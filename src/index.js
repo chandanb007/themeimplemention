@@ -3,11 +3,26 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import "./assets/vendor/fonts/materialdesignicons.css";
+import "./assets/vendor/fonts/fontawesome.css";
+import "./assets/vendor/fonts/flag-icons.css";
+import "./assets/vendor/libs/node-waves/node-waves.css";
+import "./assets/vendor/css/rtl/core.css";
+import "./assets/vendor/css/rtl/theme-default.css";
+import "./assets/css/demo.css";
+import "./assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css";
+import "./assets/vendor/libs/typeahead-js/typeahead.css";
+import "./assets/vendor/libs/@form-validation/umd/styles/index.min.css";
+import routes from "./routes/Routes";
+import { RouterProvider } from "react-router-dom";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={routes} />
   </React.StrictMode>
 );
 

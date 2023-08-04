@@ -16,6 +16,7 @@ import "./assets/css/demo.css";
 import "./assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css";
 import "./assets/vendor/libs/typeahead-js/typeahead.css";
 import "./assets/vendor/libs/@form-validation/umd/styles/index.min.css";
+
 import routes from "./routes/Routes";
 import { RouterProvider } from "react-router-dom";
 

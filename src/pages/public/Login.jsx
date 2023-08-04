@@ -5,13 +5,13 @@ import bg from "../../assets/img/illustrations/auth-basic-mask-light.png";
 
 function Login() {
   return (
-    <div class="position-relative">
-      <div class="authentication-wrapper authentication-basic container-p-y">
-        <div class="authentication-inner py-4">
-          <div class="card p-2">
-            <div class="app-brand justify-content-center mt-5">
-              <a href="index.html" class="app-brand-link gap-2">
-                <span class="app-brand-logo demo">
+    <div className="position-relative">
+      <div className="authentication-wrapper authentication-basic container-p-y">
+        <div className="authentication-inner py-4">
+          <div className="card p-2">
+            <div className="app-brand justify-content-center mt-5">
+              <a href="index.html" className="app-brand-link gap-2">
+                <span className="app-brand-logo demo">
                   <span style={{ color: "#9055fd" }}>
                     <svg
                       width="30"
@@ -71,7 +71,7 @@ function Login() {
                         clip-rule="evenodd"
                         d="M12.2787 1.18923L125 70.3075V136.87L0 65.2465V8.06814C0 3.61223 3.61061 0 8.06452 0C9.552 0 11.0105 0.411583 12.2787 1.18923Z"
                         fill="white"
-                        fill-opacity="0.15"
+                        fillOpacity="0.15"
                       />
                       <path
                         fill-rule="evenodd"
@@ -84,32 +84,32 @@ function Login() {
                         clip-rule="evenodd"
                         d="M237.721 1.18923L125 70.3075V136.87L250 65.2465V8.06814C250 3.61223 246.389 0 241.935 0C240.448 0 238.99 0.411583 237.721 1.18923Z"
                         fill="white"
-                        fill-opacity="0.3"
+                        fillOpacity="0.3"
                       />
                     </svg>
                   </span>
                 </span>
-                <span class="app-brand-text demo text-heading fw-semibold">
+                <span className="app-brand-text demo text-heading fw-semibold">
                   Materio
                 </span>
               </a>
             </div>
-            <div class="card-body mt-2">
-              <h4 class="mb-2">Welcome to Materio! 👋</h4>
-              <p class="mb-4">
+            <div className="card-body mt-2">
+              <h4 className="mb-2">Welcome to Materio! 👋</h4>
+              <p className="mb-4">
                 Please sign-in to your account and start the adventure
               </p>
 
               <form
                 id="formAuthentication"
-                class="mb-3"
+                className="mb-3"
                 action="index.html"
                 method="POST"
               >
-                <div class="form-floating form-floating-outline mb-3">
+                <div className="form-floating form-floating-outline mb-3">
                   <input
                     type="text"
-                    class="form-control"
+                    className="form-control"
                     id="email"
                     name="email-username"
                     placeholder="Enter your email or username"
@@ -117,90 +117,93 @@ function Login() {
                   />
                   <label for="email">Email or Username</label>
                 </div>
-                <div class="mb-3">
-                  <div class="form-password-toggle">
-                    <div class="input-group input-group-merge">
-                      <div class="form-floating form-floating-outline">
+                <div className="mb-3">
+                  <div className="form-password-toggle">
+                    <div className="input-group input-group-merge">
+                      <div className="form-floating form-floating-outline">
                         <input
                           type="password"
                           id="password"
-                          class="form-control"
+                          className="form-control"
                           name="password"
                           placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                           aria-describedby="password"
                         />
                         <label for="password">Password</label>
                       </div>
-                      <span class="input-group-text cursor-pointer">
-                        <i class="mdi mdi-eye-off-outline"></i>
+                      <span className="input-group-text cursor-pointer">
+                        <i className="mdi mdi-eye-off-outline"></i>
                       </span>
                     </div>
                   </div>
                 </div>
-                <div class="mb-3 d-flex justify-content-between">
-                  <div class="form-check">
+                <div className="mb-3 d-flex justify-content-between">
+                  <div className="form-check">
                     <input
-                      class="form-check-input"
+                      className="form-check-input"
                       type="checkbox"
                       id="remember-me"
                     />
-                    <label class="form-check-label" for="remember-me">
+                    <label className="form-check-label" for="remember-me">
                       {" "}
                       Remember Me{" "}
                     </label>
                   </div>
                   <a
                     href="auth-forgot-password-basic.html"
-                    class="float-end mb-1"
+                    className="float-end mb-1"
                   >
                     <span>Forgot Password?</span>
                   </a>
                 </div>
-                <div class="mb-3">
-                  <button class="btn btn-primary d-grid w-100" type="submit">
+                <div className="mb-3">
+                  <button
+                    className="btn btn-primary d-grid w-100"
+                    type="submit"
+                  >
                     Sign in
                   </button>
                 </div>
               </form>
 
-              <p class="text-center">
+              <p className="text-center">
                 <span>New on our platform?</span>
                 <a href="auth-register-basic.html">
                   <span>Create an account</span>
                 </a>
               </p>
 
-              <div class="divider my-4">
-                <div class="divider-text">or</div>
+              <div className="divider my-4">
+                <div className="divider-text">or</div>
               </div>
 
-              <div class="d-flex justify-content-center gap-2">
+              <div className="d-flex justify-content-center gap-2">
                 <a
-                  href="javascript:;"
-                  class="btn btn-icon btn-lg rounded-pill btn-text-facebook"
+                  href="#"
+                  className="btn btn-icon btn-lg rounded-pill btn-text-facebook"
                 >
-                  <i class="tf-icons mdi mdi-24px mdi-facebook"></i>
+                  <i className="tf-icons mdi mdi-24px mdi-facebook"></i>
                 </a>
 
                 <a
-                  href="javascript:;"
-                  class="btn btn-icon btn-lg rounded-pill btn-text-twitter"
+                  href="#"
+                  className="btn btn-icon btn-lg rounded-pill btn-text-twitter"
                 >
-                  <i class="tf-icons mdi mdi-24px mdi-twitter"></i>
+                  <i className="tf-icons mdi mdi-24px mdi-twitter"></i>
                 </a>
 
                 <a
-                  href="javascript:;"
-                  class="btn btn-icon btn-lg rounded-pill btn-text-github"
+                  href="#"
+                  className="btn btn-icon btn-lg rounded-pill btn-text-github"
                 >
-                  <i class="tf-icons mdi mdi-24px mdi-github"></i>
+                  <i className="tf-icons mdi mdi-24px mdi-github"></i>
                 </a>
 
                 <a
-                  href="javascript:;"
-                  class="btn btn-icon btn-lg rounded-pill btn-text-google-plus"
+                  href="#"
+                  className="btn btn-icon btn-lg rounded-pill btn-text-google-plus"
                 >
-                  <i class="tf-icons mdi mdi-24px mdi-google"></i>
+                  <i className="tf-icons mdi mdi-24px mdi-google"></i>
                 </a>
               </div>
             </div>
@@ -208,11 +211,11 @@ function Login() {
           <img
             src={tree2}
             alt="auth-tree"
-            class="authentication-image-object-left d-none d-lg-block"
+            className="authentication-image-object-left d-none d-lg-block"
           />
           <img
             src={bg}
-            class="authentication-image d-none d-lg-block"
+            className="authentication-image d-none d-lg-block"
             alt="triangle-bg"
             data-app-light-img="illustrations/auth-basic-mask-light.png"
             data-app-dark-img="illustrations/auth-basic-mask-dark.png"
@@ -220,7 +223,7 @@ function Login() {
           <img
             src={tree1}
             alt="auth-tree"
-            class="authentication-image-object-right d-none d-lg-block"
+            className="authentication-image-object-right d-none d-lg-block"
           />
         </div>
       </div>

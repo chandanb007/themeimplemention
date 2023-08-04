@@ -1,21 +1,13 @@
 import React from "react";
-import Wrapper from "../../components/common/Wrapper";
-import Footer from "../../components/common/Footer";
+import Wrapper from "../../../components/common/Wrapper";
+import Footer from "../../../components/common/Footer";
 
-import "../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css";
-import "../../assets/vendor/libs/typeahead-js/typeahead.css";
-import "../../assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
-import "../../assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css";
-import "../../assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css";
-import "../../assets/vendor/libs/apex-charts/apex-charts.css";
-import "../../assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css";
-
-function Dashboard(props) {
+function List(props) {
   return (
     <>
       <Wrapper breakCrum="Dashboard/home">
         <div className="content-wrapper">
-          <div className="container-xxl flex-grow-1 container-p-y mt-5">
+          <div className="container-xxl flex-grow-1 container-p-y">
             <div className="row gy-4">
               <div className="col-md-12 col-lg-4">
                 <div className="card">
@@ -736,7 +728,9 @@ function Dashboard(props) {
                           >
                             <span
                               className="apexcharts-tooltip-marker"
-                              style={{ backgroundColor: "rgb(240, 242, 248)" }}
+                              style={{
+                                backgroundColor: "rgb(240, 242, 248)",
+                              }}
                             ></span>
                             <div
                               className="apexcharts-tooltip-text"
@@ -2967,7 +2961,9 @@ function Dashboard(props) {
                           >
                             <span
                               className="apexcharts-tooltip-marker"
-                              style={{ backgroundColor: "rgb(144, 85, 253)" }}
+                              style={{
+                                backgroundColor: "rgb(144, 85, 253)",
+                              }}
                             ></span>
                             <div
                               className="apexcharts-tooltip-text"
@@ -2996,7 +2992,9 @@ function Dashboard(props) {
                           >
                             <span
                               className="apexcharts-tooltip-marker"
-                              style={{ backgroundColor: "rgb(22, 177, 255)" }}
+                              style={{
+                                backgroundColor: "rgb(22, 177, 255)",
+                              }}
                             ></span>
                             <div
                               className="apexcharts-tooltip-text"
@@ -3697,4 +3695,4 @@ function Dashboard(props) {
   );
 }
 
-export default Dashboard;
+export default List;

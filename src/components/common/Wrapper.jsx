@@ -8,9 +8,9 @@ function Wrapper(props) {
   });
   const handleScroll = (e) => {
     var layoutPage = document.querySelector(".layout-page");
-    if (window.pageYOffset > 0) {
+    if (window.pageYOffset > 0 && layoutPage !== null) {
       layoutPage.classList.add("window-scrolled");
-    } else {
+    } else if (layoutPage !== null) {
       layoutPage.classList.remove("window-scrolled");
     }
   };

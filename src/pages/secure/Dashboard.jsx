@@ -16,6 +16,9 @@ function Dashboard(props) {
       <Wrapper breakCrum="Dashboard/home">
         <div className="content-wrapper">
           <div className="container-xxl flex-grow-1 container-p-y mt-5">
+            <h4 class="py-3 mb-4">
+              <span class="text-muted fw-light">Dashboard /</span>
+            </h4>
             <div className="row gy-4">
               <div className="col-md-12 col-lg-4">
                 <div className="card">

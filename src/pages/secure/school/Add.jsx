@@ -7,6 +7,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 function Add(props) {
+  const [errorMsgs, setErrorMsgs] = useState(null);
   const [counties, setCounties] = useState({});
   const getCounties = async () => {
     await HttpHelper.get("lookups/counties")
@@ -31,7 +32,9 @@ function Add(props) {
         navigate("/dashboard");
       })
       .catch((error) => {
-        console.log(error);
+        if (error?.response?.data?.errors) {
+          setErrorMsgs(error.response.data);
+        }
       });
   };
   useEffect(() => {
@@ -53,6 +56,18 @@ function Add(props) {
                     <small class="text-muted float-end">Basic Details</small>
                   </div>
                   <div class="card-body">
+                    {errorMsgs !== null && errorMsgs?.errors ? (
+                      <div class="alert alert-danger" role="alert">
+                        {errorMsgs.errors.map((erromsg, index) => {
+                          return (
+                            <>
+                              {erromsg}
+                              <br />
+                            </>
+                          );
+                        })}
+                      </div>
+                    ) : null}
                     <form
                       class="browser-default-validation"
                       onSubmit={handleSubmit(onSubmit)}
@@ -330,7 +345,7 @@ function Add(props) {
                       <div class="form-floating form-floating-outline mb-4">
                         <textarea
                           {...register("bio", {
-                            required: false,
+                            required: true,
                             minLength: 50,
                             maxLength: 500,
                           })}
@@ -339,12 +354,8 @@ function Add(props) {
                               ? "is-invalid form-control h-px-75"
                               : "form-control h-px-75"
                           }
-                          id="basic-default-bio"
-                          name="basic-default-bio"
-                          placeholder="My name is john"
-                          rows="3"
-                          required=""
-                        ></textarea>
+                          placeholder="Your school bio"
+                        />
                         {(errors?.bio &&
                           errors.bio.type &&
                           errors.bio?.type === "minLength") ||
@@ -372,7 +383,6 @@ function Add(props) {
                             type="checkbox"
                             class="form-check-input"
                             id="basic-default-checkbox"
-                            required=""
                           />
                           <label
                             class="form-check-label"
@@ -381,6 +391,13 @@ function Add(props) {
                             Agree to our terms and conditions
                           </label>
                         </div>
+                        {errors?.terms &&
+                        errors.terms.type &&
+                        errors.terms.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            This field is required
+                          </p>
+                        ) : null}
                       </div>
                       <div class="mb-3">
                         <label class="switch switch-primary">

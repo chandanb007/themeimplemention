@@ -13,7 +13,7 @@ function Wrapper(props) {
     } else if (layoutPage !== null) {
       layoutPage.classList.remove("window-scrolled");
     }
-  };
+};
   return (
     <div className="light-style layout-navbar-fixed layout-menu-fixed">
       <div className="layout-wrapper layout-content-navbar">

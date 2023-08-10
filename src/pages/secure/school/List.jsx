@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Wrapper from "../../../components/common/Wrapper";
 import Footer from "../../../components/common/Footer";
 import HttpHelper from "../../../services/HttpHelper";
 import UserRolesEnum from "../../../Enums/UserRolesEnum";
+import { useNavigate } from "react-router-dom";
+import { MaterialReactTable } from "material-react-table";
+import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material";
 
 function List(props) {
+  const navigate = useNavigate();
   const [schools, setSchools] = useState([]);
   const getSchools = async () => {
     await HttpHelper.get("user/userByRole/" + UserRolesEnum.SCHOOL)
@@ -18,6 +22,52 @@ function List(props) {
   useEffect(() => {
     getSchools();
   }, []);
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "name",
+        header: "Name",
+        //muiTableHeadCellProps: { sx: { color: "green" } },
+        Cell: ({ renderedCellValue, row }) => {
+          console.log(row.original, renderedCellValue);
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "1rem",
+            }}
+          >
+            <img
+              alt="avatar"
+              height={30}
+              src={
+                row.original.profile?.profile_picture
+                  ? row.original.profile.profile_picture
+                  : "/user.png"
+              }
+              loading="lazy"
+              style={{ borderRadius: "50%" }}
+            />
+            {/* using renderedCellValue instead of cell.getValue() preserves filter match highlighting */}
+            <span>{renderedCellValue}</span>
+          </Box>;
+        },
+      },
+      {
+        accessorKey: "email",
+        header: "Email",
+      },
+      {
+        accessorKey: "mobile",
+        header: "Mobile",
+      },
+      {
+        accessorKey: "is_active",
+        header: "Status",
+      },
+    ],
+    []
+  );
   return (
     <>
       <Wrapper breakCrum="Dashboard/home">
@@ -32,6 +82,7 @@ function List(props) {
                   <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"></h5>
                     <button
+                      onClick={() => navigate("/school/add")}
                       class="btn btn-secondary add-new btn-primary"
                       tabindex="0"
                       aria-controls="DataTables_Table_0"
@@ -44,64 +95,14 @@ function List(props) {
                     </button>
                   </div>
                   <div class="card-body">
-                    <table className="table">
-                      <thead className="table-light">
-                        <tr>
-                          <th className="text-truncate">Name</th>
-                          <th className="text-truncate">Email</th>
-                          <th className="text-truncate">Mobile</th>
-                          <th className="text-truncate">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {schools?.length > 0
-                          ? schools.map((school, index) => {
-                              return (
-                                <>
-                                  <tr>
-                                    <td>
-                                      <div className="d-flex align-items-center">
-                                        <div className="avatar avatar-sm me-3">
-                                          <img
-                                            src={
-                                              "/" +
-                                              school?.profile?.profile_picture
-                                            }
-                                            alt="Avatar"
-                                            className="rounded-circle"
-                                          />
-                                        </div>
-                                        <div>
-                                          <h6 className="mb-0 text-truncate">
-                                            {school?.profile?.first_name}
-                                          </h6>
-                                          {/* <small className="text-truncate">
-                                            {school?.email}
-                                          </small> */}
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="text-truncate">
-                                      {school?.email}
-                                    </td>
-                                    <td className="text-truncate">
-                                      <i className="mdi mdi-phone mdi-24px text-danger me-1"></i>{" "}
-                                      {school?.mobile}
-                                    </td>
-                                    <td>
-                                      <span className="badge bg-label-warning rounded-pill">
-                                        {school?.is_active == 1
-                                          ? "Active"
-                                          : "Pending"}
-                                      </span>
-                                    </td>
-                                  </tr>
-                                </>
-                              );
-                            })
-                          : null}
-                      </tbody>
-                    </table>
+                    <MaterialReactTable
+                      initialState={{ density: "compact" }}
+                      columns={columns}
+                      data={schools}
+                      enableRowSelection //enable some features
+                      enableColumnOrdering
+                      enableGlobalFilter={false} //turn off a feature
+                    />
                   </div>
                 </div>
               </div>

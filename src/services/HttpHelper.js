@@ -25,8 +25,9 @@ class httpHelper {
     console.log("%c HTTP:" + message, "background: #222; color: #bada55");
   }
 
-  get(uri) {
+  get(uri, params = {}) {
     return this.instance.get(baseUri + "/" + uri, {
+      params,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

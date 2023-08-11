@@ -10,110 +10,181 @@ import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material";
 function List(props) {
   const navigate = useNavigate();
   const [schools, setSchools] = useState([]);
-  const getSchools = async () => {
-    await HttpHelper.get("user/userByRole/" + UserRolesEnum.SCHOOL)
-      .then((response) => {
-        setSchools(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  useEffect(() => {
-    getSchools();
-  }, []);
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: "name",
-        header: "Name",
-        //muiTableHeadCellProps: { sx: { color: "green" } },
-        Cell: ({ renderedCellValue, row }) => {
-          console.log(row.original, renderedCellValue);
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-          >
-            <img
-              alt="avatar"
-              height={30}
-              src={
-                row.original.profile?.profile_picture
-                  ? row.original.profile.profile_picture
-                  : "/user.png"
-              }
-              loading="lazy"
-              style={{ borderRadius: "50%" }}
-            />
-            {/* using renderedCellValue instead of cell.getValue() preserves filter match highlighting */}
-            <span>{renderedCellValue}</span>
-          </Box>;
-        },
-      },
-      {
-        accessorKey: "email",
-        header: "Email",
-      },
-      {
-        accessorKey: "mobile",
-        header: "Mobile",
-      },
-      {
-        accessorKey: "is_active",
-        header: "Status",
-      },
-    ],
-    []
-  );
-  return (
-    <>
-      <Wrapper breakCrum="Dashboard/home">
-        <div className="content-wrapper">
-          <div className="container-xxl flex-grow-1 container-p-y mt-5">
-            <h4 class="py-3 mb-4">
-              <span class="text-muted fw-light">All /</span> Schools
-            </h4>
-            <div className="row gy-4">
-              <div class="col-md mb-4 mb-md-0">
-                <div class="card">
-                  <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"></h5>
-                    <button
-                      onClick={() => navigate("/school/add")}
-                      class="btn btn-secondary add-new btn-primary"
-                      tabindex="0"
-                      aria-controls="DataTables_Table_0"
-                      type="button"
-                    >
-                      <span>
-                        <i class="mdi mdi-plus me-0 me-sm-1"></i>
-                        <span class="d-none d-sm-inline-block">Add School</span>
-                      </span>
-                    </button>
-                  </div>
-                  <div class="card-body">
-                    <MaterialReactTable
-                      initialState={{ density: "compact" }}
-                      columns={columns}
-                      data={schools}
-                      enableRowSelection //enable some features
-                      enableColumnOrdering
-                      enableGlobalFilter={false} //turn off a feature
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <Footer />
-          <div className="content-backdrop fade"></div>
-        </div>
-      </Wrapper>
-    </>
-  );
+ const [isError, setIsError] = useState(false);
+ const [isLoading, setIsLoading] = useState(false);
+ const [isRefetching, setIsRefetching] = useState(false);
+ const [rowCount, setRowCount] = useState(0);
+
+ //table state
+ const [columnFilters, setColumnFilters] = useState([]);
+ const [globalFilter, setGlobalFilter] = useState("");
+ const [sorting, setSorting] = useState([]);
+ const [pagination, setPagination] = useState({
+   pageIndex: 1,
+   pageSize: 10,
+ });
+
+ const getSchools = async () => {
+   if (!schools.length) {
+     setIsLoading(true);
+   } else {
+     setIsRefetching(true);
+   }
+
+   await HttpHelper.get("user/userByRole/" + UserRolesEnum.SCHOOL, {
+     page: pagination.pageIndex,
+     filter: columnFilters ? JSON.stringify(columnFilters) : null,
+   })
+     .then((response) => {
+       setSchools(response.data.data);
+       setRowCount(response.data.total);
+     })
+     .catch((error) => {
+       setIsError(true);
+       console.log(error);
+     });
+   setIsError(false);
+   setIsLoading(false);
+   setIsRefetching(false);
+ };
+ useEffect(() => {
+   getSchools();
+ }, [
+   columnFilters,
+   globalFilter,
+   pagination.pageIndex,
+   pagination.pageSize,
+   sorting,
+ ]);
+ useEffect(() => {
+   getSchools();
+ }, []);
+ useEffect(() => {
+   console.log(pagination);
+ }, [pagination]);
+
+ const columns = useMemo(
+   () => [
+     {
+       accessorKey: "name",
+       header: "Name",
+       size: 250,
+       Cell: ({ renderedCellValue, row }) => (
+         <Box
+           sx={{
+             display: "flex",
+             alignItems: "center",
+             gap: "1rem",
+           }}
+         >
+           <img
+             alt="avatar"
+             width={30}
+             height={30}
+             src={row.original.profile?.profile_picture ?? "/user.png"}
+             loading="lazy"
+             style={{ borderRadius: "50%" }}
+           />
+           <span>{row.original?.profile?.first_name}</span>
+         </Box>
+       ),
+     },
+     {
+       accessorKey: "email",
+       header: "Email",
+     },
+     {
+       accessorKey: "mobile",
+       header: "Mobile",
+     },
+     {
+       accessorFn: (row) =>
+         row.is_active == 1 ? (
+           <span class="badge bg-label-success me-1">Active</span>
+         ) : (
+           <span class="badge bg-label-warning me-1">Pending</span>
+         ),
+       header: "Status",
+     },
+   ],
+   []
+ );
+ return (
+   <>
+     <Wrapper breakCrum="Dashboard/home">
+       <div className="content-wrapper">
+         <div className="container-xxl flex-grow-1 container-p-y mt-5">
+           <h4 class="py-3 mb-4">
+             <span class="text-muted fw-light">All /</span> Schools
+           </h4>
+           <div className="row gy-4">
+             <div class="col-md mb-4 mb-md-0">
+               <div class="card">
+                 <div class="card-header d-flex justify-content-between align-items-center">
+                   <h5 class="mb-0"></h5>
+                   <button
+                     onClick={() => navigate("/school/add")}
+                     class="btn btn-secondary add-new btn-primary"
+                     tabindex="0"
+                     aria-controls="DataTables_Table_0"
+                     type="button"
+                   >
+                     <span>
+                       <i class="mdi mdi-plus me-0 me-sm-1"></i>
+                       <span class="d-none d-sm-inline-block">Add School</span>
+                     </span>
+                   </button>
+                 </div>
+                 <div class="card-body">
+                   <MaterialReactTable
+                     getRowId={(row) => row.id}
+                     initialState={{
+                       showColumnFilters: true,
+                       density: "compact",
+                     }}
+                     muiToolbarAlertBannerProps={
+                       isError
+                         ? {
+                             color: "error",
+                             children: "Error loading data",
+                           }
+                         : undefined
+                     }
+                     enableColumnFilterModes
+                     manualFiltering
+                     manualPagination
+                     manualSorting
+                     columns={columns}
+                     data={schools}
+                     enableRowSelection //enable some features
+                     enableColumnOrdering
+                     enableGlobalFilter={false} //turn off a feature
+                     onColumnFiltersChange={setColumnFilters}
+                     onGlobalFilterChange={setGlobalFilter}
+                     onPaginationChange={setPagination}
+                     onSortingChange={setSorting}
+                     rowCount={rowCount}
+                     state={{
+                       columnFilters,
+                       globalFilter,
+                       isLoading,
+                       pagination,
+                       showAlertBanner: isError,
+                       showProgressBars: isRefetching,
+                       sorting,
+                     }}
+                   />
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+         <Footer />
+         <div className="content-backdrop fade"></div>
+       </div>
+     </Wrapper>
+   </>
+ );
 }
 
 export default List;

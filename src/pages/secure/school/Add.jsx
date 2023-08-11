@@ -29,7 +29,7 @@ function Add(props) {
     data.role_id = UserRolesEnum.SCHOOL;
     await HttpHelper.post("signup", data, "multipart/form-data")
       .then((response) => {
-        navigate("/dashboard");
+        navigate("/school/list");
       })
       .catch((error) => {
         if (error?.response?.data?.errors) {

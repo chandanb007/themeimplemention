@@ -219,7 +219,7 @@ function Add(props) {
                               class={
                                 errors.town !== undefined
                                   ? "is-invalid form-control"
-                                  : "form-select"
+                                  : "form-control"
                               }
                               {...register("town", {
                                 required: "Town is required",
@@ -253,7 +253,7 @@ function Add(props) {
                               class={
                                 errors.estate !== undefined
                                   ? "is-invalid form-control"
-                                  : "form-select"
+                                  : "form-control"
                               }
                               {...register("estate", {
                                 required: "Estate is required",
@@ -294,7 +294,7 @@ function Add(props) {
                               class={
                                 errors.building !== undefined
                                   ? "is-invalid form-control"
-                                  : "form-select"
+                                  : "form-control"
                               }
                               placeholder=""
                               aria-describedby="basic-default-password3"

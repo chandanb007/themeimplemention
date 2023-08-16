@@ -1,6 +1,20 @@
 import React from "react";
 import userAvator from "../../assets/img/avatars/1.png";
+import HttpHelper from "../../services/HttpHelper";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 function Header(props) {
+  const navigate = useNavigate();
+  const logout = async () => {
+    await HttpHelper.post("user/logout")
+      .then((response) => {
+        Cookies.remove("XSRF-TOKEN");
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <>
       <nav
@@ -642,8 +656,9 @@ function Header(props) {
                 <li>
                   <a
                     className="dropdown-item waves-effect"
-                    href="auth-login-cover.html"
-                    target="_blank"
+                    onClick={(e) => {
+                      logout();
+                    }}
                   >
                     <i className="mdi mdi-logout me-1 mdi-20px"></i>
                     <span className="align-middle">Log Out</span>

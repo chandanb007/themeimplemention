@@ -105,16 +105,48 @@ function SideBar(props) {
           </ul>
         </li>
         <li
-          className="menu-item"
+          class="menu-item"
           onClick={(e) => {
+            e.preventDefault();
             menuToggle(e);
           }}
         >
-          <a href="#" className="menu-link waves-effect">
-            <i className="menu-icon tf-icons mdi mdi-cash"></i>
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons mdi mdi-cash"></i>
             <div data-i18n="Dashboards">Subscription</div>
-            {/* <div className="badge bg-danger rounded-pill ms-auto">5</div> */}
           </a>
+          <ul class="menu-sub">
+            <li
+              class="menu-item"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <NavLink
+                to={"/subscription/add"}
+                className={(isActive) =>
+                  "menu-link" + (!isActive ? " unselected" : "")
+                }
+              >
+                <div data-i18n="Analytics">Add Subscription</div>
+              </NavLink>
+            </li>
+            <li
+              class="menu-item"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <NavLink
+                to={"/subscription/list"}
+                className={(isActive) =>
+                  "menu-link" + (!isActive ? " unselected" : "")
+                }
+              >
+                <div data-i18n="All Schools">All Subscription</div>
+              </NavLink>
+            </li>
+          </ul>
         </li>
         <li
           className="menu-item"

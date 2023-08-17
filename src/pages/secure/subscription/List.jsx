@@ -31,7 +31,7 @@ function List(props) {
      setIsRefetching(true);
    }
 
-   await HttpHelper.get("user/userByRole/" + UserRolesEnum.SCHOOL, {
+   await HttpHelper.get("subscription", {
      page: pagination.pageIndex == 1 ? 2 : pagination.pageIndex,
      filter: columnFilters ? JSON.stringify(columnFilters) : null,
    })

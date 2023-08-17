@@ -117,8 +117,8 @@ function Login() {
                             required: "Password is required",
                           })}
                           type={showPassword ? "text" : "password"}
-                          value={password}
-                          onChange={handlePasswordChange}
+                          //value={password}
+                          //onChange={handlePasswordChange}
                           id="password"
                           className={
                             errors.password !== undefined

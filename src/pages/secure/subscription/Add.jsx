@@ -16,7 +16,7 @@ function Add(props) {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
-    await HttpHelper.post("subscription/add", data)
+    await HttpHelper.post("subscription", data)
       .then((response) => {
         navigate("/subscription/list");
       })
@@ -165,7 +165,7 @@ function Add(props) {
                       <div class="mb-3">
                         <label class="switch switch-primary">
                           <input
-                            {...register("emails_consent", {
+                            {...register("status", {
                               required: false,
                             })}
                             type="checkbox"

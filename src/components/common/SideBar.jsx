@@ -3,8 +3,10 @@ import { Link, NavLink, Navigate } from "react-router-dom";
 import HttpHelper from "../../services/HttpHelper";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import UserRolesEnum from "../../Enums/UserRolesEnum";
 
 function SideBar(props) {
+  const { role } = JSON.parse(sessionStorage.getItem("user"));
   const navigate = useNavigate();
   const menuToggle = (e) => {
     var obj = e.currentTarget;
@@ -22,6 +24,7 @@ function SideBar(props) {
     await HttpHelper.post("user/logout")
       .then((response) => {
         Cookies.remove("XSRF-TOKEN");
+        sessionStorage.removeItem("user");
         navigate("/");
       })
       .catch((error) => {
@@ -58,114 +61,212 @@ function SideBar(props) {
       </div>
 
       <div className="menu-inner-shadow" style={{ display: "none" }}></div>
-
-      <ul className="menu-inner py-1 ps ps--active-y">
-        <li
-          class="menu-item"
-          onClick={(e) => {
-            e.preventDefault();
-            menuToggle(e);
-          }}
-        >
-          <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons mdi mdi-school"></i>
-            <div data-i18n="Dashboards">Schools</div>
-          </a>
-          <ul class="menu-sub">
-            <li
-              class="menu-item"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <NavLink
-                to={"/school/add"}
-                className={(isActive) =>
-                  "menu-link" + (!isActive ? " unselected" : "")
-                }
-              >
-                <div data-i18n="Analytics">Add School</div>
-              </NavLink>
-            </li>
-            <li
-              class="menu-item"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <NavLink
-                to={"/school/list"}
-                className={(isActive) =>
-                  "menu-link" + (!isActive ? " unselected" : "")
-                }
-              >
-                <div data-i18n="All Schools">All Schools</div>
-              </NavLink>
-            </li>
-          </ul>
-        </li>
-        <li
-          class="menu-item"
-          onClick={(e) => {
-            e.preventDefault();
-            menuToggle(e);
-          }}
-        >
-          <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons mdi mdi-cash"></i>
-            <div data-i18n="Dashboards">Subscription</div>
-          </a>
-          <ul class="menu-sub">
-            <li
-              class="menu-item"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <NavLink
-                to={"/subscription/add"}
-                className={(isActive) =>
-                  "menu-link" + (!isActive ? " unselected" : "")
-                }
-              >
-                <div data-i18n="Analytics">Add Subscription</div>
-              </NavLink>
-            </li>
-            <li
-              class="menu-item"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <NavLink
-                to={"/subscription/list"}
-                className={(isActive) =>
-                  "menu-link" + (!isActive ? " unselected" : "")
-                }
-              >
-                <div data-i18n="All Schools">All Subscription</div>
-              </NavLink>
-            </li>
-          </ul>
-        </li>
-        <li
-          className="menu-item"
-          onClick={(e) => {
-            menuToggle(e);
-          }}
-        >
-          <a
-            className="menu-link waves-effect"
+      {role == UserRolesEnum.SCHOOL ? (
+        <ul className="menu-inner py-1 ps ps--active-y">
+          <li
+            class="menu-item"
             onClick={(e) => {
-              logout();
+              e.preventDefault();
+              menuToggle(e);
             }}
           >
-            <i className="menu-icon tf-icons mdi mdi-logout"></i>
-            <div data-i18n="Dashboards">Logout</div>
-            {/* <div className="badge bg-danger rounded-pill ms-auto">5</div> */}
-          </a>
-        </li>
-      </ul>
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+              <i class="menu-icon tf-icons mdi mdi-school"></i>
+              <div data-i18n="Dashboards">Students</div>
+            </a>
+            <ul class="menu-sub">
+              <li
+                class="menu-item"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <NavLink
+                  to={"/teacher/add"}
+                  className={(isActive) =>
+                    "menu-link" + (!isActive ? " unselected" : "")
+                  }
+                >
+                  <div data-i18n="Analytics">Add Teacher</div>
+                </NavLink>
+              </li>
+              <li
+                class="menu-item"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <NavLink
+                  to={"/teacher"}
+                  className={(isActive) =>
+                    "menu-link" + (!isActive ? " unselected" : "")
+                  }
+                >
+                  <div data-i18n="Analytics">All Teacher</div>
+                </NavLink>
+              </li>
+            </ul>
+          </li>
+          <li
+            class="menu-item"
+            onClick={(e) => {
+              e.preventDefault();
+              menuToggle(e);
+            }}
+          >
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+              <i class="menu-icon tf-icons mdi mdi-human-male-board"></i>
+              <div data-i18n="Dashboards">Teacher</div>
+            </a>
+            <ul class="menu-sub">
+              <li
+                class="menu-item"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <NavLink
+                  to={"/teacher/add"}
+                  className={(isActive) =>
+                    "menu-link" + (!isActive ? " unselected" : "")
+                  }
+                >
+                  <div data-i18n="Analytics">Add Teacher</div>
+                </NavLink>
+              </li>
+              <li
+                class="menu-item"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <NavLink
+                  to={"/teacher"}
+                  className={(isActive) =>
+                    "menu-link" + (!isActive ? " unselected" : "")
+                  }
+                >
+                  <div data-i18n="Analytics">All Teacher</div>
+                </NavLink>
+              </li>
+            </ul>
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link">
+                <i class="menu-icon tf-icons mdi  mdi-face-man-profile"></i>
+                <div data-i18n="Dashboards">Profile</div>
+              </a>
+            </li>
+          </li>
+        </ul>
+      ) : (
+        <ul className="menu-inner py-1 ps ps--active-y">
+          <li
+            class="menu-item"
+            onClick={(e) => {
+              e.preventDefault();
+              menuToggle(e);
+            }}
+          >
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+              <i class="menu-icon tf-icons mdi mdi-school"></i>
+              <div data-i18n="Dashboards">Schools</div>
+            </a>
+            <ul class="menu-sub">
+              <li
+                class="menu-item"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <NavLink
+                  to={"/school/add"}
+                  className={(isActive) =>
+                    "menu-link" + (!isActive ? " unselected" : "")
+                  }
+                >
+                  <div data-i18n="Analytics">Add School</div>
+                </NavLink>
+              </li>
+              <li
+                class="menu-item"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <NavLink
+                  to={"/school/list"}
+                  className={(isActive) =>
+                    "menu-link" + (!isActive ? " unselected" : "")
+                  }
+                >
+                  <div data-i18n="All Schools">All Schools</div>
+                </NavLink>
+              </li>
+            </ul>
+          </li>
+          <li
+            class="menu-item"
+            onClick={(e) => {
+              e.preventDefault();
+              menuToggle(e);
+            }}
+          >
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+              <i class="menu-icon tf-icons mdi mdi-cash"></i>
+              <div data-i18n="Dashboards">Subscription</div>
+            </a>
+            <ul class="menu-sub">
+              <li
+                class="menu-item"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <NavLink
+                  to={"/subscription/add"}
+                  className={(isActive) =>
+                    "menu-link" + (!isActive ? " unselected" : "")
+                  }
+                >
+                  <div data-i18n="Analytics">Add Subscription</div>
+                </NavLink>
+              </li>
+              <li
+                class="menu-item"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <NavLink
+                  to={"/subscription/list"}
+                  className={(isActive) =>
+                    "menu-link" + (!isActive ? " unselected" : "")
+                  }
+                >
+                  <div data-i18n="All Schools">All Subscription</div>
+                </NavLink>
+              </li>
+            </ul>
+          </li>
+          <li
+            className="menu-item"
+            onClick={(e) => {
+              menuToggle(e);
+            }}
+          >
+            <a
+              className="menu-link waves-effect"
+              onClick={(e) => {
+                logout();
+              }}
+            >
+              <i className="menu-icon tf-icons mdi mdi-logout"></i>
+              <div data-i18n="Dashboards">Logout</div>
+              {/* <div className="badge bg-danger rounded-pill ms-auto">5</div> */}
+            </a>
+          </li>
+        </ul>
+      )}
     </aside>
   );
 }

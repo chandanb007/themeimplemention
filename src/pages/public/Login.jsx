@@ -27,7 +27,9 @@ function Login() {
   const onSubmit = async (data) => {
     await HttpHelper.post("auth/login", data)
       .then((response) => {
+        debugger;
         navigate("/dashboard");
+        sessionStorage.setItem("user", JSON.stringify(response.data.data));
       })
       .catch((error) => {
         if (error?.response?.data?.errors) {

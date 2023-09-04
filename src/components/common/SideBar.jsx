@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import UserRolesEnum from "../../Enums/UserRolesEnum";
 
 function SideBar(props) {
-  const { role } = JSON.parse(sessionStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const navigate = useNavigate();
   const menuToggle = (e) => {
     var obj = e.currentTarget;
@@ -61,7 +61,7 @@ function SideBar(props) {
       </div>
 
       <div className="menu-inner-shadow" style={{ display: "none" }}></div>
-      {role == UserRolesEnum.SCHOOL ? (
+      {user.user.role_id == UserRolesEnum.SCHOOL ? (
         <ul className="menu-inner py-1 ps ps--active-y">
           <li
             class="menu-item"

@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import AddParentModal from "./AddParentModal";
 
 function Add(props) {
+  const [show, setShow] = useState(false);
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [counties, setCounties] = useState({});
   const [parents, setParents] = useState({});
@@ -52,6 +54,9 @@ function Add(props) {
     getCounties();
     getParents();
   }, []);
+  const handleCloseModal = () => {
+    setShow(false);
+  };
   return (
     <>
       <Wrapper breakCrum="Dashboard/Add Student">
@@ -111,6 +116,7 @@ function Add(props) {
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <input
+                          defaultValue={user.user.first_name}
                           disabled={true}
                           type="email"
                           id="basic-default-email"
@@ -163,9 +169,17 @@ function Add(props) {
                         ) : null}
                         <label htmlFor="basic-default-country">Parent</label>
                       </div>
-                      <div class="form-floating form-floating-outline mb-4 float-end">
+                      <div class="form-floating form-floating-outline mb-4 float-right">
                         <span>
-                          Click <a>here </a>
+                          Click{" "}
+                          <a
+                            onClick={(e) => {
+                              debugger;
+                              setShow(true);
+                            }}
+                          >
+                            here{" "}
+                          </a>
                           to create new parent.
                         </span>
                       </div>
@@ -394,7 +408,11 @@ function Add(props) {
               </div>
             </div>
             <Footer />
-            <AddParentModal />
+            <AddParentModal
+              show={show}
+              handleClose={handleCloseModal}
+              counties={counties}
+            />
             <div className="content-backdrop fade"></div>
           </div>
         </div>

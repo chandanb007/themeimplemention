@@ -1,137 +1,286 @@
-import React from "react";
+import React, { useState } from "react";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import HttpHelper from "../../../services/HttpHelper";
+import UserRolesEnum from "../../../Enums/UserRolesEnum";
 
 function AddParentModal(props) {
+  const { show, handleClose, counties } = props;
+  const [errorMsgs, setErrorMsgs] = useState(null);
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = async (data) => {
+    data.role_id = UserRolesEnum.PARENT;
+    await HttpHelper.post("signup", data)
+      .then((response) => {
+        handleClose();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <>
-      <div
-        class="modal fade"
-        id="addNewCCModal"
-        tabindex="-1"
-        aria-hidden="true"
-        style={{ display: "none" }}
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        size="lg"
       >
-        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
-          <div class="modal-content p-3 p-md-5">
-            <div class="modal-body p-md-0">
+        <Modal.Header closeButton>
+          <Modal.Title>Add Parent</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {errorMsgs !== null && errorMsgs?.errors ? (
+            <div class="alert alert-danger" role="alert">
+              {errorMsgs.errors.map((erromsg, index) => {
+                return (
+                  <>
+                    {erromsg}
+                    <br />
+                  </>
+                );
+              })}
+            </div>
+          ) : null}
+          <form
+            id="editUserForm"
+            class="row g-4"
+            onsubmit="return false"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <div class="col-12 col-md-6">
+              <div class="form-floating form-floating-outline">
+                <input
+                  {...register("first_name", {
+                    required: true,
+                  })}
+                  type="text"
+                  id="modalEditUserFirstName"
+                  name="modalEditUserFirstName"
+                  class="form-control"
+                  placeholder="John"
+                />
+                {errors?.first_name &&
+                errors.first_name.type &&
+                errors.first_name.type === "required" ? (
+                  <p className="text-danger" role="alert">
+                    First Name is required
+                  </p>
+                ) : null}
+                <label for="modalEditUserFirstName">First Name</label>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-floating form-floating-outline">
+                <input
+                  {...register("last_name", {
+                    required: "Last Name is required",
+                    maxLength: 50,
+                  })}
+                  type="text"
+                  id="modalEditUserLastName"
+                  name="modalEditUserLastName"
+                  class="form-control"
+                  placeholder="Doe"
+                />
+                <label for="modalEditUserLastName">Last Name</label>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-floating form-floating-outline">
+                <input
+                  {...register("email", {
+                    required: "Email is required",
+                    maxLength: 50,
+                  })}
+                  type="text"
+                  id="modalEditUserEmail"
+                  name="modalEditUserEmail"
+                  class="form-control"
+                  placeholder="example@domain.com"
+                />
+                {errors?.email &&
+                errors.email.type &&
+                errors.email.type === "required" ? (
+                  <p className="text-danger" role="alert">
+                    Email is required
+                  </p>
+                ) : null}
+                <label for="modalEditUserEmail">Email</label>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-floating form-floating-outline">
+                <select
+                  {...register("relationship", {
+                    required: "Relationship is required",
+                    maxLength: 50,
+                  })}
+                  id="modalEditUserStatus"
+                  name="modalEditUserStatus"
+                  class="form-select"
+                  aria-label="Default select example"
+                >
+                  <option value="" selected>
+                    Status
+                  </option>
+                  <option value="spouse">Spouse</option>
+                  <option value="child">Child</option>
+                  <option value="adopted child">Adopted child</option>
+                </select>
+                {errors?.relationship &&
+                errors.relationship.type &&
+                errors.relationship.type === "required" ? (
+                  <p className="text-danger" role="alert">
+                    Relationship is required
+                  </p>
+                ) : null}
+                <label for="modalEditUserStatus">
+                  Relationship with Student
+                </label>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="input-group input-group-merge">
+                <span class="input-group-text">Kenya (+254)</span>
+                <div class="form-floating form-floating-outline">
+                  <input
+                    {...register("mobile", {
+                      required: "Mobile is required",
+                      maxLength: 50,
+                    })}
+                    type="text"
+                    id="modalEditUserPhone"
+                    name="modalEditUserPhone"
+                    class="form-control phone-number-mask"
+                    placeholder="202 555 0111"
+                  />
+
+                  <label for="modalEditUserPhone">Phone Number</label>
+                </div>
+              </div>
+              {errors?.mobile &&
+              errors.mobile.type &&
+              errors.mobile.type === "required" ? (
+                <p className="text-danger" role="alert">
+                  Mobile is required
+                </p>
+              ) : null}
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-floating form-floating-outline">
+                <select
+                  {...register("country", {
+                    required: "Country is required",
+                    maxLength: 50,
+                  })}
+                  id="modalEditUserCountry"
+                  name="modalEditUserCountry"
+                  class="select2 form-select"
+                  data-allow-clear="true"
+                >
+                  <option value="">Select</option>
+                  <option value="">Select County</option>
+                  {counties.length > 0
+                    ? counties.map((county, index) => {
+                        return (
+                          <>
+                            <option value={county.id}>{county.name}</option>
+                          </>
+                        );
+                      })
+                    : null}
+                </select>
+                {errors?.country &&
+                errors.country.type &&
+                errors.country.type === "required" ? (
+                  <p className="text-danger" role="alert">
+                    Country is required
+                  </p>
+                ) : null}
+                <label for="modalEditUserCountry">Country</label>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-floating form-floating-outline">
+                <input
+                  {...register("town", {
+                    required: "Town is required",
+                    maxLength: 50,
+                  })}
+                  type="text"
+                  id="modalEditUserEmail"
+                  name="modalEditUserEmail"
+                  class="form-control"
+                  placeholder="example@domain.com"
+                />
+                {errors?.town &&
+                errors.town.type &&
+                errors.town.type === "required" ? (
+                  <p className="text-danger" role="alert">
+                    Town is required
+                  </p>
+                ) : null}
+                <label for="modalEditUserEmail">Town</label>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-floating form-floating-outline">
+                <input
+                  type="text"
+                  id="modalEditUserEmail"
+                  name="modalEditUserEmail"
+                  class="form-control"
+                  placeholder="example@domain.com"
+                />
+                <label for="modalEditUserEmail">Estate</label>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-floating form-floating-outline">
+                <input
+                  type="text"
+                  id="modalEditUserEmail"
+                  name="modalEditUserEmail"
+                  class="form-control"
+                  placeholder="example@domain.com"
+                />
+                <label for="modalEditUserEmail">Building</label>
+              </div>
+            </div>
+            <div class="col-12 text-center">
+              <button type="submit" class="btn btn-primary me-sm-3 me-1">
+                Submit
+              </button>
               <button
-                type="button"
-                class="btn-close"
+                onClick={handleClose}
+                type="reset"
+                class="btn btn-outline-secondary"
                 data-bs-dismiss="modal"
                 aria-label="Close"
-              ></button>
-              <div class="text-center mb-4">
-                <h3 class="mb-2 pb-1">Add New Card</h3>
-                <p>Add new card to complete payment</p>
-              </div>
-              <form
-                id="addNewCCForm"
-                class="row g-4 fv-plugins-bootstrap5 fv-plugins-framework"
-                onsubmit="return false"
-                novalidate="novalidate"
               >
-                <div class="col-12 fv-plugins-icon-container">
-                  <div class="input-group input-group-merge">
-                    <div class="form-floating form-floating-outline">
-                      <input
-                        id="modalAddCard"
-                        name="modalAddCard"
-                        class="form-control credit-card-mask"
-                        type="text"
-                        placeholder="1356 3215 6548 7898"
-                        aria-describedby="modalAddCard2"
-                      />
-                      <label for="modalAddCard">Card Number</label>
-                    </div>
-                    <span
-                      class="input-group-text cursor-pointer p-1"
-                      id="modalAddCard2"
-                    >
-                      <span class="card-type"></span>
-                    </span>
-                  </div>
-                  <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
-                </div>
-                <div class="col-12 col-md-6">
-                  <div class="form-floating form-floating-outline">
-                    <input
-                      type="text"
-                      id="modalAddCardName"
-                      class="form-control"
-                      placeholder="John Doe"
-                    />
-                    <label for="modalAddCardName">Name</label>
-                  </div>
-                </div>
-                <div class="col-6 col-md-3">
-                  <div class="form-floating form-floating-outline">
-                    <input
-                      type="text"
-                      id="modalAddCardExpiryDate"
-                      class="form-control expiry-date-mask"
-                      placeholder="MM/YY"
-                    />
-                    <label for="modalAddCardExpiryDate">Exp. Date</label>
-                  </div>
-                </div>
-                <div class="col-6 col-md-3">
-                  <div class="input-group input-group-merge">
-                    <div class="form-floating form-floating-outline">
-                      <input
-                        type="text"
-                        id="modalAddCardCvv"
-                        class="form-control cvv-code-mask"
-                        maxlength="3"
-                        placeholder="654"
-                      />
-                      <label for="modalAddCardCvv">CVV Code</label>
-                    </div>
-                    <span
-                      class="input-group-text cursor-pointer"
-                      id="modalAddCardCvv2"
-                    >
-                      <i
-                        class="mdi mdi-help-circle-outline text-muted"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        title="Card Verification Value"
-                      ></i>
-                    </span>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <label class="switch">
-                    <input type="checkbox" class="switch-input" />
-                    <span class="switch-toggle-slider">
-                      <span class="switch-on"></span>
-                      <span class="switch-off"></span>
-                    </span>
-                    <span class="switch-label">
-                      Save card for future billing?
-                    </span>
-                  </label>
-                </div>
-                <div class="col-12 text-center">
-                  <button
-                    type="submit"
-                    class="btn btn-primary me-sm-3 me-1 waves-effect waves-light"
-                  >
-                    Submit
-                  </button>
-                  <button
-                    type="reset"
-                    class="btn btn-outline-secondary btn-reset waves-effect"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  >
-                    Cancel
-                  </button>
-                </div>
-                <input type="hidden" />
-              </form>
+                Cancel
+              </button>
             </div>
-          </div>
-        </div>
-      </div>
+          </form>
+        </Modal.Body>
+        {/* <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary">Understood</Button>
+        </Modal.Footer> */}
+      </Modal>
     </>
   );
 }

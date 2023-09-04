@@ -82,12 +82,12 @@ function SideBar(props) {
                 }}
               >
                 <NavLink
-                  to={"/teacher/add"}
+                  to={"/student/add"}
                   className={(isActive) =>
                     "menu-link" + (!isActive ? " unselected" : "")
                   }
                 >
-                  <div data-i18n="Analytics">Add Teacher</div>
+                  <div data-i18n="Analytics">Add Student</div>
                 </NavLink>
               </li>
               <li
@@ -97,12 +97,12 @@ function SideBar(props) {
                 }}
               >
                 <NavLink
-                  to={"/teacher"}
+                  to={"/student/list"}
                   className={(isActive) =>
                     "menu-link" + (!isActive ? " unselected" : "")
                   }
                 >
-                  <div data-i18n="Analytics">All Teacher</div>
+                  <div data-i18n="Analytics">All Students</div>
                 </NavLink>
               </li>
             </ul>
@@ -116,7 +116,7 @@ function SideBar(props) {
           >
             <a href="javascript:void(0);" class="menu-link menu-toggle">
               <i class="menu-icon tf-icons mdi mdi-human-male-board"></i>
-              <div data-i18n="Dashboards">Teacher</div>
+              <div data-i18n="Dashboards">Teachers</div>
             </a>
             <ul class="menu-sub">
               <li
@@ -141,7 +141,7 @@ function SideBar(props) {
                 }}
               >
                 <NavLink
-                  to={"/teacher"}
+                  to={"/teacher/list"}
                   className={(isActive) =>
                     "menu-link" + (!isActive ? " unselected" : "")
                   }

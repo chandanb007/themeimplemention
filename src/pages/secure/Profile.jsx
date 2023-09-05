@@ -82,37 +82,36 @@ function Profile(props) {
                     <div class="info-container">
                       <ul class="list-unstyled mb-4">
                         <li class="mb-3">
-                          <span class="h6">Username:</span>
-                          <span>@violet.dev</span>
+                          <span class="h6">Email : </span>
+                          <span>{user.user.email}</span>
                         </li>
                         <li class="mb-3">
-                          <span class="h6">Email:</span>
-                          <span>vafgot@vultukir.org</span>
+                          <span class="h6">Status : </span>
+                          <span class="badge bg-label-success">
+                            {user.user.is_active == 1 ? "Active" : "Inactive"}
+                          </span>
                         </li>
                         <li class="mb-3">
-                          <span class="h6">Status:</span>
-                          <span class="badge bg-label-success">Active</span>
+                          <span class="h6">Role : </span>
+                          <span>
+                            {" "}
+                            {user.user.role_id == UserRolesEnum.SCHOOL
+                              ? "School"
+                              : "Admin"}
+                          </span>
                         </li>
                         <li class="mb-3">
-                          <span class="h6">Role:</span>
-                          <span>Author</span>
+                          <span class="h6">Contact : </span>
+                          <span>{user.user.mobile}</span>
                         </li>
-                        <li class="mb-3">
-                          <span class="h6">Tax id:</span>
-                          <span>Tax-8965</span>
-                        </li>
-                        <li class="mb-3">
-                          <span class="h6">Contact:</span>
-                          <span>(123) 456-7890</span>
-                        </li>
-                        <li class="mb-3">
+                        {/* <li class="mb-3">
                           <span class="h6">Languages:</span>
                           <span>French</span>
                         </li>
                         <li class="mb-3">
                           <span class="h6">Country:</span>
                           <span>England</span>
-                        </li>
+                        </li> */}
                       </ul>
                       <div class="d-flex justify-content-center">
                         <a

@@ -7,7 +7,7 @@ import HttpHelper from "../../../services/HttpHelper";
 import UserRolesEnum from "../../../Enums/UserRolesEnum";
 
 function AddParentModal(props) {
-  const { show, handleClose, counties } = props;
+  const { show, handleClose, counties, getParents } = props;
   const [errorMsgs, setErrorMsgs] = useState(null);
   const navigate = useNavigate();
   const {
@@ -21,6 +21,7 @@ function AddParentModal(props) {
     await HttpHelper.post("signup", data)
       .then((response) => {
         handleClose();
+        getParents();
       })
       .catch((error) => {
         console.log(error);
@@ -55,7 +56,6 @@ function AddParentModal(props) {
           <form
             id="editUserForm"
             class="row g-4"
-            onsubmit="return false"
             onSubmit={handleSubmit(onSubmit)}
           >
             <div class="col-12 col-md-6">
@@ -65,11 +65,11 @@ function AddParentModal(props) {
                     required: true,
                   })}
                   type="text"
-                  id="modalEditUserFirstName"
-                  name="modalEditUserFirstName"
                   class="form-control"
                   placeholder="John"
                 />
+                {console.log(errors)}
+
                 {errors?.first_name &&
                 errors.first_name.type &&
                 errors.first_name.type === "required" ? (
@@ -88,8 +88,6 @@ function AddParentModal(props) {
                     maxLength: 50,
                   })}
                   type="text"
-                  id="modalEditUserLastName"
-                  name="modalEditUserLastName"
                   class="form-control"
                   placeholder="Doe"
                 />
@@ -104,10 +102,8 @@ function AddParentModal(props) {
                     maxLength: 50,
                   })}
                   type="text"
-                  id="modalEditUserEmail"
-                  name="modalEditUserEmail"
                   class="form-control"
-                  placeholder="example@domain.com"
+                  placeholder=""
                 />
                 {errors?.email &&
                 errors.email.type &&
@@ -126,8 +122,6 @@ function AddParentModal(props) {
                     required: "Relationship is required",
                     maxLength: 50,
                   })}
-                  id="modalEditUserStatus"
-                  name="modalEditUserStatus"
                   class="form-select"
                   aria-label="Default select example"
                 >
@@ -160,10 +154,8 @@ function AddParentModal(props) {
                       maxLength: 50,
                     })}
                     type="text"
-                    id="modalEditUserPhone"
-                    name="modalEditUserPhone"
                     class="form-control phone-number-mask"
-                    placeholder="202 555 0111"
+                    placeholder="2541234567890"
                   />
 
                   <label for="modalEditUserPhone">Phone Number</label>
@@ -180,12 +172,10 @@ function AddParentModal(props) {
             <div class="col-12 col-md-6">
               <div class="form-floating form-floating-outline">
                 <select
-                  {...register("country", {
-                    required: "Country is required",
+                  {...register("county", {
+                    required: "County is required",
                     maxLength: 50,
                   })}
-                  id="modalEditUserCountry"
-                  name="modalEditUserCountry"
                   class="select2 form-select"
                   data-allow-clear="true"
                 >
@@ -201,14 +191,14 @@ function AddParentModal(props) {
                       })
                     : null}
                 </select>
-                {errors?.country &&
-                errors.country.type &&
-                errors.country.type === "required" ? (
+                {errors?.county &&
+                errors.county.type &&
+                errors.county.type === "required" ? (
                   <p className="text-danger" role="alert">
-                    Country is required
+                    County is required
                   </p>
                 ) : null}
-                <label for="modalEditUserCountry">Country</label>
+                <label for="modalEditUserCountry">County</label>
               </div>
             </div>
             <div class="col-12 col-md-6">
@@ -219,10 +209,8 @@ function AddParentModal(props) {
                     maxLength: 50,
                   })}
                   type="text"
-                  id="modalEditUserEmail"
-                  name="modalEditUserEmail"
                   class="form-control"
-                  placeholder="example@domain.com"
+                  placeholder=""
                 />
                 {errors?.town &&
                 errors.town.type &&
@@ -237,12 +225,21 @@ function AddParentModal(props) {
             <div class="col-12 col-md-6">
               <div class="form-floating form-floating-outline">
                 <input
+                  {...register("estate", {
+                    required: "Estate is required",
+                    maxLength: 50,
+                  })}
                   type="text"
-                  id="modalEditUserEmail"
-                  name="modalEditUserEmail"
                   class="form-control"
-                  placeholder="example@domain.com"
+                  placeholder=""
                 />
+                {errors?.estate &&
+                errors.estate.type &&
+                errors.estate.type === "required" ? (
+                  <p className="text-danger" role="alert">
+                    Estate is required
+                  </p>
+                ) : null}
                 <label for="modalEditUserEmail">Estate</label>
               </div>
             </div>
@@ -250,10 +247,12 @@ function AddParentModal(props) {
               <div class="form-floating form-floating-outline">
                 <input
                   type="text"
-                  id="modalEditUserEmail"
-                  name="modalEditUserEmail"
+                  {...register("building", {
+                    required: false,
+                    maxLength: 50,
+                  })}
                   class="form-control"
-                  placeholder="example@domain.com"
+                  placeholder=""
                 />
                 <label for="modalEditUserEmail">Building</label>
               </div>

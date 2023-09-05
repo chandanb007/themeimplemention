@@ -151,10 +151,14 @@ function SideBar(props) {
               </li>
             </ul>
             <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link">
+              <NavLink
+                to={"/profile"}
+                href="javascript:void(0);"
+                className="menu-link"
+              >
                 <i class="menu-icon tf-icons mdi  mdi-face-man-profile"></i>
                 <div data-i18n="Dashboards">Profile</div>
-              </a>
+              </NavLink>
             </li>
           </li>
         </ul>

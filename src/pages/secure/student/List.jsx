@@ -31,7 +31,7 @@ function List(props) {
      setIsRefetching(true);
    }
 
-   await HttpHelper.get("user/userByRole/" + UserRolesEnum.SCHOOL, {
+   await HttpHelper.get("user/userByRole/" + UserRolesEnum.STUDENT, {
      page: pagination.pageIndex == 1 ? 2 : pagination.pageIndex,
      filter: columnFilters ? JSON.stringify(columnFilters) : null,
    })
@@ -90,12 +90,20 @@ function List(props) {
        ),
      },
      {
-       accessorKey: "email",
-       header: "Email",
-     },
-     {
-       accessorKey: "mobile",
-       header: "Mobile",
+       accessorKey: "last_name",
+       header: "Last Name",
+       size: 250,
+       Cell: ({ renderedCellValue, row }) => (
+         <Box
+           sx={{
+             display: "flex",
+             alignItems: "center",
+             gap: "1rem",
+           }}
+         >
+           <span>{row.original?.last_name}</span>
+         </Box>
+       ),
      },
      {
        accessorFn: (row) =>
@@ -115,7 +123,7 @@ function List(props) {
        <div className="content-wrapper">
          <div className="container-xxl flex-grow-1 container-p-y mt-5">
            <h4 class="py-3 mb-4">
-             <span class="text-muted fw-light">All /</span> Schools
+             <span class="text-muted fw-light">All /</span> Students
            </h4>
            <div className="row gy-4">
              <div class="col-md mb-4 mb-md-0">
@@ -131,7 +139,7 @@ function List(props) {
                    >
                      <span>
                        <i class="mdi mdi-plus me-0 me-sm-1"></i>
-                       <span class="d-none d-sm-inline-block">Add School</span>
+                       <span class="d-none d-sm-inline-block">Add Student</span>
                      </span>
                    </button>
                  </div>

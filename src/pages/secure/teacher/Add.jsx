@@ -5,27 +5,15 @@ import HttpHelper from "../../../services/HttpHelper";
 import UserRolesEnum from "../../../Enums/UserRolesEnum";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import AddParentModal from "./AddParentModal";
 
 function Add(props) {
-  const [show, setShow] = useState(false);
   const user = JSON.parse(sessionStorage.getItem("user"));
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [counties, setCounties] = useState({});
-  const [parents, setParents] = useState({});
   const getCounties = async () => {
     await HttpHelper.get("lookups/counties")
       .then((response) => {
         setCounties(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const getParents = async () => {
-    await HttpHelper.get("user/userByRole/" + UserRolesEnum.PARENT)
-      .then((response) => {
-        setParents(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -39,11 +27,11 @@ function Add(props) {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
-    data.role_id = UserRolesEnum.STUDENT;
+    data.role_id = UserRolesEnum.TEACHER;
     data.school_id = user.user.id;
     await HttpHelper.post("signup", data, "multipart/form-data")
       .then((response) => {
-        navigate("/school/list");
+        navigate("/teacher/list");
       })
       .catch((error) => {
         if (error?.response?.data?.errors) {
@@ -53,18 +41,14 @@ function Add(props) {
   };
   useEffect(() => {
     getCounties();
-    getParents();
   }, []);
-  const handleCloseModal = () => {
-    setShow(false);
-  };
   return (
     <>
-      <Wrapper breakCrum="Dashboard/Add Student">
+      <Wrapper breakCrum="Dashboard/Add School">
         <div className="content-wrapper">
           <div className="container-xxl flex-grow-1 container-p-y mt-5">
             <h4 class="py-3 mb-4">
-              <span class="text-muted fw-light">Student /</span> Add
+              <span class="text-muted fw-light">School /</span> Add
             </h4>
             <div className="row gy-4">
               <div class="col-md mb-4 mb-md-0">
@@ -98,7 +82,7 @@ function Add(props) {
                           })}
                           type="text"
                           class={
-                            errors.first_name !== undefined
+                            errors.name !== undefined
                               ? "is-invalid form-control"
                               : "form-control"
                           }
@@ -110,11 +94,11 @@ function Add(props) {
                         errors.first_name.type &&
                         errors.first_name.type === "required" ? (
                           <p className="text-danger" role="alert">
-                            First Name is required
+                            First name is required
                           </p>
                         ) : null}
                         <label htmlFor="basic-default-name">
-                          Student First Name
+                          Teacher First Name
                         </label>
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
@@ -133,29 +117,37 @@ function Add(props) {
                           placeholder="John Doe"
                           required=""
                         />
-                        {errors?.last_name &&
+                        {errors?.First_name &&
                         errors.last_name.type &&
                         errors.last_name.type === "required" ? (
                           <p className="text-danger" role="alert">
-                            Last Name is required
+                            Last name is required
                           </p>
                         ) : null}
                         <label htmlFor="basic-default-name">
-                          Student Last Name
+                          Teacher Last Name
                         </label>
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <input
-                          defaultValue={user.user.first_name}
-                          disabled={true}
+                          {...register("email", {
+                            required: "Email is required",
+                            maxLength: 50,
+                          })}
                           type="email"
                           id="basic-default-email"
-                          class="form-control"
-                          placeholder="School Name"
+                          class={
+                            errors.email !== undefined
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                          placeholder="john.doe"
                           required=""
                         />
 
-                        <label htmlFor="basic-default-email">School Name</label>
+                        <label htmlFor="basic-default-email">
+                          Offical Email Address
+                        </label>
                         {errors?.email &&
                         errors.email.type &&
                         errors.email.type === "required" ? (
@@ -164,55 +156,57 @@ function Add(props) {
                           </p>
                         ) : null}
                       </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <select
-                          class={
-                            errors.parent !== undefined
-                              ? "is-invalid form-control"
-                              : "form-select"
-                          }
-                          id="parent"
-                          required=""
-                          {...register("parent_id", {
-                            required: "Parent field is required",
-                          })}
-                        >
-                          <option value="">Select Parent</option>
-                          {parents.length > 0
-                            ? parents.map((parent, index) => {
-                                return (
-                                  <>
-                                    <option value={parent.id}>
-                                      {parent.first_name +
-                                        " " +
-                                        parent.last_name}
-                                    </option>
-                                  </>
-                                );
-                              })
-                            : null}
-                        </select>
-                        {errors?.parent &&
-                        errors.parent.type &&
-                        errors.parent.type === "required" ? (
+                      <div class="mb-4 form-password-toggle">
+                        <div class="input-group input-group-merge">
+                          <div class="form-floating form-floating-outline">
+                            <input
+                              {...register("mobile", {
+                                required: "Mobile is required",
+                                minLength: 10,
+                                maxLength: 13,
+                              })}
+                              type="text"
+                              id="basic-default-password"
+                              class={
+                                errors.mobile !== undefined
+                                  ? "is-invalid form-control"
+                                  : "form-control"
+                              }
+                              placeholder=""
+                              aria-describedby="basic-default-password3"
+                              required=""
+                            />
+
+                            <label htmlFor="basic-default-password">
+                              Offical Mobile Number
+                            </label>
+                          </div>
+                          <span
+                            class="input-group-text cursor-pointer"
+                            id="basic-default-password3"
+                          ></span>
+                        </div>
+                        {errors?.mobile &&
+                        errors.mobile.type &&
+                        errors.mobile.type === "minLength" ? (
                           <p className="text-danger" role="alert">
-                            Parent field is required
+                            Mobile number should atleast 10 digit long
                           </p>
                         ) : null}
-                        <label htmlFor="basic-default-country">Parent</label>
-                      </div>
-                      <div class="form-floating form-floating-outline mb-4 float-right">
-                        <span>
-                          Click{" "}
-                          <a
-                            onClick={(e) => {
-                              setShow(true);
-                            }}
-                          >
-                            here{" "}
-                          </a>
-                          to create new parent.
-                        </span>
+                        {errors?.mobile &&
+                        errors.mobile.type &&
+                        errors.mobile.type === "maxLength" ? (
+                          <p className="text-danger" role="alert">
+                            Mobile number should not be greater than 13 digits
+                          </p>
+                        ) : null}
+                        {errors?.mobile &&
+                        errors.mobile.type &&
+                        errors.mobile.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            Mobile is required
+                          </p>
+                        ) : null}
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <select
@@ -247,7 +241,7 @@ function Add(props) {
                             County is required
                           </p>
                         ) : null}
-                        <label htmlFor="basic-default-country">County</label>
+                        <label htmlFor="basic-default-country">Country</label>
                       </div>
                       <div class="mb-4 form-password-toggle">
                         <div class="input-group input-group-merge">
@@ -379,6 +373,38 @@ function Add(props) {
                           Profile image
                         </label>
                       </div>
+                      <div class="form-floating form-floating-outline mb-4">
+                        <textarea
+                          {...register("bio", {
+                            required: true,
+                            minLength: 50,
+                            maxLength: 500,
+                          })}
+                          class={
+                            errors.bio !== undefined
+                              ? "is-invalid form-control h-px-75"
+                              : "form-control h-px-75"
+                          }
+                          placeholder="Your school bio"
+                        />
+                        {(errors?.bio &&
+                          errors.bio.type &&
+                          errors.bio?.type === "minLength") ||
+                        errors.bio?.type === "maxLength" ? (
+                          <p className="text-danger" role="alert">
+                            Bio can not be less than 50 charecter or greater
+                            then 500 charecters
+                          </p>
+                        ) : null}
+                        {errors?.bio &&
+                        errors.bio.type &&
+                        errors.bio.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            Bio is required
+                          </p>
+                        ) : null}
+                        <label htmlFor="basic-default-bio">Bio</label>
+                      </div>
                       <div class="mb-3">
                         <div class="form-check">
                           <input
@@ -439,12 +465,7 @@ function Add(props) {
               </div>
             </div>
             <Footer />
-            <AddParentModal
-              show={show}
-              handleClose={handleCloseModal}
-              counties={counties}
-              getParents={getParents}
-            />
+
             <div className="content-backdrop fade"></div>
           </div>
         </div>

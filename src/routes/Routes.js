@@ -8,6 +8,9 @@ import AddStudent from "../pages/secure/student/Add";
 import ListStudent from "../pages/secure/student/List";
 import AddSubscription from "../pages/secure/subscription/Add";
 import ListSubscription from "../pages/secure/subscription/List";
+import AddTeacher from "../pages/secure/teacher/Add";
+import ListTeacher from "../pages/secure/teacher/List";
+import Profile from "../pages/secure/Profile";
 
 import Wrapper from "../components/common/Wrapper";
 
@@ -30,11 +33,11 @@ const routes = createBrowserRouter([
   },
   {
     path: "teacher/add",
-    element: <AddSchool />,
+    element: <AddTeacher />,
   },
   {
     path: "teacher/list",
-    element: <ListSchool />,
+    element: <ListTeacher />,
   },
   {
     path: "student/add",
@@ -51,6 +54,10 @@ const routes = createBrowserRouter([
   {
     path: "subscription/add",
     element: <AddSubscription />,
+  },
+  {
+    path: "profile",
+    element: <Profile />,
   },
 ]);
 export default routes;

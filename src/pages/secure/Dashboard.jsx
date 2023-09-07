@@ -11,6 +11,7 @@ import "../../assets/vendor/libs/apex-charts/apex-charts.css";
 import "../../assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css";
 
 function Dashboard(props) {
+  console.log(props);
   return (
     <>
       <Wrapper breakCrum="Dashboard/home">

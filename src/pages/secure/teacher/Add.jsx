@@ -5,8 +5,10 @@ import HttpHelper from "../../../services/HttpHelper";
 import UserRolesEnum from "../../../Enums/UserRolesEnum";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 function Add(props) {
+  const { notify } = useAuth();
   const user = JSON.parse(sessionStorage.getItem("user"));
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [counties, setCounties] = useState({});
@@ -31,9 +33,11 @@ function Add(props) {
     data.school_id = user.user.id;
     await HttpHelper.post("signup", data, "multipart/form-data")
       .then((response) => {
+        notify("success", "Teacher added successfully");
         navigate("/teacher/list");
       })
       .catch((error) => {
+        notify("error", "Something went wrong!!!");
         if (error?.response?.data?.errors) {
           setErrorMsgs(error.response.data);
         }

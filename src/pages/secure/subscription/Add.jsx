@@ -5,8 +5,10 @@ import HttpHelper from "../../../services/HttpHelper";
 import UserRolesEnum from "../../../Enums/UserRolesEnum";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../../src/context/AuthContext";
 
 function Add(props) {
+  const { notify } = useAuth();
   const [errorMsgs, setErrorMsgs] = useState(null);
   const navigate = useNavigate();
   const {
@@ -18,9 +20,11 @@ function Add(props) {
   const onSubmit = async (data) => {
     await HttpHelper.post("subscription", data)
       .then((response) => {
+        notify("success", "Subscription plan added successfully");
         navigate("/subscription/list");
       })
       .catch((error) => {
+        notify("success", "Someting went wrong!!!");
         if (error?.response?.data?.errors) {
           setErrorMsgs(error.response.data);
         }

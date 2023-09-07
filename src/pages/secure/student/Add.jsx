@@ -6,8 +6,10 @@ import UserRolesEnum from "../../../Enums/UserRolesEnum";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import AddParentModal from "./AddParentModal";
+import { useAuth } from "../../../../src/context/AuthContext";
 
 function Add(props) {
+  const { notify } = useAuth();
   const [show, setShow] = useState(false);
   const user = JSON.parse(sessionStorage.getItem("user"));
   const [errorMsgs, setErrorMsgs] = useState(null);
@@ -43,9 +45,11 @@ function Add(props) {
     data.school_id = user.user.id;
     await HttpHelper.post("signup", data, "multipart/form-data")
       .then((response) => {
+        notify("success", "School added successfully");
         navigate("/school/list");
       })
       .catch((error) => {
+        notify("error", "Somthing went wront!!!");
         if (error?.response?.data?.errors) {
           setErrorMsgs(error.response.data);
         }

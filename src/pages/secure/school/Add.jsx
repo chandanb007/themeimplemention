@@ -5,8 +5,10 @@ import HttpHelper from "../../../services/HttpHelper";
 import UserRolesEnum from "../../../Enums/UserRolesEnum";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 function Add(props) {
+  const { notify } = useAuth();
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [counties, setCounties] = useState({});
   const getCounties = async () => {
@@ -29,9 +31,11 @@ function Add(props) {
     data.role_id = UserRolesEnum.SCHOOL;
     await HttpHelper.post("signup", data, "multipart/form-data")
       .then((response) => {
+        notify("success", "School added successfully");
         navigate("/school/list");
       })
       .catch((error) => {
+        notify("error", "Something went wrong!!!");
         if (error?.response?.data?.errors) {
           setErrorMsgs(error.response.data);
         }

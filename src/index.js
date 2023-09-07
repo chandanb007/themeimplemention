@@ -19,11 +19,14 @@ import "./assets/vendor/libs/@form-validation/umd/styles/index.min.css";
 
 import routes from "./routes/Routes";
 import { RouterProvider } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={routes} />
+    <AuthProvider>
+      <RouterProvider router={routes} />
+    </AuthProvider>
   </React.StrictMode>
 );
 

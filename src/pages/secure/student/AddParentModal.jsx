@@ -5,8 +5,10 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import HttpHelper from "../../../services/HttpHelper";
 import UserRolesEnum from "../../../Enums/UserRolesEnum";
+import { useAuth } from "../../../../src/context/AuthContext";
 
 function AddParentModal(props) {
+  const { notify } = useAuth();
   const { show, handleClose, counties, getParents } = props;
   const [errorMsgs, setErrorMsgs] = useState(null);
   const navigate = useNavigate();
@@ -20,10 +22,12 @@ function AddParentModal(props) {
     data.role_id = UserRolesEnum.PARENT;
     await HttpHelper.post("signup", data)
       .then((response) => {
+        notify("success", "Parent added successfully");
         handleClose();
         getParents();
       })
       .catch((error) => {
+        notify("error", error);
         console.log(error);
       });
   };

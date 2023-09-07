@@ -2,7 +2,9 @@ import React, { useEffect } from "react";
 import SideBar from "./SideBar";
 import Header from "./Header";
 
+
 function Wrapper(props) {
+ 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
   });
@@ -13,7 +15,7 @@ function Wrapper(props) {
     } else if (layoutPage !== null) {
       layoutPage.classList.remove("window-scrolled");
     }
-};
+  };
   return (
     <div className="light-style layout-navbar-fixed layout-menu-fixed">
       <div className="layout-wrapper layout-content-navbar">

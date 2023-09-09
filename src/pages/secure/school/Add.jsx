@@ -8,13 +8,15 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 
 function Add(props) {
-  const { notify } = useAuth();
+  const { notify, showLoader } = useAuth();
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [counties, setCounties] = useState({});
   const getCounties = async () => {
+    showLoader(true);
     await HttpHelper.get("lookups/counties")
       .then((response) => {
         setCounties(response.data.data);
+        showLoader(false);
       })
       .catch((error) => {
         console.log(error);
@@ -28,13 +30,16 @@ function Add(props) {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
+    showLoader(true);
     data.role_id = UserRolesEnum.SCHOOL;
     await HttpHelper.post("signup", data, "multipart/form-data")
       .then((response) => {
         notify("success", "School added successfully");
         navigate("/school/list");
+        showLoader(false);
       })
       .catch((error) => {
+        showLoader(false);
         notify("error", "Something went wrong!!!");
         if (error?.response?.data?.errors) {
           setErrorMsgs(error.response.data);
@@ -78,7 +83,7 @@ function Add(props) {
                     >
                       <div class="form-floating form-floating-outline mb-4">
                         <input
-                          {...register("name", {
+                          {...register("first_name", {
                             required: "Name is required",
                             maxLength: 50,
                           })}
@@ -92,9 +97,9 @@ function Add(props) {
                           placeholder="John Doe"
                           required=""
                         />
-                        {errors?.name &&
-                        errors.name.type &&
-                        errors.name.type === "required" ? (
+                        {errors?.first_name &&
+                        errors.first_name.type &&
+                        errors.first_name.type === "required" ? (
                           <p className="text-danger" role="alert">
                             Name is required
                           </p>

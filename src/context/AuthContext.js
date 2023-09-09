@@ -18,7 +18,10 @@ export function AuthProvider(props) {
   const [alertMsg, setAlertMsg] = useState(null);
   const [alertType, setAlertType] = useState(null);
   const [showAlertMsg, setShowAlertMsg] = useState(false);
-
+  const [loader, setShowLoader] = useState(false);
+  const showLoader = (status) => {
+    setShowLoader(status);
+  };
   const notify = (type, message) => {
     console.log(type, message);
     if (type == "success") {
@@ -58,6 +61,7 @@ export function AuthProvider(props) {
     setShowAlertMsg,
     userRolesEnum,
     notify,
+    showLoader,
   };
   const getCurrentUser = async () => {
     await HttHelper.get("/user")
@@ -89,8 +93,8 @@ export function AuthProvider(props) {
         width={80}
         color="#4fa94d"
         wrapperStyle={{}}
-        wrapperClass=""
-        visible={true}
+        wrapperClass="loader-container"
+        visible={loader}
         ariaLabel="oval-loading"
         secondaryColor="#4fa94d"
         strokeWidth={2}

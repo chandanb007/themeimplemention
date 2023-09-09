@@ -4,8 +4,10 @@ import HttpHelper from "../../services/HttpHelper";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import UserRolesEnum from "../../Enums/UserRolesEnum";
+import { useAuth } from "../../context/AuthContext";
 
 function SideBar(props) {
+  const { showLoader } = useAuth();
   const user = JSON.parse(sessionStorage.getItem("user"));
   const navigate = useNavigate();
   const menuToggle = (e) => {
@@ -21,13 +23,16 @@ function SideBar(props) {
     }, 300);
   };
   const logout = async () => {
+    showLoader(true);
     await HttpHelper.post("user/logout")
       .then((response) => {
         Cookies.remove("XSRF-TOKEN");
         sessionStorage.removeItem("user");
         navigate("/");
+        showLoader(false);
       })
       .catch((error) => {
+        showLoader(false);
         console.log(error);
       });
   };

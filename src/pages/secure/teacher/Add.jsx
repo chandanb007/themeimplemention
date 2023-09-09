@@ -8,17 +8,20 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 
 function Add(props) {
-  const { notify } = useAuth();
+  const { notify, showLoader } = useAuth();
   const user = JSON.parse(sessionStorage.getItem("user"));
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [counties, setCounties] = useState({});
   const getCounties = async () => {
+    showLoader(true);
     await HttpHelper.get("lookups/counties")
       .then((response) => {
         setCounties(response.data.data);
+        showLoader(false);
       })
       .catch((error) => {
         console.log(error);
+        showLoader(false);
       });
   };
   const navigate = useNavigate();
@@ -29,18 +32,21 @@ function Add(props) {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
+    showLoader(true);
     data.role_id = UserRolesEnum.TEACHER;
     data.school_id = user.user.id;
     await HttpHelper.post("signup", data, "multipart/form-data")
       .then((response) => {
         notify("success", "Teacher added successfully");
         navigate("/teacher/list");
+        showLoader(false);
       })
       .catch((error) => {
         notify("error", "Something went wrong!!!");
         if (error?.response?.data?.errors) {
           setErrorMsgs(error.response.data);
         }
+        showLoader(false);
       });
   };
   useEffect(() => {
@@ -91,7 +97,7 @@ function Add(props) {
                               : "form-control"
                           }
                           id="basic-default-name"
-                          placeholder="John Doe"
+                          placeholder="Enter first name"
                           required=""
                         />
                         {errors?.first_name &&
@@ -118,7 +124,7 @@ function Add(props) {
                               : "form-control"
                           }
                           id="basic-default-name"
-                          placeholder="John Doe"
+                          placeholder="Enter Last Name"
                           required=""
                         />
                         {errors?.First_name &&
@@ -145,12 +151,12 @@ function Add(props) {
                               ? "is-invalid form-control"
                               : "form-control"
                           }
-                          placeholder="john.doe"
+                          placeholder="Enter Email"
                           required=""
                         />
 
                         <label htmlFor="basic-default-email">
-                          Offical Email Address
+                          Email Address
                         </label>
                         {errors?.email &&
                         errors.email.type &&
@@ -176,13 +182,13 @@ function Add(props) {
                                   ? "is-invalid form-control"
                                   : "form-control"
                               }
-                              placeholder=""
+                              placeholder="Enter Mobile Number"
                               aria-describedby="basic-default-password3"
                               required=""
                             />
 
                             <label htmlFor="basic-default-password">
-                              Offical Mobile Number
+                              Mobile Number
                             </label>
                           </div>
                           <span
@@ -261,7 +267,7 @@ function Add(props) {
                               })}
                               type="text"
                               id="basic-default-password"
-                              placeholder=""
+                              placeholder="Enter Town Name"
                               aria-describedby="basic-default-password3"
                               required=""
                             />
@@ -295,7 +301,7 @@ function Add(props) {
                               })}
                               type="text"
                               id="basic-default-password"
-                              placeholder=""
+                              placeholder="Enter Estate"
                               aria-describedby="basic-default-password3"
                               required=""
                             />
@@ -331,7 +337,7 @@ function Add(props) {
                                   ? "is-invalid form-control"
                                   : "form-control"
                               }
-                              placeholder=""
+                              placeholder="Enter building"
                               aria-describedby="basic-default-password3"
                               required=""
                             />
@@ -389,7 +395,7 @@ function Add(props) {
                               ? "is-invalid form-control h-px-75"
                               : "form-control h-px-75"
                           }
-                          placeholder="Your school bio"
+                          placeholder="Your bio"
                         />
                         {(errors?.bio &&
                           errors.bio.type &&

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../src/context/AuthContext";
 
 function Add(props) {
-  const { notify } = useAuth();
+  const { notify, showLoader } = useAuth();
   const [errorMsgs, setErrorMsgs] = useState(null);
   const navigate = useNavigate();
   const {
@@ -18,13 +18,16 @@ function Add(props) {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
+    showLoader(true);
     await HttpHelper.post("subscription", data)
       .then((response) => {
         notify("success", "Subscription plan added successfully");
         navigate("/subscription/list");
+        showLoader(false);
       })
       .catch((error) => {
-        notify("success", "Someting went wrong!!!");
+        showLoader(false);
+        notify("error", "Someting went wrong!!!");
         if (error?.response?.data?.errors) {
           setErrorMsgs(error.response.data);
         }

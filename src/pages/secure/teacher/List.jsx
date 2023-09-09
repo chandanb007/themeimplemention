@@ -6,9 +6,11 @@ import UserRolesEnum from "../../../Enums/UserRolesEnum";
 import { useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material";
+import { useAuth } from "../../../context/AuthContext";
 
 function List(props) {
   const navigate = useNavigate();
+  const { showLoader } = useAuth();
   const [schools, setSchools] = useState([]);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +27,7 @@ function List(props) {
   });
 
   const getSchools = async () => {
+    showLoader(true);
     if (!schools.length) {
       setIsLoading(true);
     } else {
@@ -38,10 +41,12 @@ function List(props) {
       .then((response) => {
         setSchools(response.data.data);
         setRowCount(response.data.total);
+        showLoader(false);
       })
       .catch((error) => {
         setIsError(true);
         console.log(error);
+        showLoader(false);
       });
     setIsError(false);
     setIsLoading(false);

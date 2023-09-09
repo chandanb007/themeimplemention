@@ -3,15 +3,20 @@ import userAvator from "../../assets/img/avatars/1.png";
 import HttpHelper from "../../services/HttpHelper";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 function Header(props) {
   const navigate = useNavigate();
+  const { showLoader } = useAuth();
   const logout = async () => {
+    showLoader(true);
     await HttpHelper.post("user/logout")
       .then((response) => {
         Cookies.remove("XSRF-TOKEN");
         navigate("/");
+        showLoader(false);
       })
       .catch((error) => {
+        showLoader(false);
         console.log(error);
       });
   };

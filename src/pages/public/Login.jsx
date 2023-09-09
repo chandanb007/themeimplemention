@@ -7,7 +7,9 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import HttpHelper from "../../services/HttpHelper";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 function Login() {
+  const { showLoader } = useAuth();
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsgs, setErrorMsgs] = useState(null);
@@ -25,24 +27,28 @@ function Login() {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
+    showLoader(true);
     await HttpHelper.post("auth/login", data)
       .then((response) => {
-        debugger;
         navigate("/dashboard");
         sessionStorage.setItem("user", JSON.stringify(response.data.data));
+        showLoader(false);
       })
       .catch((error) => {
+        showLoader(false);
         if (error?.response?.data?.errors) {
           setErrorMsgs(error.response.data);
         }
       });
   };
   const getCsrfToken = async () => {
+    showLoader(true);
     axios.defaults.withCredentials = true;
     console.log(axios.defaults);
     await axios
       .get(process.env.REACT_APP_API_BASE_URI + "sanctum/csrf-cookie")
       .then((response) => {
+        showLoader(false);
         console.log(response);
       });
   };

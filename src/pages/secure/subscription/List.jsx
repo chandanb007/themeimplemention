@@ -6,9 +6,11 @@ import UserRolesEnum from "../../../Enums/UserRolesEnum";
 import { useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material";
+import { useAuth } from "../../../context/AuthContext";
 
 function List(props) {
   const navigate = useNavigate();
+  const { showLoader } = useAuth();
   const [subscriptions, setSubscriptions] = useState([]);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +27,7 @@ function List(props) {
   });
 
   const getSubscriptionList = async () => {
+    showLoader(true);
     if (subscriptions == undefined || !subscriptions.length) {
       setIsLoading(true);
     } else {
@@ -35,13 +38,14 @@ function List(props) {
       filter: columnFilters ? JSON.stringify(columnFilters) : null,
     })
       .then((response) => {
-        debugger;
         setSubscriptions(response.data.data.data);
         setRowCount(response.data.total);
+        showLoader(false);
       })
       .catch((error) => {
         setIsError(true);
         console.log(error);
+        showLoader(false);
       });
     setIsError(false);
     setIsLoading(false);

@@ -8,7 +8,7 @@ import UserRolesEnum from "../../../Enums/UserRolesEnum";
 import { useAuth } from "../../../../src/context/AuthContext";
 
 function AddParentModal(props) {
-  const { notify } = useAuth();
+  const { notify, showLoader } = useAuth();
   const { show, handleClose, counties, getParents } = props;
   const [errorMsgs, setErrorMsgs] = useState(null);
   const navigate = useNavigate();
@@ -19,16 +19,22 @@ function AddParentModal(props) {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
+    showLoader(true);
     data.role_id = UserRolesEnum.PARENT;
     await HttpHelper.post("signup", data)
       .then((response) => {
         notify("success", "Parent added successfully");
         handleClose();
         getParents();
+        showLoader(false);
       })
       .catch((error) => {
+        showLoader(false);
         notify("error", error);
         console.log(error);
+        if (error?.response?.data?.errors) {
+          setErrorMsgs(error.response.data);
+        }
       });
   };
 

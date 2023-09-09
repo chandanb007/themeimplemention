@@ -19,6 +19,22 @@ class httpHelper {
       },
       maxRedirects: 5,
     });
+    axios.interceptors.request.use(
+      (config) => {
+        // Do something before the request is sent, e.g., add headers or log the request.
+        console.log("Request is about to be sent:", config);
+
+        // You can modify the request configuration here if needed.
+        // For example, you can add headers:
+        // config.headers['Authorization'] = 'Bearer YourAccessToken';
+
+        return config;
+      },
+      (error) => {
+        // Do something with request error
+        return Promise.reject(error);
+      }
+    );
   }
 
   log(message) {

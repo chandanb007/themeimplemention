@@ -9,27 +9,33 @@ import AddParentModal from "./AddParentModal";
 import { useAuth } from "../../../../src/context/AuthContext";
 
 function Add(props) {
-  const { notify } = useAuth();
+  const { notify, showLoader } = useAuth();
   const [show, setShow] = useState(false);
   const user = JSON.parse(sessionStorage.getItem("user"));
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [counties, setCounties] = useState({});
   const [parents, setParents] = useState({});
   const getCounties = async () => {
+    showLoader(true);
     await HttpHelper.get("lookups/counties")
       .then((response) => {
         setCounties(response.data.data);
+        showLoader(false);
       })
       .catch((error) => {
+        showLoader(false);
         console.log(error);
       });
   };
   const getParents = async () => {
+    showLoader(true);
     await HttpHelper.get("user/userByRole/" + UserRolesEnum.PARENT)
       .then((response) => {
         setParents(response.data.data);
+        showLoader(false);
       })
       .catch((error) => {
+        showLoader(false);
         console.log(error);
       });
   };
@@ -41,18 +47,21 @@ function Add(props) {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
+    showLoader(true);
     data.role_id = UserRolesEnum.STUDENT;
     data.school_id = user.user.id;
     await HttpHelper.post("signup", data, "multipart/form-data")
       .then((response) => {
-        notify("success", "School added successfully");
-        navigate("/school/list");
+        notify("success", "Student added successfully");
+        navigate("/student/list");
+        showLoader(false);
       })
       .catch((error) => {
         notify("error", "Somthing went wront!!!");
         if (error?.response?.data?.errors) {
           setErrorMsgs(error.response.data);
         }
+        showLoader(false);
       });
   };
   useEffect(() => {

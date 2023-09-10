@@ -91,12 +91,12 @@ export function AuthProvider(props) {
       <Oval
         height={100}
         width={80}
-        color="#4fa94d"
+        color="#9055fd"
         wrapperStyle={{}}
         wrapperClass="loader-container"
         visible={loader}
         ariaLabel="oval-loading"
-        secondaryColor="#4fa94d"
+        secondaryColor="#9055fd"
         strokeWidth={2}
         strokeWidthSecondary={2}
       />

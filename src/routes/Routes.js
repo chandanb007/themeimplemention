@@ -10,7 +10,7 @@ import AddSubscription from "../pages/secure/subscription/Add";
 import ListSubscription from "../pages/secure/subscription/List";
 import AddTeacher from "../pages/secure/teacher/Add";
 import ListTeacher from "../pages/secure/teacher/List";
-import Profile from "../pages/secure/Profile";
+import Profile from "../pages/secure/profile/Profile";
 
 import Wrapper from "../components/common/Wrapper";
 

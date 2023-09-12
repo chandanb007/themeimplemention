@@ -161,11 +161,11 @@ function List(props) {
                         showProgressBars: isRefetching,
                         sorting,
                       }}
-                      renderRowActionMenuItems={({ closeMenu }) => [
+                      renderRowActionMenuItems={({ row, closeMenu }) => [
                         <MenuItem
                           key={0}
                           onClick={() => {
-                            // View profile logic...
+                            navigate("/subscription/edit/" + row.id);
                             closeMenu();
                           }}
                           sx={{ m: 0 }}
@@ -177,8 +177,7 @@ function List(props) {
                         </MenuItem>,
                         <MenuItem
                           key={1}
-                          onClick={(row) => {
-                            debugger;
+                          onClick={() => {
                             closeMenu();
                           }}
                           sx={{ m: 0 }}

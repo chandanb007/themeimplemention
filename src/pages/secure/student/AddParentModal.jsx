@@ -138,9 +138,8 @@ function AddParentModal(props) {
                   <option value="" selected>
                     Status
                   </option>
-                  <option value="spouse">Spouse</option>
-                  <option value="child">Child</option>
-                  <option value="adopted child">Adopted child</option>
+                  <option value="Parent">Spouse</option>
+                  <option value="Guardian">Child</option>
                 </select>
                 {errors?.relationship &&
                 errors.relationship.type &&

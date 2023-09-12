@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material";
 import { useAuth } from "../../../context/AuthContext";
+import { Edit, Delete } from "@mui/icons-material";
 
 function List(props) {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ function List(props) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
   const [pagination, setPagination] = useState({
-    pageIndex: 0,
+    pageIndex: 1,
     pageSize: 10,
   });
 
@@ -34,7 +35,7 @@ function List(props) {
       setIsRefetching(true);
     }
     await HttpHelper.get("subscription", {
-      page: pagination.pageIndex == 1 ? 2 : pagination.pageIndex,
+      page: pagination.pageIndex,
       filter: columnFilters ? JSON.stringify(columnFilters) : null,
     })
       .then((response) => {
@@ -70,6 +71,10 @@ function List(props) {
   const columns = useMemo(
     () => [
       {
+        accessorFn: (row) => row.school?.first_name ?? "-",
+        header: "School Name",
+      },
+      {
         accessorKey: "name",
         header: "Name",
         size: 250,
@@ -100,7 +105,7 @@ function List(props) {
         <div className="content-wrapper">
           <div className="container-xxl flex-grow-1 container-p-y mt-5">
             <h4 class="py-3 mb-4">
-              <span class="text-muted fw-light">All /</span> Schools
+              <span class="text-muted fw-light">All /</span> Subscription Plans
             </h4>
             <div className="row gy-4">
               <div class="col-md mb-4 mb-md-0">
@@ -133,6 +138,7 @@ function List(props) {
                       manualFiltering
                       manualPagination
                       manualSorting
+                      enableRowActions
                       muiToolbarAlertBannerProps={
                         isError
                           ? {
@@ -155,6 +161,34 @@ function List(props) {
                         showProgressBars: isRefetching,
                         sorting,
                       }}
+                      renderRowActionMenuItems={({ closeMenu }) => [
+                        <MenuItem
+                          key={0}
+                          onClick={() => {
+                            // View profile logic...
+                            closeMenu();
+                          }}
+                          sx={{ m: 0 }}
+                        >
+                          <ListItemIcon>
+                            <Edit />
+                          </ListItemIcon>
+                          Edit
+                        </MenuItem>,
+                        <MenuItem
+                          key={1}
+                          onClick={(row) => {
+                            debugger;
+                            closeMenu();
+                          }}
+                          sx={{ m: 0 }}
+                        >
+                          <ListItemIcon>
+                            <Delete />
+                          </ListItemIcon>
+                          Delete
+                        </MenuItem>,
+                      ]}
                     />
                   </div>
                 </div>

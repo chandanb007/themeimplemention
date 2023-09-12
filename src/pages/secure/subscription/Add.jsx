@@ -10,6 +10,7 @@ import { useAuth } from "../../../../src/context/AuthContext";
 function Add(props) {
   const { notify, showLoader } = useAuth();
   const [errorMsgs, setErrorMsgs] = useState(null);
+  const [schools, setSchools] = useState([]);
   const navigate = useNavigate();
   const {
     register,
@@ -33,6 +34,21 @@ function Add(props) {
         }
       });
   };
+  const getSchools = async () => {
+    showLoader(true);
+    await HttpHelper.get("user/userByRole/" + UserRolesEnum.SCHOOL)
+      .then((response) => {
+        setSchools(response.data.data);
+        showLoader(false);
+      })
+      .catch((error) => {
+        showLoader(false);
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    getSchools();
+  }, []);
   return (
     <>
       <Wrapper breakCrum="Subscription/Add">
@@ -66,6 +82,41 @@ function Add(props) {
                       onSubmit={handleSubmit(onSubmit)}
                     >
                       <div class="form-floating form-floating-outline mb-4">
+                        <select
+                          class={
+                            errors.school_id !== undefined
+                              ? "is-invalid form-control"
+                              : "form-select"
+                          }
+                          id="county"
+                          required=""
+                          {...register("school_id", {
+                            required: "School is required",
+                          })}
+                        >
+                          <option value="">Select School</option>
+                          {schools.length > 0
+                            ? schools.map((school, index) => {
+                                return (
+                                  <>
+                                    <option value={school.id}>
+                                      {school.first_name}
+                                    </option>
+                                  </>
+                                );
+                              })
+                            : null}
+                        </select>
+                        {errors?.school_id &&
+                        errors.school_id.type &&
+                        errors.school_id.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            School is required
+                          </p>
+                        ) : null}
+                        <label htmlFor="basic-default-country">School</label>
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
                         <input
                           {...register("name", {
                             required: "Name is required",
@@ -78,7 +129,7 @@ function Add(props) {
                               : "form-control"
                           }
                           id="basic-default-name"
-                          placeholder="Subscription Title"
+                          placeholder="Subscription title / Code"
                           required=""
                         />
                         {errors?.name &&
@@ -89,7 +140,7 @@ function Add(props) {
                           </p>
                         ) : null}
                         <label htmlFor="basic-default-name">
-                          Subscription Title
+                          Subscription title / Code
                         </label>
                       </div>
                       <div class="form-floating form-floating-outline mb-4">

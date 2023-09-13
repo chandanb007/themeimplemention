@@ -14,18 +14,30 @@ function Add(props) {
   const { notify, showLoader } = useAuth();
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [schools, setSchools] = useState([]);
+  const [subscription, setSubscription] = useState([]);
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: async () =>
+      HttpHelper.get("subscription/" + id).then((response) => {
+        return {
+          school_id: response.data.data.school_id,
+          name: response.data.data.name,
+          termly_fee: response.data.data.termly_fee,
+          yearly_fee: response.data.data.yearly_fee,
+          status: response.data.data.status == 0 ? false : true,
+        };
+      }),
+  });
   const onSubmit = async (data) => {
     showLoader(true);
-    await HttpHelper.post("subscription", data)
+    await HttpHelper.put("subscription/" + id, data)
       .then((response) => {
-        notify("success", "Subscription plan added successfully");
+        notify("success", "Updated successfully");
         navigate("/subscription/list");
         showLoader(false);
       })
@@ -49,19 +61,9 @@ function Add(props) {
         console.log(error);
       });
   };
-  const getSubscriptionDetails = async (id) => {
-    await HttpHelper.get("subscription/" + id)
-      .then((response) => {})
-      .catch((error) => {});
-  };
   useEffect(() => {
     getSchools();
   }, []);
-  useEffect(() => {
-    if (id) {
-      getSubscriptionDetails(id);
-    }
-  }, [id]);
   return (
     <>
       <Wrapper breakCrum="Subscription/Add">

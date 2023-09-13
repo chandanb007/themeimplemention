@@ -8,8 +8,10 @@ import { MaterialReactTable } from "material-react-table";
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material";
 import { useAuth } from "../../../context/AuthContext";
 import { Edit, Delete } from "@mui/icons-material";
+import Swal from "sweetalert2";
 
 function List(props) {
+  const { notify } = useAuth();
   const navigate = useNavigate();
   const { showLoader } = useAuth();
   const [subscriptions, setSubscriptions] = useState([]);
@@ -52,6 +54,36 @@ function List(props) {
     setIsLoading(false);
     setIsRefetching(false);
   };
+  const deleteSubscription = async (id) => {
+    Swal.fire({
+      title: "Do you want to delete?",
+      showCancelButton: true,
+      confirmButtonText: "Save",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        HttpHelper.delete("subscription/" + id)
+          .then((response) => {
+            notify("success", "Deleted successfully");
+            getSubscriptionList();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else if (result.isDenied) {
+        Swal.fire("Changes are not saved", "", "info");
+      }
+    });
+  };
+  const changeStatus = async (id, status) => {
+    await HttpHelper.put("subscription/updateStatus/" + id)
+      .then((reseponse) => {
+        notify("success", "Updated successfully");
+        getSubscriptionList();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
     getSubscriptionList();
   }, [
@@ -88,12 +120,25 @@ function List(props) {
         header: "Yearly Fee",
       },
       {
-        accessorFn: (row) =>
-          row.status == 1 ? (
-            <span class="badge bg-label-success me-1">Active</span>
-          ) : (
-            <span class="badge bg-label-warning me-1">Inactive</span>
-          ),
+        accessorFn: (row) => (
+          <div class="mb-3">
+            <label class="switch switch-primary">
+              <input
+                onChange={(e) => {
+                  changeStatus(row.id, e.currentTarget.checked);
+                }}
+                type="checkbox"
+                checked={row.status == 0 ? false : true}
+                class="switch-input"
+                required=""
+              />
+              <span class="switch-toggle-slider">
+                <span class="switch-on"></span>
+                <span class="switch-off"></span>
+              </span>
+            </label>
+          </div>
+        ),
         header: "Status",
       },
     ],
@@ -129,7 +174,6 @@ function List(props) {
                     <MaterialReactTable
                       columns={columns}
                       data={subscriptions}
-                      enableRowSelection
                       getRowId={(row) => row.id}
                       initialState={{
                         showColumnFilters: false,
@@ -178,6 +222,7 @@ function List(props) {
                         <MenuItem
                           key={1}
                           onClick={() => {
+                            deleteSubscription(row.id);
                             closeMenu();
                           }}
                           sx={{ m: 0 }}

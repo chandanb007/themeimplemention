@@ -80,7 +80,6 @@ export function AuthProvider(props) {
         console.log(error);
       });
   };
-
   useEffect(() => {
     getCurrentUser();
   }, []);

@@ -6,11 +6,39 @@ import UserRolesEnum from "../../../Enums/UserRolesEnum";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import {
+  withScriptjs,
+  withGoogleMap,
+  GoogleMap,
+  Marker,
+} from "react-google-maps";
+import { compose, withProps } from "recompose";
+import Select from "react-select";
 
 function Add(props) {
+  const options = [
+    { value: "chocolate", label: "Chocolate" },
+    { value: "strawberry", label: "Strawberry" },
+    { value: "vanilla", label: "Vanilla" },
+  ];
   const { notify, showLoader } = useAuth();
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [counties, setCounties] = useState({});
+  const [gradeCategories, setGradeCategories] = useState({});
+  const [grades, setGrades] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const navigate = useNavigate();
+  const getGradeCategories = async () => {
+    showLoader(true);
+    await HttpHelper.get("lookups/gradeCategories")
+      .then((response) => {
+        setGradeCategories(response.data.data);
+        showLoader(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const getCounties = async () => {
     showLoader(true);
     await HttpHelper.get("lookups/counties")
@@ -22,7 +50,7 @@ function Add(props) {
         console.log(error);
       });
   };
-  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -46,8 +74,20 @@ function Add(props) {
         }
       });
   };
+  const gradesByCategory = async (id) => {
+    await HttpHelper.get("lookups/gradesByCategory/" + id)
+      .then((response) => {
+        setGrades(response.data);
+      })
+      .catch((error) => {});
+  };
+
+  useEffect(() => {
+    if (selectedCategory) gradesByCategory(selectedCategory);
+  }, [selectedCategory]);
   useEffect(() => {
     getCounties();
+    getGradeCategories();
   }, []);
   return (
     <>
@@ -81,6 +121,58 @@ function Add(props) {
                       class="browser-default-validation"
                       onSubmit={handleSubmit(onSubmit)}
                     >
+                      <div class="form-floating form-floating-outline mb-4">
+                        <select
+                          class={
+                            errors.category_id !== undefined
+                              ? "is-invalid form-control"
+                              : "form-select"
+                          }
+                          id="county"
+                          required=""
+                          {...register("category_id", {
+                            required: "Category is required",
+                          })}
+                          onChange={(e) => {
+                            setSelectedCategory(e.currentTarget.value);
+                          }}
+                        >
+                          <option value="">Select Category</option>
+                          {gradeCategories.length > 0
+                            ? gradeCategories.map((gradeCategory, index) => {
+                                return (
+                                  <>
+                                    <option value={gradeCategory.id}>
+                                      {gradeCategory.name}
+                                    </option>
+                                  </>
+                                );
+                              })
+                            : null}
+                        </select>
+                        {errors?.category_id &&
+                        errors.category_id.type &&
+                        errors.category_id.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            Category is required
+                          </p>
+                        ) : null}
+                        <label htmlFor="basic-default-country">Category</label>
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
+                        <Select
+                          className="form-control"
+                          options={grades ? grades : []}
+                          isMulti
+                          styles={{
+                            control: (baseStyles, state) => ({
+                              ...baseStyles,
+                              borderColor: state.isFocused ? "grey" : "red",
+                            }),
+                          }}
+                        />
+                        <label htmlFor="basic-default-country">Grades</label>
+                      </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <input
                           {...register("first_name", {
@@ -291,6 +383,7 @@ function Add(props) {
                           </p>
                         ) : null}
                       </div>
+
                       <div class="mb-4 form-password-toggle">
                         <div class="input-group input-group-merge">
                           <div class="form-floating form-floating-outline">
@@ -363,7 +456,7 @@ function Add(props) {
                               ? "is-invalid form-control h-px-75"
                               : "form-control h-px-75"
                           }
-                          placeholder="Your school bio"
+                          placeholder="Your school Moto"
                         />
                         {(errors?.bio &&
                           errors.bio.type &&
@@ -381,8 +474,9 @@ function Add(props) {
                             Bio is required
                           </p>
                         ) : null}
-                        <label htmlFor="basic-default-bio">Bio</label>
+                        <label htmlFor="basic-default-bio">Moto</label>
                       </div>
+                      <div class="form-floating form-floating-outline mb-4"></div>
                       <div class="mb-3">
                         <div class="form-check">
                           <input

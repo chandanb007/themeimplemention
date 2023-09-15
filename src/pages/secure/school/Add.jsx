@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Wrapper from "../../../components/common/Wrapper";
 import Footer from "../../../components/common/Footer";
 import HttpHelper from "../../../services/HttpHelper";
@@ -6,6 +6,9 @@ import UserRolesEnum from "../../../Enums/UserRolesEnum";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import Tags from "@yaireo/tagify/dist/react.tagify"; // React-wrapper file
+import "@yaireo/tagify/dist/tagify.css"; // Tagify CSS
+
 import {
   withScriptjs,
   withGoogleMap,
@@ -27,6 +30,10 @@ function Add(props) {
   const [gradeCategories, setGradeCategories] = useState({});
   const [grades, setGrades] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedGrads, setSelectedGrads] = useState(null);
+  const [streams, setStreams] = useState({});
+  const [subjects, setSubjects] = useState({});
+
   const navigate = useNavigate();
   const getGradeCategories = async () => {
     showLoader(true);
@@ -59,6 +66,10 @@ function Add(props) {
   } = useForm();
   const onSubmit = async (data) => {
     showLoader(true);
+    data.category = selectedCategory;
+    data.streams = streams;
+    data.subjects = subjects;
+    data.grads = selectedGrads;
     data.role_id = UserRolesEnum.SCHOOL;
     await HttpHelper.post("signup", data, "multipart/form-data")
       .then((response) => {
@@ -77,7 +88,13 @@ function Add(props) {
   const gradesByCategory = async (id) => {
     await HttpHelper.get("lookups/gradesByCategory/" + id)
       .then((response) => {
-        setGrades(response.data);
+        var gradeData = [];
+        if (response.data.data) {
+          response.data.data.map((item) => {
+            gradeData.push({ value: item.id, label: item.name });
+          });
+          setGrades(gradeData);
+        }
       })
       .catch((error) => {});
   };
@@ -88,6 +105,12 @@ function Add(props) {
   useEffect(() => {
     getCounties();
     getGradeCategories();
+  }, []);
+  const onChangeStream = useCallback((e) => {
+    setStreams({ ...streams, name: e.detail.tagify.value });
+  }, []);
+  const onChangeSubject = useCallback((e) => {
+    setStreams({ ...subjects, name: e.detail.tagify.value });
   }, []);
   return (
     <>
@@ -164,6 +187,10 @@ function Add(props) {
                           className="form-control"
                           options={grades ? grades : []}
                           isMulti
+                          onChange={(e) => {
+                            setSelectedGrads(e);
+                            console.log(e);
+                          }}
                           styles={{
                             control: (baseStyles, state) => ({
                               ...baseStyles,
@@ -172,6 +199,22 @@ function Add(props) {
                           }}
                         />
                         <label htmlFor="basic-default-country">Grades</label>
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
+                        <Tags
+                          // tagify settings object
+                          onChange={onChangeStream}
+                          className={"form-control"}
+                        />
+                        <label htmlFor="basic-default-country">Streams</label>
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
+                        <Tags
+                          // tagify settings object
+                          onChange={onChangeSubject}
+                          className={"form-control"}
+                        />
+                        <label htmlFor="basic-default-country">Subjects</label>
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <input

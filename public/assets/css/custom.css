@@ -57,3 +57,7 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .css-1nmdiq5-menu{
+          z-index: 999999 !important;
+        }

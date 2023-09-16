@@ -110,7 +110,7 @@ function Add(props) {
     setStreams({ ...streams, name: e.detail.tagify.value });
   }, []);
   const onChangeSubject = useCallback((e) => {
-    setStreams({ ...subjects, name: e.detail.tagify.value });
+    setSubjects({ ...subjects, name: e.detail.tagify.value });
   }, []);
   return (
     <>

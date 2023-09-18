@@ -5,26 +5,39 @@ import HttpHelper from "../../../services/HttpHelper";
 import UserRolesEnum from "../../../Enums/UserRolesEnum";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../../src/context/AuthContext";
+import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
 
 function Add(props) {
   console.log(props);
+  let { id } = useParams();
   const { notify, showLoader } = useAuth();
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [schools, setSchools] = useState([]);
+  const [subscription, setSubscription] = useState([]);
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: async () =>
+      HttpHelper.get("subscription/" + id).then((response) => {
+        return {
+          school_id: response.data.data.school_id,
+          name: response.data.data.name,
+          termly_fee: response.data.data.termly_fee,
+          yearly_fee: response.data.data.yearly_fee,
+          status: response.data.data.status == 0 ? false : true,
+        };
+      }),
+  });
   const onSubmit = async (data) => {
     showLoader(true);
-    await HttpHelper.post("subscription", data)
+    await HttpHelper.put("subscription/" + id, data)
       .then((response) => {
-        notify("success", "Subscription plan added successfully");
+        notify("success", "Updated successfully");
         navigate("/subscription/list");
         showLoader(false);
       })
@@ -57,7 +70,7 @@ function Add(props) {
         <div className="content-wrapper">
           <div className="container-xxl flex-grow-1 container-p-y mt-5">
             <h4 class="py-3 mb-4">
-              <span class="text-muted fw-light">Subscription /</span> Add
+              <span class="text-muted fw-light">Subscription /</span> Edit
             </h4>
             <div className="row gy-4">
               <div class="col-md mb-4 mb-md-0">

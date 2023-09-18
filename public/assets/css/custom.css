@@ -61,3 +61,7 @@
         .css-1nmdiq5-menu{
           z-index: 999999 !important;
         }
+        tags.tagify{
+          width: 100% !important;
+          border-radius: 3px !important;
+        }

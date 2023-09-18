@@ -15,6 +15,10 @@ function Add(props) {
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [counties, setCounties] = useState({});
   const [parents, setParents] = useState({});
+  const [grads, setGrades] = useState({});
+  const [subjects, setSubjects] = useState({});
+  const [streams, setStreams] = useState({});
+
   const getCounties = async () => {
     showLoader(true);
     await HttpHelper.get("lookups/counties")
@@ -64,9 +68,40 @@ function Add(props) {
         showLoader(false);
       });
   };
+  const getSchoolGrads = async () => {
+    await HttpHelper.get("user/school/getGrads/" + user.user.id)
+      .then((response) => {
+        setGrades(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getSchoolSubjects = async () => {
+    await HttpHelper.get("user/school/getSubjects/" + user.user.id)
+      .then((response) => {
+        setSubjects(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getSchoolStreams = async () => {
+    await HttpHelper.get("user/school/getStreams/" + user.user.id)
+      .then((response) => {
+        setStreams(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     getCounties();
     getParents();
+    getSchoolSubjects();
+    getSchoolGrads();
+    getSchoolStreams();
   }, []);
   const handleCloseModal = () => {
     setShow(false);
@@ -103,6 +138,26 @@ function Add(props) {
                       class="browser-default-validation"
                       onSubmit={handleSubmit(onSubmit)}
                     >
+                      <div class="form-floating form-floating-outline mb-4">
+                        <input
+                          defaultValue={user.user.first_name}
+                          disabled={true}
+                          type="email"
+                          id="basic-default-email"
+                          class="form-control"
+                          placeholder="School Name"
+                          required=""
+                        />
+
+                        <label htmlFor="basic-default-email">School Name</label>
+                        {errors?.email &&
+                        errors.email.type &&
+                        errors.email.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            Email is required
+                          </p>
+                        ) : null}
+                      </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <input
                           {...register("first_name", {
@@ -157,75 +212,259 @@ function Add(props) {
                           Student Last Name
                         </label>
                       </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <input
-                          defaultValue={user.user.first_name}
-                          disabled={true}
-                          type="email"
-                          id="basic-default-email"
-                          class="form-control"
-                          placeholder="School Name"
-                          required=""
-                        />
+                      <div className="row col-sm-12">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-2">
+                          <label>Gender</label>
+                        </div>
+                        <div class="form-floating form-floating-outline mb-4 col-sm-2">
+                          <div class="form-check mt-2">
+                            <label class="form-check-label">
+                              <input
+                                name="default-radio-1"
+                                class="form-check-input"
+                                type="radio"
+                                value="1"
+                              />
+                              Male
+                            </label>
+                          </div>
+                        </div>
+                        <div class="form-floating form-floating-outline mb-4 col-sm-2">
+                          <div class="form-check mt-2">
+                            <label class="form-check-label">
+                              <input
+                                name="default-radio-1"
+                                class="form-check-input"
+                                type="radio"
+                                value="1"
+                              />
+                              Female{" "}
+                            </label>
+                          </div>
+                        </div>
+                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                          <div class="mb-4 form-password-toggle">
+                            <div class="input-group input-group-merge">
+                              <div class="form-floating form-floating-outline">
+                                <input
+                                  class={
+                                    errors.admission_no !== undefined
+                                      ? "is-invalid form-control"
+                                      : "form-control"
+                                  }
+                                  {...register("admission_no", {
+                                    required: "admission number is required",
+                                  })}
+                                  type="text"
+                                  id="basic-default-password"
+                                  placeholder="Enter admission number"
+                                  aria-describedby="basic-default-password3"
+                                  required=""
+                                />
 
-                        <label htmlFor="basic-default-email">School Name</label>
-                        {errors?.email &&
-                        errors.email.type &&
-                        errors.email.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Email is required
-                          </p>
-                        ) : null}
+                                <label htmlFor="basic-default-password">
+                                  Admission Number
+                                </label>
+                              </div>
+                              <span
+                                class="input-group-text cursor-pointer"
+                                id="basic-default-password3"
+                              ></span>
+                            </div>
+                            {errors?.admission_no &&
+                            errors.admission_no.type &&
+                            errors.admission_no.type === "required" ? (
+                              <p className="text-danger" role="alert">
+                                Admission number is required
+                              </p>
+                            ) : null}
+                          </div>
+                        </div>
                       </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <select
-                          class={
-                            errors.parent !== undefined
-                              ? "is-invalid form-control"
-                              : "form-select"
-                          }
-                          id="parent"
-                          required=""
-                          {...register("parent_id", {
-                            required: "Parent field is required",
-                          })}
-                        >
-                          <option value="">Select Parent</option>
-                          {parents.length > 0
-                            ? parents.map((parent, index) => {
-                                return (
-                                  <>
-                                    <option value={parent.id}>
-                                      {parent.first_name +
-                                        " " +
-                                        parent.last_name}
-                                    </option>
-                                  </>
-                                );
-                              })
-                            : null}
-                        </select>
-                        {errors?.parent &&
-                        errors.parent.type &&
-                        errors.parent.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Parent field is required
-                          </p>
-                        ) : null}
-                        <label htmlFor="basic-default-country">Parent</label>
+                      <div className="row col-sm-12">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                          <div class="mb-4 form-password-toggle">
+                            <div class="input-group input-group-merge">
+                              <div class="form-floating form-floating-outline">
+                                <input
+                                  type="date"
+                                  class={
+                                    errors.dob !== undefined
+                                      ? "is-invalid form-control"
+                                      : "form-control"
+                                  }
+                                  {...register("dob", {
+                                    required: "admission number is required",
+                                  })}
+                                  id="basic-default-password"
+                                  placeholder="Enter admission number"
+                                  aria-describedby="basic-default-password3"
+                                  required=""
+                                />
+
+                                <label htmlFor="basic-default-password">
+                                  Date of birth
+                                </label>
+                              </div>
+                              <span
+                                class="input-group-text cursor-pointer"
+                                id="basic-default-password3"
+                              ></span>
+                            </div>
+                            {errors?.dob &&
+                            errors.dob.type &&
+                            errors.dob.type === "required" ? (
+                              <p className="text-danger" role="alert">
+                                Date of Birth is required
+                              </p>
+                            ) : null}
+                          </div>
+                        </div>
+                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                          <div class="form-floating form-floating-outline mb-4">
+                            <select
+                              class={
+                                errors.parent !== undefined
+                                  ? "is-invalid form-control"
+                                  : "form-select"
+                              }
+                              id="parent"
+                              required=""
+                              {...register("parent_id", {
+                                required: "Parent field is required",
+                              })}
+                            >
+                              <option value="">Select Parent</option>
+                              {parents.length > 0
+                                ? parents.map((parent, index) => {
+                                    return (
+                                      <>
+                                        <option value={parent.id}>
+                                          {parent.first_name +
+                                            " " +
+                                            parent.last_name}
+                                        </option>
+                                      </>
+                                    );
+                                  })
+                                : null}
+                            </select>
+                            {errors?.parent &&
+                            errors.parent.type &&
+                            errors.parent.type === "required" ? (
+                              <p className="text-danger" role="alert">
+                                Parent field is required
+                              </p>
+                            ) : null}
+                            <label htmlFor="basic-default-country">
+                              Parent
+                            </label>
+                          </div>
+                          <div class="form-floating form-floating-outline mb-4 float-right">
+                            <span>
+                              Click{" "}
+                              <a
+                                onClick={(e) => {
+                                  setShow(true);
+                                }}
+                              >
+                                here{" "}
+                              </a>
+                              to create new parent.
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div class="form-floating form-floating-outline mb-4 float-right">
-                        <span>
-                          Click{" "}
-                          <a
-                            onClick={(e) => {
-                              setShow(true);
-                            }}
-                          >
-                            here{" "}
-                          </a>
-                          to create new parent.
-                        </span>
+                      <div className="row col-sm-12">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                          <div class="mb-4 form-password-toggle">
+                            <div class="input-group input-group-merge">
+                              <div class="form-floating form-floating-outline">
+                                <select
+                                  class={
+                                    errors.grade !== undefined
+                                      ? "is-invalid form-control"
+                                      : "form-select"
+                                  }
+                                  id="county"
+                                  required=""
+                                  {...register("grade", {
+                                    required: "Grade is required",
+                                  })}
+                                >
+                                  <option value="">Select Grade</option>
+                                  {console.log(grads?.length)}
+                                  {grads?.length > 0
+                                    ? grads.map((grad, index) => {
+                                        debugger;
+                                        console.log(grad);
+                                        return (
+                                          <>
+                                            <option value={index}>
+                                              {grad}
+                                            </option>
+                                          </>
+                                        );
+                                      })
+                                    : null}
+                                </select>
+                                {errors?.county &&
+                                errors.county.type &&
+                                errors.county.type === "required" ? (
+                                  <p className="text-danger" role="alert">
+                                    Grade is required
+                                  </p>
+                                ) : null}
+                                <label htmlFor="basic-default-country">
+                                  Grade
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                          <div class="mb-4 form-password-toggle">
+                            <div class="input-group input-group-merge">
+                              <div class="form-floating form-floating-outline">
+                                <select
+                                  class={
+                                    errors.stream !== undefined
+                                      ? "is-invalid form-control"
+                                      : "form-select"
+                                  }
+                                  id="county"
+                                  required=""
+                                  {...register("stream", {
+                                    required: "Stream is required",
+                                  })}
+                                >
+                                  <option value="">Select Stream</option>
+                                  {counties.length > 0
+                                    ? counties.map((county, index) => {
+                                        return (
+                                          <>
+                                            <option value={county.id}>
+                                              {county.name}
+                                            </option>
+                                          </>
+                                        );
+                                      })
+                                    : null}
+                                </select>
+                                {errors?.stream &&
+                                errors.stream.type &&
+                                errors.stream.type === "required" ? (
+                                  <p className="text-danger" role="alert">
+                                    Stream is required
+                                  </p>
+                                ) : null}
+                                <label htmlFor="basic-default-country">
+                                  Stream
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <select

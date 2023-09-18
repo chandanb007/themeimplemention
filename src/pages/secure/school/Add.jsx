@@ -86,10 +86,12 @@ function Add(props) {
       });
   };
   const gradesByCategory = async (id) => {
+    showLoader(true);
     await HttpHelper.get("lookups/gradesByCategory/" + id)
       .then((response) => {
         var gradeData = [];
         if (response.data.data) {
+          showLoader(false);
           response.data.data.map((item) => {
             gradeData.push({ value: item.id, label: item.name });
           });
@@ -194,7 +196,7 @@ function Add(props) {
                           styles={{
                             control: (baseStyles, state) => ({
                               ...baseStyles,
-                              borderColor: state.isFocused ? "grey" : "red",
+                              //borderColor: state.isFocused ? "grey" : "",
                             }),
                           }}
                         />
@@ -204,17 +206,19 @@ function Add(props) {
                         <Tags
                           // tagify settings object
                           onChange={onChangeStream}
+                          placeholder="Enter steam name and press enter"
                           className={"form-control"}
                         />
-                        <label htmlFor="basic-default-country">Streams</label>
+                        {/* <label htmlFor="basic-default-country">Streams</label> */}
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <Tags
                           // tagify settings object
+                          placeholder="Enter subject name and press enter"
                           onChange={onChangeSubject}
                           className={"form-control"}
                         />
-                        <label htmlFor="basic-default-country">Subjects</label>
+                        {/* <label htmlFor="basic-default-country">Subjects</label> */}
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <input
@@ -462,6 +466,80 @@ function Add(props) {
                           ></span>
                         </div>
                       </div>
+                      <div className="row col-sm-12">
+                        <div class="mb-4 form-password-toggle col-sm-6">
+                          <div class="input-group input-group-merge">
+                            <div class="form-floating form-floating-outline">
+                              <input
+                                class={
+                                  errors.estate !== undefined
+                                    ? "is-invalid form-control"
+                                    : "form-control"
+                                }
+                                {...register("lat", {
+                                  required: "Lat is required",
+                                })}
+                                type="text"
+                                id="basic-default-password"
+                                placeholder=""
+                                aria-describedby="basic-default-password3"
+                                required=""
+                              />
+
+                              <label htmlFor="basic-default-password">
+                                Latitude
+                              </label>
+                            </div>
+                            <span
+                              class="input-group-text cursor-pointer"
+                              id="basic-default-password3"
+                            ></span>
+                          </div>
+                          {errors?.estate &&
+                          errors.lat.type &&
+                          errors.lat.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              latitude is required
+                            </p>
+                          ) : null}
+                        </div>
+                        <div class="mb-4 form-password-toggle col-sm-6">
+                          <div class="input-group input-group-merge">
+                            <div class="form-floating form-floating-outline">
+                              <input
+                                class={
+                                  errors.long !== undefined
+                                    ? "is-invalid form-control"
+                                    : "form-control"
+                                }
+                                {...register("long", {
+                                  required: "Longitude is required",
+                                })}
+                                type="text"
+                                id="basic-default-password"
+                                placeholder=""
+                                aria-describedby="basic-default-password3"
+                                required=""
+                              />
+
+                              <label htmlFor="basic-default-password">
+                                Longitude
+                              </label>
+                            </div>
+                            <span
+                              class="input-group-text cursor-pointer"
+                              id="basic-default-password3"
+                            ></span>
+                          </div>
+                          {errors?.long &&
+                          errors.long.type &&
+                          errors.long.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Longitude is required
+                            </p>
+                          ) : null}
+                        </div>
+                      </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <input
                           {...register("file", {
@@ -564,6 +642,7 @@ function Add(props) {
                           </span>
                         </label>
                       </div>
+
                       <div class="row">
                         <div class="col-12">
                           <button

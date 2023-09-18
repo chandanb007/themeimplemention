@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material";
 import { useAuth } from "../../../context/AuthContext";
+import { Edit, Delete } from "@mui/icons-material";
 
 function List(props) {
   const { showLoader } = useAuth();
@@ -161,13 +162,14 @@ function List(props) {
                       manualSorting
                       columns={columns}
                       data={schools}
-                      enableRowSelection //enable some features
+                      //enableRowSelection //enable some features
                       enableColumnOrdering
                       enableGlobalFilter={false} //turn off a feature
                       onColumnFiltersChange={setColumnFilters}
                       onGlobalFilterChange={setGlobalFilter}
                       onPaginationChange={setPagination}
                       onSortingChange={setSorting}
+                      enableRowActions
                       rowCount={rowCount}
                       state={{
                         columnFilters,
@@ -178,6 +180,34 @@ function List(props) {
                         showProgressBars: isRefetching,
                         sorting,
                       }}
+                      renderRowActionMenuItems={({ row, closeMenu }) => [
+                        <MenuItem
+                          key={0}
+                          onClick={() => {
+                            navigate("/subscription/edit/" + row.id);
+                            closeMenu();
+                          }}
+                          sx={{ m: 0 }}
+                        >
+                          <ListItemIcon>
+                            <Edit />
+                          </ListItemIcon>
+                          Edit
+                        </MenuItem>,
+                        <MenuItem
+                          key={1}
+                          onClick={() => {
+                            // deleteSubscription(row.id);
+                            closeMenu();
+                          }}
+                          sx={{ m: 0 }}
+                        >
+                          <ListItemIcon>
+                            <Delete />
+                          </ListItemIcon>
+                          Delete
+                        </MenuItem>,
+                      ]}
                     />
                   </div>
                 </div>

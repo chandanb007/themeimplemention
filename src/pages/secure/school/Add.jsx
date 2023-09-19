@@ -8,13 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import Tags from "@yaireo/tagify/dist/react.tagify"; // React-wrapper file
 import "@yaireo/tagify/dist/tagify.css"; // Tagify CSS
-
-import {
-  withScriptjs,
-  withGoogleMap,
-  GoogleMap,
-  Marker,
-} from "react-google-maps";
 import { compose, withProps } from "recompose";
 import Select from "react-select";
 
@@ -31,6 +24,9 @@ function Add(props) {
   const [grades, setGrades] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedGrads, setSelectedGrads] = useState(null);
+  const [selectSteams, setSelectedStreams] = useState(null);
+  const [selectSubjects, setSelectedSubjects] = useState(null);
+
   const [streams, setStreams] = useState({});
   const [subjects, setSubjects] = useState({});
 
@@ -67,8 +63,8 @@ function Add(props) {
   const onSubmit = async (data) => {
     showLoader(true);
     data.category = selectedCategory;
-    data.streams = streams;
-    data.subjects = subjects;
+    data.streams = selectSteams;
+    data.subjects = selectSubjects;
     data.grads = selectedGrads;
     data.role_id = UserRolesEnum.SCHOOL;
     await HttpHelper.post("signup", data, "multipart/form-data")
@@ -100,19 +96,56 @@ function Add(props) {
       })
       .catch((error) => {});
   };
-
+  const getSubjects = async () => {
+    showLoader(true);
+    await HttpHelper.get("lookups/subjects")
+      .then((response) => {
+        showLoader(false);
+        var subjects = [];
+        response.data.data.map((item) => {
+          subjects.push({ value: item.id, label: item.name });
+        });
+        //setGrades(gradeData);
+        setSubjects(subjects);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getStreams = async () => {
+    showLoader(true);
+    await HttpHelper.get("lookups/streams")
+      .then((response) => {
+        showLoader(false);
+        var streams = [];
+        response.data.data.map((item) => {
+          streams.push({ value: item.id, label: item.name });
+        });
+        setStreams(streams);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
     if (selectedCategory) gradesByCategory(selectedCategory);
   }, [selectedCategory]);
   useEffect(() => {
     getCounties();
     getGradeCategories();
+    getSubjects();
+    getStreams();
   }, []);
   const onChangeStream = useCallback((e) => {
-    setStreams({ ...streams, name: e.detail.tagify.value });
+    if (e.length) {
+      var exists = selectSteams.filter((stream) => stream.id == e[0].value);
+      if (!exists) {
+        setSelectedStreams({ ...selectSteams, id: e[0].value });
+      }
+    }
   }, []);
   const onChangeSubject = useCallback((e) => {
-    setSubjects({ ...subjects, name: e.detail.tagify.value });
+    if (e.length) setSelectedSubjects({ ...selectSubjects, id: e[0].value });
   }, []);
   return (
     <>
@@ -146,79 +179,98 @@ function Add(props) {
                       class="browser-default-validation"
                       onSubmit={handleSubmit(onSubmit)}
                     >
-                      <div class="form-floating form-floating-outline mb-4">
-                        <select
-                          class={
-                            errors.category_id !== undefined
-                              ? "is-invalid form-control"
-                              : "form-select"
-                          }
-                          id="county"
-                          required=""
-                          {...register("category_id", {
-                            required: "Category is required",
-                          })}
-                          onChange={(e) => {
-                            setSelectedCategory(e.currentTarget.value);
-                          }}
-                        >
-                          <option value="">Select Category</option>
-                          {gradeCategories.length > 0
-                            ? gradeCategories.map((gradeCategory, index) => {
-                                return (
-                                  <>
-                                    <option value={gradeCategory.id}>
-                                      {gradeCategory.name}
-                                    </option>
-                                  </>
-                                );
-                              })
-                            : null}
-                        </select>
-                        {errors?.category_id &&
-                        errors.category_id.type &&
-                        errors.category_id.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Category is required
-                          </p>
-                        ) : null}
-                        <label htmlFor="basic-default-country">Category</label>
+                      <div className="row">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                          <select
+                            class={
+                              errors.category_id !== undefined
+                                ? "is-invalid form-control"
+                                : "form-select"
+                            }
+                            id="county"
+                            required=""
+                            {...register("category_id", {
+                              required: "Category is required",
+                            })}
+                            onChange={(e) => {
+                              setSelectedCategory(e.currentTarget.value);
+                            }}
+                          >
+                            <option value="">Select Category</option>
+                            {gradeCategories.length > 0
+                              ? gradeCategories.map((gradeCategory, index) => {
+                                  return (
+                                    <>
+                                      <option value={gradeCategory.id}>
+                                        {gradeCategory.name}
+                                      </option>
+                                    </>
+                                  );
+                                })
+                              : null}
+                          </select>
+                          {errors?.category_id &&
+                          errors.category_id.type &&
+                          errors.category_id.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Category is required
+                            </p>
+                          ) : null}
+                          <label htmlFor="basic-default-country">
+                            Category
+                          </label>
+                        </div>
+                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                          <Select
+                            className="form-control"
+                            options={grades ? grades : []}
+                            isMulti
+                            onChange={(e) => {
+                              setSelectedGrads(e);
+                              console.log(e);
+                            }}
+                            styles={{
+                              control: (baseStyles, state) => ({
+                                ...baseStyles,
+                                //borderColor: state.isFocused ? "grey" : "",
+                              }),
+                            }}
+                          />
+                          <label htmlFor="basic-default-country">Grades</label>
+                        </div>
                       </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <Select
-                          className="form-control"
-                          options={grades ? grades : []}
-                          isMulti
-                          onChange={(e) => {
-                            setSelectedGrads(e);
-                            console.log(e);
-                          }}
-                          styles={{
-                            control: (baseStyles, state) => ({
-                              ...baseStyles,
-                              //borderColor: state.isFocused ? "grey" : "",
-                            }),
-                          }}
-                        />
-                        <label htmlFor="basic-default-country">Grades</label>
-                      </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <Tags
-                          // tagify settings object
-                          onChange={onChangeStream}
-                          placeholder="Enter steam name and press enter"
-                          className={"form-control"}
-                        />
-                        {/* <label htmlFor="basic-default-country">Streams</label> */}
-                      </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <Tags
-                          // tagify settings object
-                          placeholder="Enter subject name and press enter"
-                          onChange={onChangeSubject}
-                          className={"form-control"}
-                        />
-                        {/* <label htmlFor="basic-default-country">Subjects</label> */}
+                      <div className="row">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                          <Select
+                            className="form-control"
+                            options={subjects ? subjects : []}
+                            isMulti
+                            onChange={onChangeSubject}
+                            styles={{
+                              control: (baseStyles, state) => ({
+                                ...baseStyles,
+                                //borderColor: state.isFocused ? "grey" : "",
+                              }),
+                            }}
+                          />
+                          <label htmlFor="basic-default-country">
+                            Subjects
+                          </label>
+                        </div>
+                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                          <Select
+                            className="form-control"
+                            options={streams ? streams : []}
+                            isMulti
+                            onChange={onChangeStream}
+                            styles={{
+                              control: (baseStyles, state) => ({
+                                ...baseStyles,
+                              }),
+                            }}
+                          />
+                          <label htmlFor="basic-default-country">Streams</label>
+                        </div>
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <input
@@ -584,7 +636,7 @@ function Add(props) {
                           errors.bio?.type === "minLength") ||
                         errors.bio?.type === "maxLength" ? (
                           <p className="text-danger" role="alert">
-                            Bio can not be less than 50 charecter or greater
+                            Moto can not be less than 50 charecter or greater
                             then 500 charecters
                           </p>
                         ) : null}
@@ -592,7 +644,7 @@ function Add(props) {
                         errors.bio.type &&
                         errors.bio.type === "required" ? (
                           <p className="text-danger" role="alert">
-                            Bio is required
+                            Moto is required
                           </p>
                         ) : null}
                         <label htmlFor="basic-default-bio">Moto</label>

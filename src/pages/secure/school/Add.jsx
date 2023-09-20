@@ -137,15 +137,10 @@ function Add(props) {
     getStreams();
   }, []);
   const onChangeStream = useCallback((e) => {
-    if (e.length) {
-      var exists = selectSteams.filter((stream) => stream.id == e[0].value);
-      if (!exists) {
-        setSelectedStreams({ ...selectSteams, id: e[0].value });
-      }
-    }
+    setSelectedStreams({ ...selectSteams, e });
   }, []);
   const onChangeSubject = useCallback((e) => {
-    if (e.length) setSelectedSubjects({ ...selectSubjects, id: e[0].value });
+    setSelectedSubjects({ ...selectSubjects, e });
   }, []);
   return (
     <>

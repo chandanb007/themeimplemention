@@ -9,7 +9,6 @@ import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
 
 function Add(props) {
-  console.log(props);
   let { id } = useParams();
   const { notify, showLoader } = useAuth();
   const [errorMsgs, setErrorMsgs] = useState(null);

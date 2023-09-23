@@ -6,12 +6,20 @@ import UserRolesEnum from "../../../Enums/UserRolesEnum";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import Select from "react-select";
 
 function Add(props) {
   const { notify, showLoader } = useAuth();
   const user = JSON.parse(sessionStorage.getItem("user"));
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [counties, setCounties] = useState({});
+  const [gradeCategories, setGradeCategories] = useState({});
+  
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [streams, setStreams] = useState({});
+  const [subjects, setSubjects] = useState({});
+  const [grades, setGrades] = useState([]);
+  const [selectedGrads, setSelectedGrads] = useState(null);
   const getCounties = async () => {
     showLoader(true);
     await HttpHelper.get("lookups/counties")
@@ -22,6 +30,41 @@ function Add(props) {
       .catch((error) => {
         console.log(error);
         showLoader(false);
+      });
+  };
+  const getStreams = async () => {
+    showLoader(true);
+    await HttpHelper.get("lookups/streams")
+      .then((response) => {
+        setStreams(response.data.data);
+        showLoader(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        showLoader(false);
+      });
+  };
+  const getSubjects = async () => {
+    showLoader(true);
+    await HttpHelper.get("lookups/subjects")
+      .then((response) => {
+        setSubjects(response.data.data);
+        showLoader(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        showLoader(false);
+      });
+  };
+  const getGradeCategories = async () => {
+    showLoader(true);
+    await HttpHelper.get("lookups/gradeCategories")
+      .then((response) => {
+        setGradeCategories(response.data.data);
+        showLoader(false);
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
   const navigate = useNavigate();
@@ -35,6 +78,9 @@ function Add(props) {
     showLoader(true);
     data.role_id = UserRolesEnum.TEACHER;
     data.school_id = user.user.id;
+    data.category = selectedCategory;
+    data.grads = selectedGrads;
+    console.log(data);
     await HttpHelper.post("signup", data, "multipart/form-data")
       .then((response) => {
         notify("success", "Teacher added successfully");
@@ -49,8 +95,29 @@ function Add(props) {
         showLoader(false);
       });
   };
+  const gradesByCategory = async (id) => {
+    showLoader(true);
+    await HttpHelper.get("lookups/gradesByCategory/" + id)
+      .then((response) => {
+        var gradeData = [];
+        if (response.data.data) {
+          showLoader(false);
+          response.data.data.map((item) => {
+            gradeData.push({ value: item.id, label: item.name });
+          });
+          setGrades(gradeData);
+        }
+      })
+      .catch((error) => {});
+  };
+  useEffect(() => {
+    if (selectedCategory) gradesByCategory(selectedCategory);
+  }, [selectedCategory]);
   useEffect(() => {
     getCounties();
+    getGradeCategories();
+    getStreams();
+    getSubjects();
   }, []);
   return (
     <>
@@ -84,6 +151,7 @@ function Add(props) {
                       class="browser-default-validation"
                       onSubmit={handleSubmit(onSubmit)}
                     >
+                         
                       <div class="form-floating form-floating-outline mb-4">
                         <input
                           {...register("first_name", {
@@ -137,6 +205,62 @@ function Add(props) {
                         <label htmlFor="basic-default-name">
                           Teacher Last Name
                         </label>
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
+                        <select
+                          class={
+                            errors.category_id !== undefined
+                              ? "is-invalid form-control"
+                              : "form-select"
+                          }
+                          id="county"
+                          required=""
+                          {...register("category_id", {
+                            required: "Category is required",
+                          })}
+                          onChange={(e) => {
+                            setSelectedCategory(e.currentTarget.value);
+                          }}
+                        >
+                          <option value="">Select Category</option>
+                          {gradeCategories.length > 0
+                            ? gradeCategories.map((gradeCategory, index) => {
+                                return (
+                                  <>
+                                    <option value={gradeCategory.id}>
+                                      {gradeCategory.name}
+                                    </option>
+                                  </>
+                                );
+                              })
+                            : null}
+                        </select>
+                        {errors?.category_id &&
+                        errors.category_id.type &&
+                        errors.category_id.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            Category is required
+                          </p>
+                        ) : null}
+                        <label htmlFor="basic-default-country">Category</label>
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
+                        <Select
+                          className="form-control"
+                          options={grades ? grades : []}
+                          isMulti
+                          onChange={(e) => {
+                            setSelectedGrads(e);
+                            console.log(e);
+                          }}
+                          styles={{
+                            control: (baseStyles, state) => ({
+                              ...baseStyles,
+                              //borderColor: state.isFocused ? "grey" : "",
+                            }),
+                          }}
+                        />
+                        <label htmlFor="basic-default-country">Grades</label>
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <input
@@ -382,6 +506,104 @@ function Add(props) {
                         <label htmlFor="basic-default-upload-file">
                           Profile image
                         </label>
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
+                        <input
+                          {...register("moto", {
+                            required: "Moto is required",
+                            maxLength: 50,
+                          })}
+                          type="text"
+                          class={
+                            errors.name !== undefined
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                          id="basic-default-name"
+                          placeholder="Enter Moto"
+                          required=""
+                        />
+                        {errors?.moto &&
+                        errors.moto.type &&
+                        errors.moto.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            Moto is required
+                          </p>
+                        ) : null}
+                        <label htmlFor="basic-default-name">
+                          Moto
+                        </label>
+                      </div>
+                      {/* stream */}
+                      <div class="form-floating form-floating-outline mb-4">
+                        <select
+                          class={
+                            errors.stream !== undefined
+                              ? "is-invalid form-control"
+                              : "form-select"
+                          }
+                          id="stream"
+                          required=""
+                          {...register("stream", {
+                            required: "stream is required",
+                          })}
+                        >
+                          <option value="">Select Stream</option>
+                          {streams.length > 0
+                            ? streams.map((stream, index) => {
+                                return (
+                                  <>
+                                    <option value={stream.id}>
+                                      {stream.name}
+                                    </option>
+                                  </>
+                                );
+                              })
+                            : null}
+                        </select>
+                        {errors?.stream &&
+                        errors.stream.type &&
+                        errors.stream.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            Stream is required
+                          </p>
+                        ) : null}
+                        <label htmlFor="basic-default-country">Stream</label>
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
+                        <select
+                          class={
+                            errors.subject !== undefined
+                              ? "is-invalid form-control"
+                              : "form-select"
+                          }
+                          id="subject"
+                          required=""
+                          {...register("subject", {
+                            required: "subject is required",
+                          })}
+                        >
+                          <option value="">Select Subject</option>
+                          {subjects.length > 0
+                            ? subjects.map((subject, index) => {
+                                return (
+                                  <>
+                                    <option value={subject.id}>
+                                      {subject.name}
+                                    </option>
+                                  </>
+                                );
+                              })
+                            : null}
+                        </select>
+                        {errors?.subject &&
+                        errors.subject.type &&
+                        errors.subject.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            Subject is required
+                          </p>
+                        ) : null}
+                        <label htmlFor="basic-default-country">Subject</label>
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <textarea

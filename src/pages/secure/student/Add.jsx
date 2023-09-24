@@ -7,6 +7,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import AddParentModal from "./AddParentModal";
 import { useAuth } from "../../../../src/context/AuthContext";
+import Select from "react-select";
 
 function Add(props) {
   const { notify, showLoader } = useAuth();
@@ -18,7 +19,25 @@ function Add(props) {
   const [grads, setGrades] = useState({});
   const [subjects, setSubjects] = useState({});
   const [streams, setStreams] = useState({});
+  const [gradeCategories, setGradeCategories] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedGrads, setSelectedGrads] = useState(null);
 
+  const getStreams = async () => {
+    showLoader(true);
+    await HttpHelper.get("lookups/streams")
+      .then((response) => {
+        showLoader(false);
+        var streams = [];
+        response.data.data.map((item) => {
+          streams.push({ value: item.id, label: item.name });
+        });
+        setStreams(streams);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const getCounties = async () => {
     showLoader(true);
     await HttpHelper.get("lookups/counties")
@@ -43,6 +62,24 @@ function Add(props) {
         console.log(error);
       });
   };
+  const gradesByCategory = async (id) => {
+    showLoader(true);
+    await HttpHelper.get("lookups/gradesByCategory/" + id)
+      .then((response) => {
+        var gradeData = [];
+        if (response.data.data) {
+          showLoader(false);
+          response.data.data.map((item) => {
+            gradeData.push({ value: item.id, label: item.name });
+          });
+          setGrades(gradeData);
+        }
+      })
+      .catch((error) => {});
+  };
+  useEffect(() => {
+    if (selectedCategory) gradesByCategory(selectedCategory);
+  }, [selectedCategory]);
   const navigate = useNavigate();
   const {
     register,
@@ -102,9 +139,22 @@ function Add(props) {
     getSchoolSubjects();
     getSchoolGrads();
     getSchoolStreams();
+    getGradeCategories();
+    getStreams();
   }, []);
   const handleCloseModal = () => {
     setShow(false);
+  };
+  const getGradeCategories = async () => {
+    showLoader(true);
+    await HttpHelper.get("lookups/gradeCategories")
+      .then((response) => {
+        setGradeCategories(response.data.data);
+        showLoader(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <>
@@ -375,92 +425,131 @@ function Add(props) {
                           </div>
                         </div>
                       </div>
-                      <div className="row col-sm-12">
+                      <div className="row">
                         <div class="form-floating form-floating-outline mb-4 col-sm-6">
-                          <div class="mb-4 form-password-toggle">
-                            <div class="input-group input-group-merge">
-                              <div class="form-floating form-floating-outline">
-                                <select
-                                  class={
-                                    errors.grade !== undefined
-                                      ? "is-invalid form-control"
-                                      : "form-select"
-                                  }
-                                  id="county"
-                                  required=""
-                                  {...register("grade", {
-                                    required: "Grade is required",
-                                  })}
-                                >
-                                  <option value="">Select Grade</option>
-                                  {console.log(grads?.length)}
-                                  {grads?.length > 0
-                                    ? grads.map((grad, index) => {
-                                        debugger;
-                                        console.log(grad);
-                                        return (
-                                          <>
-                                            <option value={index}>
-                                              {grad}
-                                            </option>
-                                          </>
-                                        );
-                                      })
-                                    : null}
-                                </select>
-                                {errors?.county &&
-                                errors.county.type &&
-                                errors.county.type === "required" ? (
-                                  <p className="text-danger" role="alert">
-                                    Grade is required
-                                  </p>
-                                ) : null}
-                                <label htmlFor="basic-default-country">
-                                  Grade
-                                </label>
+                          <select
+                            class={
+                              errors.category_id !== undefined
+                                ? "is-invalid form-control"
+                                : "form-select"
+                            }
+                            id="county"
+                            required=""
+                            {...register("category_id", {
+                              required: "Category is required",
+                            })}
+                            onChange={(e) => {
+                              setSelectedCategory(e.currentTarget.value);
+                            }}
+                          >
+                            <option value="">Select Category</option>
+                            {gradeCategories.length > 0
+                              ? gradeCategories.map((gradeCategory, index) => {
+                                  return (
+                                    <>
+                                      <option value={gradeCategory.id}>
+                                        {gradeCategory.name}
+                                      </option>
+                                    </>
+                                  );
+                                })
+                              : null}
+                          </select>
+                          {errors?.category_id &&
+                          errors.category_id.type &&
+                          errors.category_id.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Category is required
+                            </p>
+                          ) : null}
+                          <label htmlFor="basic-default-country">
+                            Category
+                          </label>
+                        </div>
+                        <div className="row col-sm-12">
+                          <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                            <div class="mb-4 form-password-toggle">
+                              <div class="input-group input-group-merge">
+                                <div class="form-floating form-floating-outline">
+                                  <select
+                                    class={
+                                      errors.grade !== undefined
+                                        ? "is-invalid form-control"
+                                        : "form-select"
+                                    }
+                                    id="county"
+                                    required=""
+                                    {...register("grade", {
+                                      required: "Grade is required",
+                                    })}
+                                  >
+                                    <option value="">Select Grades</option>
+                                    {grads?.length > 0
+                                      ? grads.map((grad, index) => {
+                                          return (
+                                            <>
+                                              <option value={grad.value}>
+                                                {grad.label}
+                                              </option>
+                                            </>
+                                          );
+                                        })
+                                      : null}
+                                  </select>
+                                  {errors?.county &&
+                                  errors.county.type &&
+                                  errors.county.type === "required" ? (
+                                    <p className="text-danger" role="alert">
+                                      Grade is required
+                                    </p>
+                                  ) : null}
+                                  <label htmlFor="basic-default-country">
+                                    Grade
+                                  </label>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
-                          <div class="mb-4 form-password-toggle">
-                            <div class="input-group input-group-merge">
-                              <div class="form-floating form-floating-outline">
-                                <select
-                                  class={
-                                    errors.stream !== undefined
-                                      ? "is-invalid form-control"
-                                      : "form-select"
-                                  }
-                                  id="county"
-                                  required=""
-                                  {...register("stream", {
-                                    required: "Stream is required",
-                                  })}
-                                >
-                                  <option value="">Select Stream</option>
-                                  {counties.length > 0
-                                    ? counties.map((county, index) => {
-                                        return (
-                                          <>
-                                            <option value={county.id}>
-                                              {county.name}
-                                            </option>
-                                          </>
-                                        );
-                                      })
-                                    : null}
-                                </select>
-                                {errors?.stream &&
-                                errors.stream.type &&
-                                errors.stream.type === "required" ? (
-                                  <p className="text-danger" role="alert">
-                                    Stream is required
-                                  </p>
-                                ) : null}
-                                <label htmlFor="basic-default-country">
-                                  Stream
-                                </label>
+                          <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                            <div class="mb-4 form-password-toggle">
+                              <div class="input-group input-group-merge">
+                                <div class="form-floating form-floating-outline">
+                                  <select
+                                    class={
+                                      errors.stream !== undefined
+                                        ? "is-invalid form-control"
+                                        : "form-select"
+                                    }
+                                    id="stream"
+                                    required=""
+                                    {...register("stream", {
+                                      required: "Stream is required",
+                                    })}
+                                  >
+                                    <option value="">Select Stream</option>
+                                    {streams.length > 0
+                                      ? streams.map((stream, index) => {
+                                          return (
+                                            <>
+                                              <option value={stream.value}>
+                                                {stream.label}
+                                              </option>
+                                            </>
+                                          );
+                                        })
+                                      : null}
+                                  </select>
+                                  {errors?.stream &&
+                                  errors.stream.type &&
+                                  errors.stream.type === "required" ? (
+                                    <p className="text-danger" role="alert">
+                                      Stream is required
+                                    </p>
+                                  ) : null}
+                                  <label htmlFor="basic-default-country">
+                                    Stream
+                                  </label>
+                                </div>
                               </div>
                             </div>
                           </div>

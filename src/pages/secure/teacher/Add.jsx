@@ -207,6 +207,62 @@ function Add(props) {
                         </label>
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
+                        <input
+                          {...register("id_no", {
+                            required: "Id no is required",
+                            maxLength: 50,
+                          })}
+                          type="text"
+                          id="basic-default-id_no"
+                          class={
+                            errors.id_no !== undefined
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                          placeholder="Id no"
+                          required=""
+                        />
+
+                        <label htmlFor="basic-default-id_no">
+                           Id No 
+                        </label>
+                        {errors?.id_no &&
+                        errors.id_no.type &&
+                        errors.id_no.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            id_no is required
+                          </p>
+                        ) : null}
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
+                        <input
+                          {...register("date_of_birth", {
+                            required: "Date of birth is required",
+                            maxLength: 50,
+                          })}
+                          type="date"
+                          id="basic-default-id_no"
+                          class={
+                            errors.date_of_birth !== undefined
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                          placeholder="Date of birth"
+                          required=""
+                        />
+
+                        <label htmlFor="basic-default-id_no">
+                        Date of birth
+                        </label>
+                        {errors?.date_of_birth &&
+                        errors.date_of_birth.type &&
+                        errors.date_of_birth.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            Date of Birth is required
+                          </p>
+                        ) : null}
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
                         <select
                           class={
                             errors.category_id !== undefined

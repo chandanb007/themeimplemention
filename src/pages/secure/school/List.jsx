@@ -8,9 +8,10 @@ import { MaterialReactTable } from "material-react-table";
 import { Box, Button, ListItemIcon, MenuItem, Typography } from "@mui/material";
 import { useAuth } from "../../../context/AuthContext";
 import { Edit, Delete } from "@mui/icons-material";
+import Swal from "sweetalert2";
 
 function List(props) {
-  const { showLoader } = useAuth();
+  const { showLoader, notify } = useAuth();
   const navigate = useNavigate();
   const [schools, setSchools] = useState([]);
   const [isError, setIsError] = useState(false);
@@ -115,6 +116,26 @@ function List(props) {
     ],
     []
   );
+  const deleteUser = async (id) => {
+    Swal.fire({
+      title: "Do you want to delete?",
+      showCancelButton: true,
+      confirmButtonText: "Save",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        HttpHelper.delete("user/delete/" + id)
+          .then((response) => {
+            notify("success", "Deleted successfully");
+            getSchools();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else if (result.isDenied) {
+        Swal.fire("Changes are not saved", "", "info");
+      }
+    });
+  };
   return (
     <>
       <Wrapper breakCrum="Dashboard/home">
@@ -184,7 +205,7 @@ function List(props) {
                         <MenuItem
                           key={0}
                           onClick={() => {
-                            navigate("/subscription/edit/" + row.id);
+                            navigate("/school/edit/" + row.id);
                             closeMenu();
                           }}
                           sx={{ m: 0 }}
@@ -197,7 +218,7 @@ function List(props) {
                         <MenuItem
                           key={1}
                           onClick={() => {
-                            // deleteSubscription(row.id);
+                            deleteUser(row.id);
                             closeMenu();
                           }}
                           sx={{ m: 0 }}

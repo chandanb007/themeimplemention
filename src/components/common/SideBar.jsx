@@ -66,7 +66,7 @@ function SideBar(props) {
       </div>
 
       <div className="menu-inner-shadow" style={{ display: "none" }}></div>
-      {user.user.role_id == UserRolesEnum.SCHOOL ? (                    
+      {user.user.role_id == UserRolesEnum.SCHOOL ? (
         <ul className="menu-inner py-1 ps ps--active-y">
           <li
             class="menu-item"
@@ -155,10 +155,9 @@ function SideBar(props) {
                 </NavLink>
               </li>
             </ul>
-           
-            
-          {/* Attendences module */}
-            <li
+
+            {/* Attendences module */}
+            {/* <li
             class="menu-item"
             onClick={(e) => {
               e.preventDefault();
@@ -201,9 +200,9 @@ function SideBar(props) {
                 </NavLink>
               </li>
             </ul>
-          </li>
-           {/* Notice-Board module */}
-           <li
+          </li> */}
+            {/* Notice-Board module 
+            <li
             class="menu-item"
             onClick={(e) => {
               e.preventDefault();
@@ -245,18 +244,63 @@ function SideBar(props) {
                   <div data-i18n="Analytics">Report</div>
                 </NavLink>
               </li> */}
+            {/* </ul>
+          </li>  */}
+          </li>
+          <li
+            class="menu-item"
+            onClick={(e) => {
+              e.preventDefault();
+              menuToggle(e);
+            }}
+          >
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+              <i class="menu-icon tf-icons mdi mdi-school"></i>
+              <div data-i18n="Dashboards">Attendences</div>
+            </a>
+            <ul class="menu-sub">
+              <li
+                class="menu-item"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <NavLink
+                  to={"/attendance/add"}
+                  className={(isActive) =>
+                    "menu-link" + (!isActive ? " unselected" : "")
+                  }
+                >
+                  <div data-i18n="Analytics">Add</div>
+                </NavLink>
+              </li>
+              <li
+                class="menu-item"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <NavLink
+                  to={"/attendance/report"}
+                  className={(isActive) =>
+                    "menu-link" + (!isActive ? " unselected" : "")
+                  }
+                >
+                  <div data-i18n="Analytics">Attendance Report</div>
+                </NavLink>
+              </li>
             </ul>
           </li>
           <li class="menu-item">
-              <NavLink
-                to={"/profile"}
-                href="javascript:void(0);"
-                className="menu-link"
-              >
-                <i class="menu-icon tf-icons mdi  mdi-face-man-profile"></i>
-                <div data-i18n="Dashboards">Profile</div>
-              </NavLink>
-            </li>
+            <NavLink
+              to={"/profile"}
+              href="javascript:void(0);"
+              className="menu-link"
+            >
+              <i class="menu-icon tf-icons mdi  mdi-face-man-profile"></i>
+              <div data-i18n="Dashboards">Profile</div>
+            </NavLink>
+          </li>
           {/* Logout Module */}
           <li
             className="menu-item"
@@ -274,7 +318,6 @@ function SideBar(props) {
               <div data-i18n="Dashboards">Logout</div>
               {/* <div className="badge bg-danger rounded-pill ms-auto">5</div> */}
             </a>
-          </li>
           </li>
         </ul>
       ) : (

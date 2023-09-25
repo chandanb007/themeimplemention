@@ -10,8 +10,10 @@ import Tags from "@yaireo/tagify/dist/react.tagify"; // React-wrapper file
 import "@yaireo/tagify/dist/tagify.css"; // Tagify CSS
 import { compose, withProps } from "recompose";
 import Select from "react-select";
+import { useParams } from "react-router-dom";
 
 function Add(props) {
+  let { id } = useParams();
   const options = [
     { value: "chocolate", label: "Chocolate" },
     { value: "strawberry", label: "Strawberry" },
@@ -28,6 +30,7 @@ function Add(props) {
   const [selectSubjects, setSelectedSubjects] = useState(null);
   const [lat, setLat] = useState(null);
   const [long, setLong] = useState(null);
+  const [existingGrade, setExistingGrads] = useState(null);
 
   const [streams, setStreams] = useState({});
   const [subjects, setSubjects] = useState({});
@@ -61,7 +64,20 @@ function Add(props) {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: async () =>
+      HttpHelper.get("user/Profile/" + id).then((response) => {
+        setSelectedCategory(response.data.data.user.category.category_id);
+        setExistingGrads(response.data.data.user.grads);
+        return {
+          category_id: response.data.data.user.category.category_id,
+          name: response.data.data.name,
+          termly_fee: response.data.data.termly_fee,
+          yearly_fee: response.data.data.yearly_fee,
+          status: response.data.data.status == 0 ? false : true,
+        };
+      }),
+  });
   const onSubmit = async (data) => {
     if (lat == null || long == null) {
       notify("error", "Location data is required");
@@ -241,6 +257,7 @@ function Add(props) {
                             className="form-control"
                             options={grades ? grades : []}
                             isMulti
+                            defaultValue={[11]}
                             onChange={(e) => {
                               setSelectedGrads(e);
                               console.log(e);

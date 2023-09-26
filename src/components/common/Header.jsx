@@ -27,13 +27,22 @@ function Header(props) {
         id="layout-navbar"
       >
         <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-          <a className="nav-item nav-link px-0 me-xl-4" href="#">
+          <a
+            className="nav-item nav-link px-0 me-xl-4"
+            href="#"
+            onClick={() => {
+              var getId = document.getElementById("layout-menu");
+              if (getId) {
+                getId.classList.toggle("resMenu");
+              }
+            }}
+          >
             <i className="mdi mdi-menu mdi-24px"></i>
           </a>
         </div>
 
         <div
-          className="navbar-nav-right d-flex align-items-center"
+          className="navbar-nav-right d-flex align-items-center headerBorderBottom"
           id="navbar-collapse"
         >
           <div className="navbar-nav align-items-center">

@@ -20,6 +20,8 @@ function Add(props) {
   const [subjects, setSubjects] = useState({});
   const [grades, setGrades] = useState([]);
   const [selectedGrads, setSelectedGrads] = useState(null);
+  const [selectedSubjects, setSelectedSubjects] = useState(null);
+  const [selectedStream, setSelectedStream] = useState(null);
   const getCounties = async () => {
     showLoader(true);
     await HttpHelper.get("lookups/counties")
@@ -36,7 +38,11 @@ function Add(props) {
     showLoader(true);
     await HttpHelper.get("lookups/streams")
       .then((response) => {
-        setStreams(response.data.data);
+        const streamOption = response.data.data.map(stream => ({
+          value: stream.id, // Adjust the value property as needed
+          label: stream.name, // Adjust the label property as needed
+        }));
+        setStreams(streamOption);
         showLoader(false);
       })
       .catch((error) => {
@@ -48,7 +54,12 @@ function Add(props) {
     showLoader(true);
     await HttpHelper.get("lookups/subjects")
       .then((response) => {
-        setSubjects(response.data.data);
+        const subjectOption = response.data.data.map(subject => ({
+          value: subject.id, // Adjust the value property as needed
+          label: subject.name, // Adjust the label property as needed
+        }));
+
+        setSubjects(subjectOption);
         showLoader(false);
       })
       .catch((error) => {
@@ -80,6 +91,8 @@ function Add(props) {
     data.school_id = user.user.id;
     data.category = selectedCategory;
     data.grads = selectedGrads;
+    data.subjects = selectedSubjects;
+    data.streams = selectedStream;
     console.log(data);
     await HttpHelper.post("signup", data, "multipart/form-data")
       .then((response) => {
@@ -205,6 +218,94 @@ function Add(props) {
                         <label htmlFor="basic-default-name">
                           Teacher Last Name
                         </label>
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
+                        <input
+                          {...register("id_no", {
+                            required: "Id no is required",
+                            maxLength: 50,
+                          })}
+                          type="text"
+                          id="basic-default-id_no"
+                          class={
+                            errors.id_no !== undefined
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                          placeholder="Id no"
+                          required=""
+                        />
+
+                        <label htmlFor="basic-default-id_no">
+                           Id No 
+                        </label>
+                        {errors?.id_no &&
+                        errors.id_no.type &&
+                        errors.id_no.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            id_no is required
+                          </p>
+                        ) : null}
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
+                        <input
+                          {...register("date_of_birth", {
+                            required: "Date of birth is required",
+                            maxLength: 50,
+                          })}
+                          type="date"
+                          id="basic-default-id_no"
+                          class={
+                            errors.date_of_birth !== undefined
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                          placeholder="Date of birth"
+                          required=""
+                        />
+
+                        <label htmlFor="basic-default-id_no">
+                        Date of birth
+                        </label>
+                        {errors?.date_of_birth &&
+                        errors.date_of_birth.type &&
+                        errors.date_of_birth.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            Date of Birth is required
+                          </p>
+                        ) : null}
+                      </div>
+                      <div className="row col-sm-12">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-2">
+                          <label>Gender</label>
+                        </div>
+                        <div class="form-floating form-floating-outline mb-4 col-sm-2">
+                          <div class="form-check mt-2">
+                            <label class="form-check-label">
+                              <input
+                                name="default-radio-1"
+                                class="form-check-input"
+                                type="radio"
+                                value="1"
+                              />
+                              Male
+                            </label>
+                          </div>
+                        </div>
+                        <div class="form-floating form-floating-outline mb-4 col-sm-2">
+                          <div class="form-check mt-2">
+                            <label class="form-check-label">
+                              <input
+                                name="default-radio-1"
+                                class="form-check-input"
+                                type="radio"
+                                value="1"
+                              />
+                              Female{" "}
+                            </label>
+                          </div>
+                        </div>
+                    
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <select
@@ -339,6 +440,34 @@ function Add(props) {
                         errors.mobile.type === "required" ? (
                           <p className="text-danger" role="alert">
                             Mobile is required
+                          </p>
+                        ) : null}
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
+                        <input
+                          {...register("start_do_employment", {
+                            required: "Start Do Employment is required",
+                            maxLength: 50,
+                          })}
+                          type="date"
+                          id="basic-default-id_no"
+                          class={
+                            errors.start_do_employment !== undefined
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                          placeholder="Start Date Employment"
+                          required=""
+                        />
+
+                        <label htmlFor="basic-default-id_no">
+                        Start Date Employment
+                        </label>
+                        {errors?.start_do_employment &&
+                        errors.start_do_employment.type &&
+                        errors.start_do_employment.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            Start Date employment is required
                           </p>
                         ) : null}
                       </div>
@@ -509,6 +638,33 @@ function Add(props) {
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <input
+                          {...register("capacity", {
+                            required: "Capacity is required",
+                            maxLength: 50,
+                          })}
+                          type="text"
+                          class={
+                            errors.capacity !== undefined
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                          id="basic-default-name"
+                          placeholder="Enter Capacity"
+                          required=""
+                        />
+                        {errors?.capacity &&
+                        errors.capacity.type &&
+                        errors.capacity.type === "required" ? (
+                          <p className="text-danger" role="alert">
+                            Capacity is required
+                          </p>
+                        ) : null}
+                        <label htmlFor="basic-default-name">
+                          Capacity
+                        </label>
+                      </div>
+                      <div class="form-floating form-floating-outline mb-4">
+                        <input
                           {...register("moto", {
                             required: "Moto is required",
                             maxLength: 50,
@@ -534,77 +690,46 @@ function Add(props) {
                           Moto
                         </label>
                       </div>
-                      {/* stream */}
+                  
+                      
                       <div class="form-floating form-floating-outline mb-4">
-                        <select
-                          class={
-                            errors.stream !== undefined
-                              ? "is-invalid form-control"
-                              : "form-select"
-                          }
-                          id="stream"
-                          required=""
-                          {...register("stream", {
-                            required: "stream is required",
-                          })}
-                        >
-                          <option value="">Select Stream</option>
-                          {streams.length > 0
-                            ? streams.map((stream, index) => {
-                                return (
-                                  <>
-                                    <option value={stream.id}>
-                                      {stream.name}
-                                    </option>
-                                  </>
-                                );
-                              })
-                            : null}
-                        </select>
-                        {errors?.stream &&
-                        errors.stream.type &&
-                        errors.stream.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Stream is required
-                          </p>
-                        ) : null}
+                        <Select
+                          className="form-control"
+                          options={streams ? streams : []}
+                          isMulti
+                          onChange={(e) => {
+                            setSelectedStream(e);
+                            console.log(e);
+                          }}
+                          styles={{
+                            control: (baseStyles, state) => ({
+                              ...baseStyles,
+                              //borderColor: state.isFocused ? "grey" : "",
+                            }),
+                          }}
+                        />
                         <label htmlFor="basic-default-country">Stream</label>
                       </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <select
-                          class={
-                            errors.subject !== undefined
-                              ? "is-invalid form-control"
-                              : "form-select"
-                          }
-                          id="subject"
-                          required=""
-                          {...register("subject", {
-                            required: "subject is required",
-                          })}
-                        >
-                          <option value="">Select Subject</option>
-                          {subjects.length > 0
-                            ? subjects.map((subject, index) => {
-                                return (
-                                  <>
-                                    <option value={subject.id}>
-                                      {subject.name}
-                                    </option>
-                                  </>
-                                );
-                              })
-                            : null}
-                        </select>
-                        {errors?.subject &&
-                        errors.subject.type &&
-                        errors.subject.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Subject is required
-                          </p>
-                        ) : null}
+                         <div class="form-floating form-floating-outline mb-4">
+                        <Select
+                          className="form-control"
+                          options={subjects ? subjects : []}
+                          isMulti
+                          onChange={(e) => {
+                            setSelectedSubjects(e);
+                            console.log(e);
+                          }}
+                          styles={{
+                            control: (baseStyles, state) => ({
+                              ...baseStyles,
+                              //borderColor: state.isFocused ? "grey" : "",
+                            }),
+                          }}
+                        />
                         <label htmlFor="basic-default-country">Subject</label>
                       </div>
+                      
+                   
                       <div class="form-floating form-floating-outline mb-4">
                         <textarea
                           {...register("bio", {

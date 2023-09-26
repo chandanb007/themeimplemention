@@ -57,8 +57,8 @@ function Login() {
   }, []);
   return (
     <div className="position-relative">
-      <div className="authentication-wrapper authentication-basic container-p-y">
-        <div className="authentication-inner py-4">
+      <div className="authentication-wrapper loginFormSection authentication-basic container-p-y">
+        <div className="authentication-inner loginFormWrapper py-4">
           <div className="card p-2">
             <div className="app-brand justify-content-center mt-5">
               <a href="index.html" className="app-brand-link gap-2">
@@ -92,7 +92,7 @@ function Login() {
                 id="formAuthentication"
                 className="mb-3"
               >
-                <div className="form-floating form-floating-outline mb-3">
+                <div className="form-floating form-floating-outline mb-3 formOutline">
                   <input
                     type="text"
                     className={
@@ -118,7 +118,7 @@ function Login() {
                 </div>
                 <div className="mb-3">
                   <div className="form-password-toggle">
-                    <div className="input-group input-group-merge">
+                    <div className="input-group input-group-merge formOutline">
                       <div className="form-floating form-floating-outline">
                         <input
                           {...register("password", {
@@ -201,7 +201,7 @@ function Login() {
                 <br />
                 <div className="mb-3">
                   <button
-                    className="btn btn-primary d-grid w-100"
+                    className="btn btn-primary btn-login d-grid w-100"
                     type="submit"
                   >
                     Sign in

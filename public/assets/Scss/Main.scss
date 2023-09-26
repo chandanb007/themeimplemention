@@ -1,0 +1,73 @@
+.loginFormSection {
+    background-color: #fff;
+    background-image: url(https://img.freepik.com/free-vector/white-abstract-background-design_23-2148825582.jpg);
+    background-size: cover;
+    background-image: linear-gradient(135deg, #f6f9ff 0%, #d6e6ff 100%);
+
+    .loginFormWrapper {
+        .card {
+            border-radius: 14px !important;
+            box-shadow: 0 0.375rem 1rem 0 rgba(58, 53, 65, 0.22) !important;
+
+            .card-body {
+                h4 {
+                    font-weight: 700 !important;
+                    color: #000 !important;
+                }
+
+                p {
+                    color: #000 !important;
+                }
+
+                .btn-login {
+                    border-radius: 4px;
+                    padding: 12px 0px;
+                    font-weight: 700;
+                }
+
+                #formAuthentication {
+                    .formOutline {
+                        border: 1px solid #9055fd !important;
+                        border-radius: 8px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+#layout-menu {
+    background-color: #FFF !important;
+    box-shadow: 0 0.375rem 1rem 0 rgba(58, 53, 65, 0.12);
+    border-right: 0.5px solid #9055fd;
+
+    .app-brand {
+        border-bottom: 1px solid #e8e8e8 !important;
+        padding: 0px 17px;
+    }
+
+    .menu-inner {
+        .menu-item {
+            border-bottom: 1px solid #e8e8e8 !important;
+        }
+    }
+}
+.breadcrumWrapper{
+    .brreadCrumText{
+        font-size: 12px;
+        font-weight: 500 !important;
+        color: #000 !important;
+    }
+}
+.headerBorderBottom{
+    border-bottom: 1px solid #9055fd;
+}
+
+@media only screen and (min-width: 280px) and (max-width: 1200px) {
+    #layout-menu.resMenu {
+        width: 16.25rem !important;
+        left: 16.25rem !important;
+        z-index: 99999999 !important;
+        position: relative !important;
+    }
+}

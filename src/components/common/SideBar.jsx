@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink, Navigate } from "react-router-dom";
 import HttpHelper from "../../services/HttpHelper";
 import Cookies from "js-cookie";
@@ -60,7 +60,12 @@ function SideBar(props) {
           </span>
         </NavLink>
 
-        <a href="#" className="layout-menu-toggle menu-link text-large ms-auto">
+        <a href="#" className="layout-menu-toggle menu-link text-large ms-auto" onClick={()=>{
+            var getId = document.getElementById('layout-menu');
+            if(getId){
+              getId.classList.toggle('resMenu');
+            }
+          }}>
           <i className="mdi menu-toggle-icon d-xl-block align-middle mdi-20px"></i>
         </a>
       </div>

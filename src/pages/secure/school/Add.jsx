@@ -10,13 +10,13 @@ import Tags from "@yaireo/tagify/dist/react.tagify"; // React-wrapper file
 import "@yaireo/tagify/dist/tagify.css"; // Tagify CSS
 import { compose, withProps } from "recompose";
 import Select from "react-select";
-
+import "leaflet/dist/leaflet.css";
+import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
 function Add(props) {
-  const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
-  ];
+  //[51.505, -0.09]
+  const icon = L.icon({ iconUrl: "/logo-transprent.png" });
+  const [position, setPosition] = useState([]);
   const { notify, showLoader } = useAuth();
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [counties, setCounties] = useState({});
@@ -148,15 +148,16 @@ function Add(props) {
   const onChangeStream = useCallback((e) => {
     setSelectedStreams({ ...selectSteams, e });
   }, []);
-  const onChangeSubject = useCallback((e) => {
-    setSelectedSubjects({ ...selectSubjects, e });
-  }, []);
+  // const onChangeSubject = useCallback((e) => {
+  //   setSelectedSubjects({ ...selectSubjects, e });
+  // }, []);
 
   const getGeoLocation = () => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(function (position) {
         setLat(position.coords.latitude);
         setLong(position.coords.longitude);
+        setPosition([position.coords.latitude, position.coords.longitude]);
       });
     } else {
       notify("error", "Location data is required");
@@ -168,8 +169,10 @@ function Add(props) {
       <Wrapper breakCrum="Dashboard/Add School">
         <div className="content-wrapper">
           <div className="container-xxl flex-grow-1 container-p-y mt-5">
-            <h4 class="py-3 mb-4">
-              <span class="text-muted fw-light">School /</span> Add
+            <h4 class="py-3 mb-4 breadcrumWrapper">
+              <span class="text-muted fw-light brreadCrumText">
+                School /Add
+              </span>
             </h4>
             <div className="row gy-4">
               <div class="col-md mb-4 mb-md-0">
@@ -245,6 +248,7 @@ function Add(props) {
                               setSelectedGrads(e);
                               console.log(e);
                             }}
+                            placeholder="Select Grades"
                             styles={{
                               control: (baseStyles, state) => ({
                                 ...baseStyles,
@@ -261,7 +265,11 @@ function Add(props) {
                             className="form-control"
                             options={subjects ? subjects : []}
                             isMulti
-                            onChange={onChangeSubject}
+                            placeholder="Select Subjects"
+                            onChange={(e) => {
+                              setSelectedSubjects(e);
+                              console.log(e);
+                            }}
                             styles={{
                               control: (baseStyles, state) => ({
                                 ...baseStyles,
@@ -278,7 +286,10 @@ function Add(props) {
                             className="form-control"
                             options={streams ? streams : []}
                             isMulti
-                            onChange={onChangeStream}
+                            placeholder="Select Streams"
+                            onChange={(e) => {
+                              setSelectedStreams(e);
+                            }}
                             styles={{
                               control: (baseStyles, state) => ({
                                 ...baseStyles,
@@ -301,7 +312,7 @@ function Add(props) {
                               : "form-control"
                           }
                           id="basic-default-name"
-                          placeholder="John Doe"
+                          placeholder="Enter School Name"
                           required=""
                         />
                         {errors?.first_name &&
@@ -326,7 +337,7 @@ function Add(props) {
                               ? "is-invalid form-control"
                               : "form-control"
                           }
-                          placeholder="john.doe"
+                          placeholder="Enter Offical Email Address"
                           required=""
                         />
 
@@ -357,7 +368,7 @@ function Add(props) {
                                   ? "is-invalid form-control"
                                   : "form-control"
                               }
-                              placeholder=""
+                              placeholder="Enter Offical Mobile Number"
                               aria-describedby="basic-default-password3"
                               required=""
                             />
@@ -395,6 +406,7 @@ function Add(props) {
                       </div>
                       <div class="form-floating form-floating-outline mb-4">
                         <select
+                          placeholder="Select County"
                           class={
                             errors.county !== undefined
                               ? "is-invalid form-control"
@@ -426,7 +438,7 @@ function Add(props) {
                             County is required
                           </p>
                         ) : null}
-                        <label htmlFor="basic-default-country">Country</label>
+                        <label htmlFor="basic-default-country">County</label>
                       </div>
                       <div class="mb-4 form-password-toggle">
                         <div class="input-group input-group-merge">
@@ -442,7 +454,7 @@ function Add(props) {
                               })}
                               type="text"
                               id="basic-default-password"
-                              placeholder=""
+                              placeholder="Enter Town Name"
                               aria-describedby="basic-default-password3"
                               required=""
                             />
@@ -476,7 +488,7 @@ function Add(props) {
                               })}
                               type="text"
                               id="basic-default-password"
-                              placeholder=""
+                              placeholder="Enter Estate Name"
                               aria-describedby="basic-default-password3"
                               required=""
                             />
@@ -513,7 +525,7 @@ function Add(props) {
                                   ? "is-invalid form-control"
                                   : "form-control"
                               }
-                              placeholder=""
+                              placeholder="Enter Building Number"
                               aria-describedby="basic-default-password3"
                               required=""
                             />
@@ -534,7 +546,30 @@ function Add(props) {
                           ></span>
                         </div>
                       </div>
-                      <div className="row col-sm-12">
+                      {position && position.length > 0 ? (
+                        <div class="mb-4 form-password-toggle col-sm-12">
+                          <div class="input-group input-group-merge">
+                            <label htmlFor="basic-default-password">
+                              Your current Location :
+                            </label>
+                            <MapContainer
+                              center={position}
+                              zoom={13}
+                              scrollWheelZoom={false}
+                            >
+                              <TileLayer
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                              />
+                              <Marker position={position} icon={icon}>
+                                <Popup>Your current location.</Popup>
+                              </Marker>
+                            </MapContainer>
+                          </div>
+                        </div>
+                      ) : null}
+
+                      <div className="row col-sm-12 d-none">
                         <div class="mb-4 form-password-toggle col-sm-6">
                           <div class="input-group input-group-merge">
                             <div class="form-floating form-floating-outline">
@@ -623,7 +658,7 @@ function Add(props) {
                               ? "is-invalid form-control h-px-75"
                               : "form-control h-px-75"
                           }
-                          placeholder="Your school Moto"
+                          placeholder="Enter Your School Moto"
                         />
                         {(errors?.bio &&
                           errors.bio.type &&

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink, Navigate } from "react-router-dom";
 import HttpHelper from "../../services/HttpHelper";
 import Cookies from "js-cookie";
@@ -8,8 +8,9 @@ import { useAuth } from "../../context/AuthContext";
 
 function SideBar(props) {
   const { showLoader } = useAuth();
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const [user, setUser] = useState();
   const navigate = useNavigate();
+
   const menuToggle = (e) => {
     var obj = e.currentTarget;
     if (obj) obj.classList.add("menu-item-animating");
@@ -33,9 +34,19 @@ function SideBar(props) {
       })
       .catch((error) => {
         showLoader(false);
+        navigate("/");
+        Cookies.remove("XSRF-TOKEN");
+        sessionStorage.removeItem("user");
         console.log(error);
       });
   };
+  useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (user == null) {
+      navigate("/");
+    }
+    setUser(JSON.parse(sessionStorage.getItem("user")));
+  }, []);
   return (
     <aside
       id="layout-menu"
@@ -60,18 +71,22 @@ function SideBar(props) {
           </span>
         </NavLink>
 
-        <a href="#" className="layout-menu-toggle menu-link text-large ms-auto" onClick={()=>{
-            var getId = document.getElementById('layout-menu');
-            if(getId){
-              getId.classList.toggle('resMenu');
+        <a
+          href="#"
+          className="layout-menu-toggle menu-link text-large ms-auto"
+          onClick={() => {
+            var getId = document.getElementById("layout-menu");
+            if (getId) {
+              getId.classList.toggle("resMenu");
             }
-          }}>
+          }}
+        >
           <i className="mdi menu-toggle-icon d-xl-block align-middle mdi-20px"></i>
         </a>
       </div>
 
       <div className="menu-inner-shadow" style={{ display: "none" }}></div>
-      {user.user.role_id == UserRolesEnum.SCHOOL ? (
+      {user && user.user.role_id == UserRolesEnum.SCHOOL ? (
         <ul className="menu-inner py-1 ps ps--active-y">
           <li
             class="menu-item"

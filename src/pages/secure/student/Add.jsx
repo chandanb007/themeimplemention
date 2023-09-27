@@ -7,7 +7,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import AddParentModal from "./AddParentModal";
 import { useAuth } from "../../../../src/context/AuthContext";
-import Select from "react-select";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function Add(props) {
   const { notify, showLoader } = useAuth();
@@ -22,6 +23,7 @@ function Add(props) {
   const [gradeCategories, setGradeCategories] = useState({});
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedGrads, setSelectedGrads] = useState(null);
+  const [startDate, setStartDate] = useState(new Date());
 
   const getStreams = async () => {
     showLoader(true);
@@ -161,8 +163,10 @@ function Add(props) {
       <Wrapper breakCrum="Dashboard/Add Student">
         <div className="content-wrapper">
           <div className="container-xxl flex-grow-1 container-p-y mt-5">
-            <h4 class="py-3 mb-4">
-              <span class="text-muted fw-light">Student /</span> Add
+            <h4 class="py-3 mb-4 breadcrumWrapper">
+              <span class="text-muted fw-light brreadCrumText">
+                Student /Add
+              </span>
             </h4>
             <div className="row gy-4">
               <div class="col-md mb-4 mb-md-0">
@@ -188,111 +192,115 @@ function Add(props) {
                       class="browser-default-validation"
                       onSubmit={handleSubmit(onSubmit)}
                     >
-                      <div class="form-floating form-floating-outline mb-4">
-                        <input
-                          defaultValue={user.user.first_name}
-                          disabled={true}
-                          type="email"
-                          id="basic-default-email"
-                          class="form-control"
-                          placeholder="School Name"
-                          required=""
-                        />
+                      <div className="row">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
+                          <input
+                            defaultValue={user.user.first_name}
+                            disabled={true}
+                            type="email"
+                            id="basic-default-email"
+                            class="form-control"
+                            placeholder="Enter School Name"
+                            required=""
+                          />
 
-                        <label htmlFor="basic-default-email">School Name</label>
-                        {errors?.email &&
-                        errors.email.type &&
-                        errors.email.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Email is required
-                          </p>
-                        ) : null}
+                          <label htmlFor="basic-default-email">
+                            School Name
+                          </label>
+                          {errors?.email &&
+                          errors.email.type &&
+                          errors.email.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Email is required
+                            </p>
+                          ) : null}
+                        </div>
+                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
+                          <input
+                            {...register("first_name", {
+                              required: "First Name is required",
+                              maxLength: 50,
+                            })}
+                            type="text"
+                            class={
+                              errors.first_name !== undefined
+                                ? "is-invalid form-control"
+                                : "form-control"
+                            }
+                            id="basic-default-name"
+                            placeholder="Enter First Name"
+                            required=""
+                          />
+                          {errors?.first_name &&
+                          errors.first_name.type &&
+                          errors.first_name.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              First Name is required
+                            </p>
+                          ) : null}
+                          <label htmlFor="basic-default-name">
+                            Student First Name
+                          </label>
+                        </div>
+                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
+                          <input
+                            {...register("last_name", {
+                              required: "Last Name is required",
+                              maxLength: 50,
+                            })}
+                            type="text"
+                            class={
+                              errors.last_name !== undefined
+                                ? "is-invalid form-control"
+                                : "form-control"
+                            }
+                            id="basic-default-name"
+                            placeholder="Enter Last Name"
+                            required=""
+                          />
+                          {errors?.last_name &&
+                          errors.last_name.type &&
+                          errors.last_name.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Last Name is required
+                            </p>
+                          ) : null}
+                          <label htmlFor="basic-default-name">
+                            Student Last Name
+                          </label>
+                        </div>
                       </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <input
-                          {...register("first_name", {
-                            required: "First Name is required",
-                            maxLength: 50,
-                          })}
-                          type="text"
-                          class={
-                            errors.first_name !== undefined
-                              ? "is-invalid form-control"
-                              : "form-control"
-                          }
-                          id="basic-default-name"
-                          placeholder="John Doe"
-                          required=""
-                        />
-                        {errors?.first_name &&
-                        errors.first_name.type &&
-                        errors.first_name.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            First Name is required
-                          </p>
-                        ) : null}
-                        <label htmlFor="basic-default-name">
-                          Student First Name
-                        </label>
-                      </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <input
-                          {...register("last_name", {
-                            required: "Last Name is required",
-                            maxLength: 50,
-                          })}
-                          type="text"
-                          class={
-                            errors.last_name !== undefined
-                              ? "is-invalid form-control"
-                              : "form-control"
-                          }
-                          id="basic-default-name"
-                          placeholder="John Doe"
-                          required=""
-                        />
-                        {errors?.last_name &&
-                        errors.last_name.type &&
-                        errors.last_name.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Last Name is required
-                          </p>
-                        ) : null}
-                        <label htmlFor="basic-default-name">
-                          Student Last Name
-                        </label>
-                      </div>
-                      <div className="row col-sm-12">
-                        <div class="form-floating form-floating-outline mb-4 col-sm-2">
+
+                      <div className="row">
+                        <div class="col-sm-4">
                           <label>Gender</label>
-                        </div>
-                        <div class="form-floating form-floating-outline mb-4 col-sm-2">
-                          <div class="form-check mt-2">
-                            <label class="form-check-label">
-                              <input
-                                name="default-radio-1"
-                                class="form-check-input"
-                                type="radio"
-                                value="1"
-                              />
-                              Male
-                            </label>
+                          <div class="form-floating form-floating-outline mb-4">
+                            <div class="form-check mt-2">
+                              <label
+                                class="form-check-label"
+                                style={{ marginRight: "35px" }}
+                              >
+                                <input
+                                  name="default-radio-1"
+                                  class="form-check-input"
+                                  type="radio"
+                                  value="1"
+                                />
+                                Male
+                              </label>
+                              <label class="form-check-label">
+                                <input
+                                  name="default-radio-1"
+                                  class="form-check-input"
+                                  type="radio"
+                                  value="1"
+                                />
+                                Female{" "}
+                              </label>
+                            </div>
                           </div>
                         </div>
-                        <div class="form-floating form-floating-outline mb-4 col-sm-2">
-                          <div class="form-check mt-2">
-                            <label class="form-check-label">
-                              <input
-                                name="default-radio-1"
-                                class="form-check-input"
-                                type="radio"
-                                value="1"
-                              />
-                              Female{" "}
-                            </label>
-                          </div>
-                        </div>
-                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
                           <div class="mb-4 form-password-toggle">
                             <div class="input-group input-group-merge">
                               <div class="form-floating form-floating-outline">
@@ -330,46 +338,56 @@ function Add(props) {
                             ) : null}
                           </div>
                         </div>
-                      </div>
-                      <div className="row col-sm-12">
-                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
-                          <div class="mb-4 form-password-toggle">
-                            <div class="input-group input-group-merge">
-                              <div class="form-floating form-floating-outline">
-                                <input
-                                  type="date"
-                                  class={
-                                    errors.dob !== undefined
-                                      ? "is-invalid form-control"
-                                      : "form-control"
-                                  }
-                                  {...register("dob", {
-                                    required: "admission number is required",
-                                  })}
-                                  id="basic-default-password"
-                                  placeholder="Enter admission number"
-                                  aria-describedby="basic-default-password3"
-                                  required=""
-                                />
+                        <div className="col-sm-4">
+                          <div class="form-floating form-floating-outline mb-4">
+                            <div class="mb-4 form-password-toggle">
+                              <div class="input-group input-group-merge">
+                                <div class="form-floating form-floating-outline">
+                                  <DatePicker
+                                    maxDate={new Date()}
+                                    //className="form-control"
+                                    selected={startDate}
+                                    placeholderText="Select Date"
+                                    onChange={(date) => setStartDate(date)}
+                                  />
+                                  {/* <input
+                                    type="date"
+                                    class={
+                                      errors.dob !== undefined
+                                        ? "is-invalid form-control"
+                                        : "form-control"
+                                    }
+                                    {...register("dob", {
+                                      required: "admission number is required",
+                                    })}
+                                    id="basic-default-password"
+                                    placeholder="Enter admission number"
+                                    aria-describedby="basic-default-password3"
+                                    required=""
+                                  /> */}
 
-                                <label htmlFor="basic-default-password">
-                                  Date of birth
-                                </label>
+                                  <label htmlFor="basic-default-password">
+                                    Date of birth
+                                  </label>
+                                </div>
+                                <span
+                                  class="input-group-text cursor-pointer"
+                                  id="basic-default-password3"
+                                ></span>
                               </div>
-                              <span
-                                class="input-group-text cursor-pointer"
-                                id="basic-default-password3"
-                              ></span>
+                              {errors?.dob &&
+                              errors.dob.type &&
+                              errors.dob.type === "required" ? (
+                                <p className="text-danger" role="alert">
+                                  Date of Birth is required
+                                </p>
+                              ) : null}
                             </div>
-                            {errors?.dob &&
-                            errors.dob.type &&
-                            errors.dob.type === "required" ? (
-                              <p className="text-danger" role="alert">
-                                Date of Birth is required
-                              </p>
-                            ) : null}
                           </div>
                         </div>
+                      </div>
+
+                      <div className="row">
                         <div class="form-floating form-floating-outline mb-4 col-sm-6">
                           <div class="form-floating form-floating-outline mb-4">
                             <select
@@ -424,8 +442,6 @@ function Add(props) {
                             </span>
                           </div>
                         </div>
-                      </div>
-                      <div className="row">
                         <div class="form-floating form-floating-outline mb-4 col-sm-6">
                           <select
                             class={

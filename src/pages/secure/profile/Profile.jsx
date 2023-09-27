@@ -62,8 +62,8 @@ function Profile(props) {
       <Wrapper breakCrum="Dashboard/home">
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y mt-5">
-            <h4 class="py-3 mb-4">
-              <span class="text-muted fw-light">User /</span> Edit Account
+            <h4 class="mb-4 breadcrumWrapper">
+              <span class="text-muted fw-light brreadCrumText">User /</span> Edit Account
             </h4>
             <div class="row">
               <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">

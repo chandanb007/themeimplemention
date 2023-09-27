@@ -23,7 +23,9 @@ function Add(props) {
   const [gradeCategories, setGradeCategories] = useState({});
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedGrads, setSelectedGrads] = useState(null);
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(
+    new Date().setMonth(new Date().getMonth() - 30)
+  );
 
   const getStreams = async () => {
     showLoader(true);
@@ -344,7 +346,7 @@ function Add(props) {
                               <div class="input-group input-group-merge">
                                 <div class="form-floating form-floating-outline">
                                   <DatePicker
-                                    maxDate={new Date()}
+                                    maxDate={startDate}
                                     //className="form-control"
                                     selected={startDate}
                                     placeholderText="Select Date"

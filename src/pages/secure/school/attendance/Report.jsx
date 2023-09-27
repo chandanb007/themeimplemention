@@ -54,8 +54,8 @@ function Add(props) {
       <Wrapper breakCrum="Dashboard/Add School">
         <div className="content-wrapper">
           <div className="container-xxl flex-grow-1 container-p-y mt-5">
-            <h4 class="py-3 mb-4">
-              <span class="text-muted fw-light">School /</span> Add
+            <h4 class="mb-4 breadcrumWrapper">
+              <span class="text-muted fw-light brreadCrumText">School /</span> Add
             </h4>
             <div className="row gy-4">
               <div class="col-md mb-4 mb-md-0">

@@ -61,7 +61,7 @@ function Add(props) {
               <div class="col-md mb-4 mb-md-0">
                 <div class="card">
                   <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Basic Details</h5>
+                    <h6 class="mb-0">Basic Details</h6>
                     <small class="text-muted float-end">Basic Details</small>
                   </div>
                   <div class="card-body">

@@ -6,11 +6,22 @@ import UserRolesEnum from "../../../../Enums/UserRolesEnum";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../context/AuthContext";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { Calendar } from "react-date-range";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function Add(props) {
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const { notify, showLoader } = useAuth();
   const [errorMsgs, setErrorMsgs] = useState(null);
   const [counties, setCounties] = useState({});
+  const [gradeCategories, setGradeCategories] = useState({});
+  const [grads, setGrades] = useState({});
+  const [attendanceData, setAttendanceData] = useState({});
+  const currentDate = new Date().toLocaleString();
+  const [startDate, setStartDate] = useState(new Date());
   const getCounties = async () => {
     showLoader(true);
     await HttpHelper.get("lookups/counties")
@@ -31,11 +42,9 @@ function Add(props) {
   } = useForm();
   const onSubmit = async (data) => {
     showLoader(true);
-    data.role_id = UserRolesEnum.SCHOOL;
-    await HttpHelper.post("signup", data, "multipart/form-data")
+    await HttpHelper.get("attendance/search", data)
       .then((response) => {
-        notify("success", "School added successfully");
-        navigate("/school/list");
+        setAttendanceData(response.data.data);
         showLoader(false);
       })
       .catch((error) => {
@@ -47,23 +56,55 @@ function Add(props) {
       });
   };
   useEffect(() => {
-    getCounties();
+    getGradeCategories();
+    getSchoolGrads();
   }, []);
+  const getGradeCategories = async () => {
+    showLoader(true);
+    await HttpHelper.get("lookups/gradeCategories")
+      .then((response) => {
+        setGradeCategories(response.data.data);
+        showLoader(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getSchoolGrads = async () => {
+    await HttpHelper.get("user/school/getGrads/" + user.user.id + "/true")
+      .then((response) => {
+        debugger;
+        setGrades(response.data.data);
+        var data = response.data.data;
+        for (var i = 0; i < data.length; i++) {
+          console.log(data[i][i]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleSelect = (date) => {
+    console.log(date); // native Date object
+  };
+  const selectionRange = {
+    startDate: new Date(),
+    endDate: new Date().setDate(new Date().getDate() + 5),
+    key: "selection",
+  };
   return (
     <>
       <Wrapper breakCrum="Dashboard/Add School">
         <div className="content-wrapper">
           <div className="container-xxl flex-grow-1 container-p-y mt-5">
-            <h4 class="py-3 mb-4">
-              <span class="text-muted fw-light">School /</span> Add
+            <h4 class="py-3 mb-4 breadcrumWrapper">
+              <span class="text-muted fw-light brreadCrumText">
+                Attendance / Add
+              </span>{" "}
             </h4>
             <div className="row gy-4">
               <div class="col-md mb-4 mb-md-0">
                 <div class="card">
-                  <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0">Basic Details</h6>
-                    <small class="text-muted float-end">Basic Details</small>
-                  </div>
                   <div class="card-body">
                     {errorMsgs !== null && errorMsgs?.errors ? (
                       <div class="alert alert-danger" role="alert">
@@ -81,359 +122,131 @@ function Add(props) {
                       class="browser-default-validation"
                       onSubmit={handleSubmit(onSubmit)}
                     >
-                      <div class="form-floating form-floating-outline mb-4">
-                        <input
-                          {...register("first_name", {
-                            required: "Name is required",
-                            maxLength: 50,
-                          })}
-                          type="text"
-                          class={
-                            errors.name !== undefined
-                              ? "is-invalid form-control"
-                              : "form-control"
-                          }
-                          id="basic-default-name"
-                          placeholder="John Doe"
-                          required=""
-                        />
-                        {errors?.first_name &&
-                        errors.first_name.type &&
-                        errors.first_name.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Name is required
-                          </p>
-                        ) : null}
-                        <label htmlFor="basic-default-name">School Name</label>
-                      </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <input
-                          {...register("email", {
-                            required: "Email is required",
-                            maxLength: 50,
-                          })}
-                          type="email"
-                          id="basic-default-email"
-                          class={
-                            errors.email !== undefined
-                              ? "is-invalid form-control"
-                              : "form-control"
-                          }
-                          placeholder="john.doe"
-                          required=""
-                        />
-
-                        <label htmlFor="basic-default-email">
-                          Offical Email Address
-                        </label>
-                        {errors?.email &&
-                        errors.email.type &&
-                        errors.email.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Email is required
-                          </p>
-                        ) : null}
-                      </div>
-                      <div class="mb-4 form-password-toggle">
-                        <div class="input-group input-group-merge">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              {...register("mobile", {
-                                required: "Mobile is required",
-                                minLength: 10,
-                                maxLength: 13,
-                              })}
-                              type="text"
-                              id="basic-default-password"
-                              class={
-                                errors.mobile !== undefined
-                                  ? "is-invalid form-control"
-                                  : "form-control"
-                              }
-                              placeholder=""
-                              aria-describedby="basic-default-password3"
-                              required=""
-                            />
-
-                            <label htmlFor="basic-default-password">
-                              Offical Mobile Number
-                            </label>
-                          </div>
-                          <span
-                            class="input-group-text cursor-pointer"
-                            id="basic-default-password3"
-                          ></span>
-                        </div>
-                        {errors?.mobile &&
-                        errors.mobile.type &&
-                        errors.mobile.type === "minLength" ? (
-                          <p className="text-danger" role="alert">
-                            Mobile number should atleast 10 digit long
-                          </p>
-                        ) : null}
-                        {errors?.mobile &&
-                        errors.mobile.type &&
-                        errors.mobile.type === "maxLength" ? (
-                          <p className="text-danger" role="alert">
-                            Mobile number should not be greater than 13 digits
-                          </p>
-                        ) : null}
-                        {errors?.mobile &&
-                        errors.mobile.type &&
-                        errors.mobile.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Mobile is required
-                          </p>
-                        ) : null}
-                      </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <select
-                          class={
-                            errors.county !== undefined
-                              ? "is-invalid form-control"
-                              : "form-select"
-                          }
-                          id="county"
-                          required=""
-                          {...register("county", {
-                            required: "County is required",
-                          })}
-                        >
-                          <option value="">Select County</option>
-                          {counties.length > 0
-                            ? counties.map((county, index) => {
-                                return (
-                                  <>
-                                    <option value={county.id}>
-                                      {county.name}
-                                    </option>
-                                  </>
-                                );
-                              })
-                            : null}
-                        </select>
-                        {errors?.county &&
-                        errors.county.type &&
-                        errors.county.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            County is required
-                          </p>
-                        ) : null}
-                        <label htmlFor="basic-default-country">Country</label>
-                      </div>
-                      <div class="mb-4 form-password-toggle">
-                        <div class="input-group input-group-merge">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              class={
-                                errors.town !== undefined
-                                  ? "is-invalid form-control"
-                                  : "form-control"
-                              }
-                              {...register("town", {
-                                required: "Town is required",
-                              })}
-                              type="text"
-                              id="basic-default-password"
-                              placeholder=""
-                              aria-describedby="basic-default-password3"
-                              required=""
-                            />
-
-                            <label htmlFor="basic-default-password">Town</label>
-                          </div>
-                          <span
-                            class="input-group-text cursor-pointer"
-                            id="basic-default-password3"
-                          ></span>
-                        </div>
-                        {errors?.town &&
-                        errors.town.type &&
-                        errors.town.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Town is required
-                          </p>
-                        ) : null}
-                      </div>
-                      <div class="mb-4 form-password-toggle">
-                        <div class="input-group input-group-merge">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              class={
-                                errors.estate !== undefined
-                                  ? "is-invalid form-control"
-                                  : "form-control"
-                              }
-                              {...register("estate", {
-                                required: "Estate is required",
-                              })}
-                              type="text"
-                              id="basic-default-password"
-                              placeholder=""
-                              aria-describedby="basic-default-password3"
-                              required=""
-                            />
-
-                            <label htmlFor="basic-default-password">
-                              Estate
-                            </label>
-                          </div>
-                          <span
-                            class="input-group-text cursor-pointer"
-                            id="basic-default-password3"
-                          ></span>
-                        </div>
-                        {errors?.estate &&
-                        errors.estate.type &&
-                        errors.estate.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Estate is required
-                          </p>
-                        ) : null}
-                      </div>
-                      <div class="mb-4 form-password-toggle">
-                        <div class="input-group input-group-merge">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              {...register("building", {
-                                required: false,
-                              })}
-                              type="text"
-                              id="basic-default-password"
-                              class={
-                                errors.building !== undefined
-                                  ? "is-invalid form-control"
-                                  : "form-control"
-                              }
-                              placeholder=""
-                              aria-describedby="basic-default-password3"
-                              required=""
-                            />
-                            {errors?.building &&
-                            errors.building.type &&
-                            errors.building.type === "required" ? (
-                              <p className="text-danger" role="alert">
-                                Building is required
-                              </p>
-                            ) : null}
-                            <label htmlFor="basic-default-password">
-                              Building
-                            </label>
-                          </div>
-                          <span
-                            class="input-group-text cursor-pointer"
-                            id="basic-default-password3"
-                          ></span>
-                        </div>
-                      </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <input
-                          {...register("file", {
-                            required: true,
-                          })}
-                          type="file"
-                          class={
-                            errors.file !== undefined
-                              ? "is-invalid form-control"
-                              : "form-control"
-                          }
-                          id="basic-default-upload-file"
-                          required=""
-                        />
-                        {errors?.file &&
-                        errors.file.type &&
-                        errors.file.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Profile image is required
-                          </p>
-                        ) : null}
-                        <label htmlFor="basic-default-upload-file">
-                          Profile image
-                        </label>
-                      </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <textarea
-                          {...register("bio", {
-                            required: true,
-                            minLength: 50,
-                            maxLength: 500,
-                          })}
-                          class={
-                            errors.bio !== undefined
-                              ? "is-invalid form-control h-px-75"
-                              : "form-control h-px-75"
-                          }
-                          placeholder="Your school bio"
-                        />
-                        {(errors?.bio &&
-                          errors.bio.type &&
-                          errors.bio?.type === "minLength") ||
-                        errors.bio?.type === "maxLength" ? (
-                          <p className="text-danger" role="alert">
-                            Bio can not be less than 50 charecter or greater
-                            then 500 charecters
-                          </p>
-                        ) : null}
-                        {errors?.bio &&
-                        errors.bio.type &&
-                        errors.bio.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Bio is required
-                          </p>
-                        ) : null}
-                        <label htmlFor="basic-default-bio">Bio</label>
-                      </div>
-                      <div class="mb-3">
-                        <div class="form-check">
-                          <input
-                            {...register("terms", {
-                              required: "This field is required",
+                      <div className="row col-sm-12">
+                        {/* <div class="form-floating form-floating-outline mb-4 col-sm-3">
+                          <select
+                            class={
+                              errors.county !== undefined
+                                ? "is-invalid form-control"
+                                : "form-select"
+                            }
+                            id="county"
+                            required=""
+                            {...register("category", {
+                              required: "Category is required",
                             })}
-                            type="checkbox"
-                            class="form-check-input"
-                            id="basic-default-checkbox"
-                          />
-                          <label
-                            class="form-check-label"
-                            htmlFor="basic-default-checkbox"
                           >
-                            Agree to our terms and conditions
+                            <option value="">Select Category</option>
+                            {gradeCategories.length > 0
+                              ? gradeCategories.map((category, index) => {
+                                  return (
+                                    <>
+                                      <option value={category.id}>
+                                        {category.name}
+                                      </option>
+                                    </>
+                                  );
+                                })
+                              : null}
+                          </select>
+                          {errors?.county &&
+                          errors.county.type &&
+                          errors.county.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Category is required
+                            </p>
+                          ) : null}
+                          <label htmlFor="basic-default-country">
+                            Category
                           </label>
-                        </div>
-                        {errors?.terms &&
-                        errors.terms.type &&
-                        errors.terms.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            This field is required
-                          </p>
-                        ) : null}
-                      </div>
-                      <div class="mb-3">
-                        <label class="switch switch-primary">
-                          <input
-                            {...register("emails_consent", {
-                              required: false,
+                        </div> */}
+                        <div class="form-floating form-floating-outline mb-4 col-sm-3">
+                          <select
+                            class={
+                              errors.grade !== undefined
+                                ? "is-invalid form-control"
+                                : "form-select"
+                            }
+                            id="grade"
+                            required=""
+                            {...register("grade_id", {
+                              required: "grade is required",
                             })}
-                            type="checkbox"
-                            class="switch-input"
+                          >
+                            <option value="">Select Grade</option>
+
+                            {console.log(grads)}
+                            {grads.length > 0
+                              ? grads.map((grad, index) => {
+                                  return (
+                                    <>
+                                      <option value={grad.grads[0].id}>
+                                        {grad.grads[0].name}
+                                      </option>
+                                    </>
+                                  );
+                                })
+                              : null}
+                          </select>
+                          {errors?.county &&
+                          errors.county.type &&
+                          errors.county.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Grade is required
+                            </p>
+                          ) : null}
+                          <label htmlFor="basic-default-country">Grade</label>
+                        </div>
+                        {/* <div class="form-floating form-floating-outline mb-4 col-sm-3">
+                          <input
+                            {...register("name", {
+                              required: "Name is required",
+                            })}
+                            type="text"
+                            class="form-control"
+                            placeholder="Student Name"
                             required=""
                           />
-                          <span class="switch-toggle-slider">
-                            <span class="switch-on"></span>
-                            <span class="switch-off"></span>
-                          </span>
-                          <span class="switch-label">
-                            Send me related emails
-                          </span>
-                        </label>
-                      </div>
-                      <div class="row">
-                        <div class="col-12">
+                          <label htmlFor="basic-default-email">Name</label>
+                          {errors?.name &&
+                          errors.name.type &&
+                          errors.name.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Name is required
+                            </p>
+                          ) : null}
+                          <label htmlFor="basic-default-country">Name</label>
+                        </div> */}
+                        <div class="form-floating form-floating-outline mb-4 col-sm-3">
+                          <DatePicker
+                            maxDate={new Date()}
+                            className="form-control"
+                            selected={startDate}
+                            placeholderText="Select Date"
+                            onChange={(date) => setStartDate(date)}
+                          />
+                          {/* <input
+                            type="date"
+                            required=""
+                            {...register("date", {
+                              required: "Date is required",
+                            })}
+                            className="form-control"
+                          /> */}
+                          {/* <label htmlFor="basic-default-country">Date</label> */}
+                        </div>
+                        {/* <div class="form-floating form-floating-outline mb-4 col-sm-2">
+                          <input type="date" className="form-control" />
+                          <label htmlFor="basic-default-country">
+                            End Date
+                          </label>
+                        </div> */}
+                        <div class="form-floating form-floating-outline mb-4 col-sm-3">
                           <button
                             type="submit"
                             class="btn btn-primary waves-effect waves-light"
                           >
-                            Submit
+                            Search
                           </button>
                         </div>
                       </div>
@@ -442,8 +255,72 @@ function Add(props) {
                 </div>
               </div>
             </div>
-            <Footer />
+            {attendanceData.length > 0 ? (
+              <div class="card">
+                <form>
+                  <h5 class="card-header">Students List</h5>
+                  <div class="table-responsive text-nowrap">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Student Name</th>
+                          {/* <th>Date</th> */}
+                          <th>Present</th>
+                          <th>Absent</th>
+                        </tr>
+                      </thead>
+                      <tbody class="table-border-bottom-0">
+                        {attendanceData.map((row) => {
+                          return (
+                            <tr class="table-default">
+                              <td>
+                                <img
+                                  width={30}
+                                  height={30}
+                                  src={row.profile.profile_picture}
+                                  alt="Avatar"
+                                  class="rounded-circle"
+                                />{" "}
+                                {row.first_name + " " + row.last_name}{" "}
+                              </td>
 
+                              {/* <td>
+                              <span class="badge bg-label-primary me-1">
+                                {currentDate}
+                              </span>
+                            </td> */}
+                              <td>
+                                <input
+                                  name={"ids[" + row.id + "]"}
+                                  type="radio"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  name={"ids[" + row.id + "]"}
+                                  type="radio"
+                                />
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    <div className="row">
+                      <div class="form-floating form-floating-outline ml-5 mb-4 col-sm-3">
+                        <button
+                          type="submit"
+                          class="btn btn-primary waves-effect waves-light customStyle"
+                        >
+                          Save Changes
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            ) : null}
+            <Footer />
             <div className="content-backdrop fade"></div>
           </div>
         </div>

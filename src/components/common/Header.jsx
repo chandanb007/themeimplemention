@@ -17,6 +17,9 @@ function Header(props) {
       })
       .catch((error) => {
         showLoader(false);
+        navigate("/");
+        Cookies.remove("XSRF-TOKEN");
+        sessionStorage.removeItem("user");
         console.log(error);
       });
   };

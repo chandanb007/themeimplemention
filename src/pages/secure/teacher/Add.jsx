@@ -653,46 +653,6 @@ function Add(props) {
                         <label htmlFor="basic-default-name">Moto</label>
                       </div> */}
                       <div className="row">
-                        {/* <div class="form-floating form-floating-outline mb-4 col-sm-6">
-                          <select
-                            class={
-                              errors.category_id !== undefined
-                                ? "is-invalid form-control"
-                                : "form-select"
-                            }
-                            id="county"
-                            required=""
-                            {...register("category_id", {
-                              required: "Category is required",
-                            })}
-                            onChange={(e) => {
-                              setSelectedCategory(e.currentTarget.value);
-                            }}
-                          >
-                            <option value="">Select Category</option>
-                            {gradeCategories.length > 0
-                              ? gradeCategories.map((gradeCategory, index) => {
-                                  return (
-                                    <>
-                                      <option value={gradeCategory.id}>
-                                        {gradeCategory.name}
-                                      </option>
-                                    </>
-                                  );
-                                })
-                              : null}
-                          </select>
-                          {errors?.category_id &&
-                          errors.category_id.type &&
-                          errors.category_id.type === "required" ? (
-                            <p className="text-danger" role="alert">
-                              Category is required
-                            </p>
-                          ) : null}
-                          <label htmlFor="basic-default-country">
-                            Category
-                          </label>
-                        </div> */}
                         <div class="form-floating form-floating-outline mb-4 col-sm-4">
                           <Select
                             className="form-control"

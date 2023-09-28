@@ -23,7 +23,10 @@ function Add(props) {
   const [gradeCategories, setGradeCategories] = useState({});
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedGrads, setSelectedGrads] = useState(null);
-  const [startDate, setStartDate] = useState(new Date());
+  const [dob, setDob] = useState(null);
+  const [startDate, setStartDate] = useState(
+    new Date().setMonth(new Date().getMonth() - 30)
+  );
 
   const getStreams = async () => {
     showLoader(true);
@@ -90,9 +93,11 @@ function Add(props) {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
+    debugger;
     showLoader(true);
     data.role_id = UserRolesEnum.STUDENT;
     data.school_id = user.user.id;
+    data.date_of_birth = dob;
     await HttpHelper.post("signup", data, "multipart/form-data")
       .then((response) => {
         notify("success", "Student added successfully");
@@ -284,7 +289,7 @@ function Add(props) {
                       </div>
 
                       <div className="row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                           <label>Gender</label>
                           <div class="form-floating form-floating-outline mb-4">
                             <div class="form-check mt-2">
@@ -293,26 +298,37 @@ function Add(props) {
                                 style={{ marginRight: "35px" }}
                               >
                                 <input
-                                  name="default-radio-1"
+                                  {...register("gender", {
+                                    required: "Gender is required",
+                                  })}
                                   class="form-check-input"
                                   type="radio"
-                                  value="1"
+                                  value="Male"
                                 />
                                 Male
                               </label>
                               <label class="form-check-label">
                                 <input
-                                  name="default-radio-1"
+                                  {...register("gender", {
+                                    required: "Gender is required",
+                                  })}
                                   class="form-check-input"
                                   type="radio"
-                                  value="1"
+                                  value="Female"
                                 />
                                 Female{" "}
                               </label>
+                              {errors?.gender &&
+                              errors.gender.type &&
+                              errors.gender.type === "required" ? (
+                                <p className="text-danger" role="alert">
+                                  Gender is required
+                                </p>
+                              ) : null}
                             </div>
                           </div>
                         </div>
-                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
+                        <div class="col-sm-6">
                           <div class="mb-4 form-password-toggle">
                             <div class="input-group input-group-merge">
                               <div class="form-floating form-floating-outline">
@@ -350,6 +366,8 @@ function Add(props) {
                             ) : null}
                           </div>
                         </div>
+                      </div>
+                      <div className="row">
                         <div className="col-sm-4">
                           <div class="form-floating form-floating-outline mb-4">
                             <div class="mb-4 form-password-toggle">
@@ -359,8 +377,21 @@ function Add(props) {
                                     maxDate={new Date()}
                                     className="form-control"
                                     selected={startDate}
-                                    placeholderText="Select Date"
-                                    onChange={(date) => setStartDate(date)}
+                                    placeholderText="Enter Date of Birth"
+                                    onChange={(date) => {
+                                      setStartDate(date);
+                                      var d = date.getDate();
+                                      var m = date.getMonth() + 1; //Month from 0 to 11
+                                      var y = date.getFullYear();
+                                      setDob(
+                                        "" +
+                                          y +
+                                          "-" +
+                                          (m <= 9 ? "0" + m : m) +
+                                          "-" +
+                                          (d <= 9 ? "0" + d : d)
+                                      );
+                                    }}
                                   />
                                   {/* <input
                                     type="date"
@@ -378,14 +409,10 @@ function Add(props) {
                                     required=""
                                   /> */}
 
-                                  <label htmlFor="basic-default-password">
+                                  {/* <label htmlFor="basic-default-password">
                                     Date of birth
-                                  </label>
+                                  </label> */}
                                 </div>
-                                <span
-                                  class="input-group-text cursor-pointer"
-                                  id="basic-default-password3"
-                                ></span>
                               </div>
                               {errors?.dob &&
                               errors.dob.type &&
@@ -397,10 +424,7 @@ function Add(props) {
                             </div>
                           </div>
                         </div>
-                      </div>
-
-                      <div className="row">
-                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-8">
                           <div class="form-floating form-floating-outline mb-4">
                             <select
                               class={
@@ -454,7 +478,9 @@ function Add(props) {
                             </span>
                           </div>
                         </div>
-                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                      </div>
+                      <div className="row">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
                           <select
                             class={
                               errors.category_id !== undefined
@@ -494,235 +520,239 @@ function Add(props) {
                             Category
                           </label>
                         </div>
-                        <div className="row col-sm-12">
-                          <div class="form-floating form-floating-outline mb-4 col-sm-6">
-                            <div class="mb-4 form-password-toggle">
-                              <div class="input-group input-group-merge">
-                                <div class="form-floating form-floating-outline">
-                                  <select
-                                    class={
-                                      errors.grade !== undefined
-                                        ? "is-invalid form-control"
-                                        : "form-select"
-                                    }
-                                    id="county"
-                                    required=""
-                                    {...register("grade", {
-                                      required: "Grade is required",
-                                    })}
-                                  >
-                                    <option value="">Select Grades</option>
-                                    {grads?.length > 0
-                                      ? grads.map((grad, index) => {
-                                          return (
-                                            <>
-                                              <option value={grad.value}>
-                                                {grad.label}
-                                              </option>
-                                            </>
-                                          );
-                                        })
-                                      : null}
-                                  </select>
-                                  {errors?.county &&
-                                  errors.county.type &&
-                                  errors.county.type === "required" ? (
-                                    <p className="text-danger" role="alert">
-                                      Grade is required
-                                    </p>
-                                  ) : null}
-                                  <label htmlFor="basic-default-country">
-                                    Grade
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="form-floating form-floating-outline mb-4 col-sm-6">
-                            <div class="mb-4 form-password-toggle">
-                              <div class="input-group input-group-merge">
-                                <div class="form-floating form-floating-outline">
-                                  <select
-                                    class={
-                                      errors.stream !== undefined
-                                        ? "is-invalid form-control"
-                                        : "form-select"
-                                    }
-                                    id="stream"
-                                    required=""
-                                    {...register("stream", {
-                                      required: "Stream is required",
-                                    })}
-                                  >
-                                    <option value="">Select Stream</option>
-                                    {streams.length > 0
-                                      ? streams.map((stream, index) => {
-                                          return (
-                                            <>
-                                              <option value={stream.value}>
-                                                {stream.label}
-                                              </option>
-                                            </>
-                                          );
-                                        })
-                                      : null}
-                                  </select>
-                                  {errors?.stream &&
-                                  errors.stream.type &&
-                                  errors.stream.type === "required" ? (
-                                    <p className="text-danger" role="alert">
-                                      Stream is required
-                                    </p>
-                                  ) : null}
-                                  <label htmlFor="basic-default-country">
-                                    Stream
-                                  </label>
-                                </div>
+
+                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
+                          <div class="mb-4 form-password-toggle">
+                            <div class="input-group input-group-merge">
+                              <div class="form-floating form-floating-outline">
+                                <select
+                                  class={
+                                    errors.grade !== undefined
+                                      ? "is-invalid form-control"
+                                      : "form-select"
+                                  }
+                                  id="county"
+                                  required=""
+                                  {...register("grade", {
+                                    required: "Grade is required",
+                                  })}
+                                >
+                                  <option value="">Select Grades</option>
+                                  {grads?.length > 0
+                                    ? grads.map((grad, index) => {
+                                        return (
+                                          <>
+                                            <option value={grad.value}>
+                                              {grad.label}
+                                            </option>
+                                          </>
+                                        );
+                                      })
+                                    : null}
+                                </select>
+                                {errors?.county &&
+                                errors.county.type &&
+                                errors.county.type === "required" ? (
+                                  <p className="text-danger" role="alert">
+                                    Grade is required
+                                  </p>
+                                ) : null}
+                                <label htmlFor="basic-default-country">
+                                  Grade
+                                </label>
                               </div>
                             </div>
                           </div>
                         </div>
+                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
+                          <div class="mb-4 form-password-toggle">
+                            <div class="input-group input-group-merge">
+                              <div class="form-floating form-floating-outline">
+                                <select
+                                  class={
+                                    errors.stream !== undefined
+                                      ? "is-invalid form-control"
+                                      : "form-select"
+                                  }
+                                  id="stream"
+                                  required=""
+                                  {...register("stream", {
+                                    required: "Stream is required",
+                                  })}
+                                >
+                                  <option value="">Select Stream</option>
+                                  {streams.length > 0
+                                    ? streams.map((stream, index) => {
+                                        return (
+                                          <>
+                                            <option value={stream.value}>
+                                              {stream.label}
+                                            </option>
+                                          </>
+                                        );
+                                      })
+                                    : null}
+                                </select>
+                                {errors?.stream &&
+                                errors.stream.type &&
+                                errors.stream.type === "required" ? (
+                                  <p className="text-danger" role="alert">
+                                    Stream is required
+                                  </p>
+                                ) : null}
+                                <label htmlFor="basic-default-country">
+                                  Stream
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <select
-                          class={
-                            errors.county !== undefined
-                              ? "is-invalid form-control"
-                              : "form-select"
-                          }
-                          id="county"
-                          required=""
-                          {...register("county", {
-                            required: "County is required",
-                          })}
-                        >
-                          <option value="">Select County</option>
-                          {counties.length > 0
-                            ? counties.map((county, index) => {
-                                return (
-                                  <>
-                                    <option value={county.id}>
-                                      {county.name}
-                                    </option>
-                                  </>
-                                );
-                              })
-                            : null}
-                        </select>
-                        {errors?.county &&
-                        errors.county.type &&
-                        errors.county.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            County is required
-                          </p>
-                        ) : null}
-                        <label htmlFor="basic-default-country">County</label>
-                      </div>
-                      <div class="mb-4 form-password-toggle">
-                        <div class="input-group input-group-merge">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              class={
-                                errors.town !== undefined
-                                  ? "is-invalid form-control"
-                                  : "form-control"
-                              }
-                              {...register("town", {
-                                required: "Town is required",
-                              })}
-                              type="text"
-                              id="basic-default-password"
-                              placeholder=""
-                              aria-describedby="basic-default-password3"
-                              required=""
-                            />
+                      <div className="row">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-3">
+                          <select
+                            class={
+                              errors.county !== undefined
+                                ? "is-invalid form-control"
+                                : "form-select"
+                            }
+                            id="county"
+                            required=""
+                            {...register("county", {
+                              required: "County is required",
+                            })}
+                          >
+                            <option value="">Select County</option>
+                            {counties.length > 0
+                              ? counties.map((county, index) => {
+                                  return (
+                                    <>
+                                      <option value={county.id}>
+                                        {county.name}
+                                      </option>
+                                    </>
+                                  );
+                                })
+                              : null}
+                          </select>
+                          {errors?.county &&
+                          errors.county.type &&
+                          errors.county.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              County is required
+                            </p>
+                          ) : null}
+                          <label htmlFor="basic-default-country">County</label>
+                        </div>
+                        <div class="mb-4 form-password-toggle  col-sm-3">
+                          <div class="input-group input-group-merge">
+                            <div class="form-floating form-floating-outline">
+                              <input
+                                class={
+                                  errors.town !== undefined
+                                    ? "is-invalid form-control"
+                                    : "form-control"
+                                }
+                                {...register("town", {
+                                  required: "Town is required",
+                                })}
+                                type="text"
+                                id="basic-default-password"
+                                placeholder=""
+                                aria-describedby="basic-default-password3"
+                                required=""
+                              />
 
-                            <label htmlFor="basic-default-password">Town</label>
+                              <label htmlFor="basic-default-password">
+                                Town
+                              </label>
+                            </div>
+                            <span
+                              class="input-group-text cursor-pointer"
+                              id="basic-default-password3"
+                            ></span>
                           </div>
-                          <span
-                            class="input-group-text cursor-pointer"
-                            id="basic-default-password3"
-                          ></span>
+                          {errors?.town &&
+                          errors.town.type &&
+                          errors.town.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Town is required
+                            </p>
+                          ) : null}
                         </div>
-                        {errors?.town &&
-                        errors.town.type &&
-                        errors.town.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Town is required
-                          </p>
-                        ) : null}
-                      </div>
-                      <div class="mb-4 form-password-toggle">
-                        <div class="input-group input-group-merge">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              class={
-                                errors.estate !== undefined
-                                  ? "is-invalid form-control"
-                                  : "form-control"
-                              }
-                              {...register("estate", {
-                                required: "Estate is required",
-                              })}
-                              type="text"
-                              id="basic-default-password"
-                              placeholder=""
-                              aria-describedby="basic-default-password3"
-                              required=""
-                            />
+                        <div class="mb-4 form-password-toggle  col-sm-3">
+                          <div class="input-group input-group-merge">
+                            <div class="form-floating form-floating-outline">
+                              <input
+                                class={
+                                  errors.estate !== undefined
+                                    ? "is-invalid form-control"
+                                    : "form-control"
+                                }
+                                {...register("estate", {
+                                  required: "Estate is required",
+                                })}
+                                type="text"
+                                id="basic-default-password"
+                                placeholder=""
+                                aria-describedby="basic-default-password3"
+                                required=""
+                              />
 
-                            <label htmlFor="basic-default-password">
-                              Estate
-                            </label>
+                              <label htmlFor="basic-default-password">
+                                Estate
+                              </label>
+                            </div>
+                            <span
+                              class="input-group-text cursor-pointer"
+                              id="basic-default-password3"
+                            ></span>
                           </div>
-                          <span
-                            class="input-group-text cursor-pointer"
-                            id="basic-default-password3"
-                          ></span>
+                          {errors?.estate &&
+                          errors.estate.type &&
+                          errors.estate.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Estate is required
+                            </p>
+                          ) : null}
                         </div>
-                        {errors?.estate &&
-                        errors.estate.type &&
-                        errors.estate.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Estate is required
-                          </p>
-                        ) : null}
-                      </div>
-                      <div class="mb-4 form-password-toggle">
-                        <div class="input-group input-group-merge">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              {...register("building", {
-                                required: false,
-                              })}
-                              type="text"
-                              id="basic-default-password"
-                              class={
-                                errors.building !== undefined
-                                  ? "is-invalid form-control"
-                                  : "form-control"
-                              }
-                              placeholder=""
-                              aria-describedby="basic-default-password3"
-                              required=""
-                            />
-                            {errors?.building &&
-                            errors.building.type &&
-                            errors.building.type === "required" ? (
-                              <p className="text-danger" role="alert">
-                                Building is required
-                              </p>
-                            ) : null}
-                            <label htmlFor="basic-default-password">
-                              Building
-                            </label>
+                        <div class="mb-4 form-password-toggle  col-sm-3">
+                          <div class="input-group input-group-merge">
+                            <div class="form-floating form-floating-outline">
+                              <input
+                                {...register("building", {
+                                  required: false,
+                                })}
+                                type="text"
+                                id="basic-default-password"
+                                class={
+                                  errors.building !== undefined
+                                    ? "is-invalid form-control"
+                                    : "form-control"
+                                }
+                                placeholder=""
+                                aria-describedby="basic-default-password3"
+                                required=""
+                              />
+                              {errors?.building &&
+                              errors.building.type &&
+                              errors.building.type === "required" ? (
+                                <p className="text-danger" role="alert">
+                                  Building is required
+                                </p>
+                              ) : null}
+                              <label htmlFor="basic-default-password">
+                                Building
+                              </label>
+                            </div>
+                            <span
+                              class="input-group-text cursor-pointer"
+                              id="basic-default-password3"
+                            ></span>
                           </div>
-                          <span
-                            class="input-group-text cursor-pointer"
-                            id="basic-default-password3"
-                          ></span>
                         </div>
                       </div>
+
                       <div class="form-floating form-floating-outline mb-4">
                         <input
                           {...register("file", {

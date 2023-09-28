@@ -56,7 +56,8 @@
 .breadcrumWrapper {
     font-size: 12px;
     font-weight: 500 !important;
-        color: #000 !important;
+    color: #000 !important;
+
     .brreadCrumText {
         font-size: 12px;
         font-weight: 500 !important;
@@ -92,6 +93,8 @@
 }
 
 .form-floating {
+    background-color: transparent;
+
     .form-control {
         height: calc(2.6rem + calc(var(--bs-border-width) * 2)) !important;
         min-height: calc(2.6rem + calc(var(--bs-border-width) * 2)) !important;
@@ -99,6 +102,7 @@
         font-size: 12px;
         border: 1px solid #e6e3e3;
     }
+
     select.form-select {
         height: calc(2.6rem + calc(var(--bs-border-width) * 2)) !important;
         min-height: calc(2.6rem + calc(var(--bs-border-width) * 2)) !important;
@@ -106,13 +110,34 @@
         font-size: 12px;
         border: 1px solid #e6e3e3;
     }
-    label{
+
+    label {
         font-size: 12px;
     }
+
+    .react-datepicker-wrapper {
+        +label {
+            display: none;
+        }
+
+        width: 100%;
+
+        input {
+            border-right: 0px;
+        }
+    }
+
+    .react-datepicker__tab-loop {
+        +label {
+            display: none;
+        }
+    }
 }
-.card-body{
-    form{
-        span.input-group-text{
+
+
+.card-body {
+    form {
+        span.input-group-text {
             border: 1px solid #e6e3e3;
         }
     }
@@ -123,16 +148,18 @@
     min-height: 46px !important;
     height: 46px !important;
 }
+
 .layout-wrapper:not(.layout-horizontal) {
     .menu-vertical {
         .menu-sub {
-            .menu-link{
+            .menu-link {
                 font-size: 12px;
             }
         }
     }
 }
-.menu-vertical .menu-item .menu-link > div:not(.badge){
+
+.menu-vertical .menu-item .menu-link>div:not(.badge) {
     padding-left: 9px;
     font-size: 14px;
 }

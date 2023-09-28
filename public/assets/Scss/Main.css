@@ -71,6 +71,9 @@
   margin-bottom: 20px;
 }
 
+.form-floating {
+  background-color: transparent;
+}
 .form-floating .form-control {
   height: calc(2.6rem + var(--bs-border-width) * 2) !important;
   min-height: calc(2.6rem + var(--bs-border-width) * 2) !important;
@@ -87,6 +90,18 @@
 }
 .form-floating label {
   font-size: 12px;
+}
+.form-floating .react-datepicker-wrapper {
+  width: 100%;
+}
+.form-floating .react-datepicker-wrapper + label {
+  display: none;
+}
+.form-floating .react-datepicker-wrapper input {
+  border-right: 0px;
+}
+.form-floating .react-datepicker__tab-loop + label {
+  display: none;
 }
 
 .card-body form span.input-group-text {

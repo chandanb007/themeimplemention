@@ -163,8 +163,10 @@ function Add(props) {
       <Wrapper breakCrum="Dashboard/Add Student">
         <div className="content-wrapper">
           <div className="container-xxl flex-grow-1 container-p-y mt-5">
-            <h4 class="mb-4 breadcrumWrapper">
-              <span class="text-muted fw-light brreadCrumText">Student /</span> Add
+            <h4 class="py-3 mb-4 breadcrumWrapper">
+              <span class="text-muted fw-light brreadCrumText">
+                Student /Add
+              </span>
             </h4>
             <div className="row gy-4">
               <div class="col-md mb-4 mb-md-0">
@@ -191,81 +193,93 @@ function Add(props) {
                       onSubmit={handleSubmit(onSubmit)}
                     >
                       <div className="row">
-                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
-                          <input
-                            defaultValue={user.user.first_name}
-                            disabled={true}
-                            type="email"
-                            id="basic-default-email"
-                            class="form-control"
-                            placeholder="Enter School Name"
-                            required=""
-                          />
+                        <div className="col-sm-4">
+                        <div className="input-group input-group-merge">
+                          <div class="form-floating form-floating-outline mb-4 col-sm-4">
+                            <input
+                              defaultValue={user.user.first_name}
+                              disabled={true}
+                              type="email"
+                              id="basic-default-email"
+                              class="form-control"
+                              placeholder="Enter School Name"
+                              required=""
+                            />
 
-                          <label htmlFor="basic-default-email">
-                            School Name
-                          </label>
-                          {errors?.email &&
-                          errors.email.type &&
-                          errors.email.type === "required" ? (
-                            <p className="text-danger" role="alert">
-                              Email is required
-                            </p>
-                          ) : null}
+                            <label htmlFor="basic-default-email">
+                              School Name
+                            </label>
+                            {errors?.email &&
+                            errors.email.type &&
+                            errors.email.type === "required" ? (
+                              <p className="text-danger" role="alert">
+                                Email is required
+                              </p>
+                            ) : null}
+                          </div>
                         </div>
-                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
-                          <input
-                            {...register("first_name", {
-                              required: "First Name is required",
-                              maxLength: 50,
-                            })}
-                            type="text"
-                            class={
-                              errors.first_name !== undefined
-                                ? "is-invalid form-control"
-                                : "form-control"
-                            }
-                            id="basic-default-name"
-                            placeholder="Enter First Name"
-                            required=""
-                          />
-                          {errors?.first_name &&
-                          errors.first_name.type &&
-                          errors.first_name.type === "required" ? (
-                            <p className="text-danger" role="alert">
-                              First Name is required
-                            </p>
-                          ) : null}
-                          <label htmlFor="basic-default-name">
-                            Student First Name
-                          </label>
                         </div>
-                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
-                          <input
-                            {...register("last_name", {
-                              required: "Last Name is required",
-                              maxLength: 50,
-                            })}
-                            type="text"
-                            class={
-                              errors.last_name !== undefined
-                                ? "is-invalid form-control"
-                                : "form-control"
-                            }
-                            id="basic-default-name"
-                            placeholder="Enter Last Name"
-                            required=""
-                          />
-                          {errors?.last_name &&
-                          errors.last_name.type &&
-                          errors.last_name.type === "required" ? (
-                            <p className="text-danger" role="alert">
-                              Last Name is required
-                            </p>
-                          ) : null}
-                          <label htmlFor="basic-default-name">
-                            Student Last Name
-                          </label>
+                        <div className="col-sm-4">
+                        <div className="input-group input-group-merge">
+                          <div class="form-floating form-floating-outline mb-4 col-sm-4">
+                            <input
+                              {...register("first_name", {
+                                required: "First Name is required",
+                                maxLength: 50,
+                              })}
+                              type="text"
+                              class={
+                                errors.first_name !== undefined
+                                  ? "is-invalid form-control"
+                                  : "form-control"
+                              }
+                              id="basic-default-name"
+                              placeholder="Enter First Name"
+                              required=""
+                            />
+                            {errors?.first_name &&
+                            errors.first_name.type &&
+                            errors.first_name.type === "required" ? (
+                              <p className="text-danger" role="alert">
+                                First Name is required
+                              </p>
+                            ) : null}
+                            <label htmlFor="basic-default-name">
+                              Student First Name
+                            </label>
+                          </div>
+                        </div>
+                        </div>
+                        <div className="col-sm-4">
+                        <div className="input-group input-group-merge">
+                          <div class="form-floating form-floating-outline mb-4 col-sm-4">
+                            <input
+                              {...register("last_name", {
+                                required: "Last Name is required",
+                                maxLength: 50,
+                              })}
+                              type="text"
+                              class={
+                                errors.last_name !== undefined
+                                  ? "is-invalid form-control"
+                                  : "form-control"
+                              }
+                              id="basic-default-name"
+                              placeholder="Enter Last Name"
+                              required=""
+                            />
+                            {errors?.last_name &&
+                            errors.last_name.type &&
+                            errors.last_name.type === "required" ? (
+                              <p className="text-danger" role="alert">
+                                Last Name is required
+                              </p>
+                            ) : null}
+                            <label htmlFor="basic-default-name">
+                              Student Last Name
+                            </label>
+                          </div>
+                        </div>
                         </div>
                       </div>
 
@@ -343,7 +357,7 @@ function Add(props) {
                                 <div class="form-floating form-floating-outline">
                                   <DatePicker
                                     maxDate={new Date()}
-                                    //className="form-control"
+                                    className="form-control"
                                     selected={startDate}
                                     placeholderText="Select Date"
                                     onChange={(date) => setStartDate(date)}

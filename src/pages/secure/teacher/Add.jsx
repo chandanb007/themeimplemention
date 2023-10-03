@@ -11,10 +11,12 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 function Add(props) {
-  const [startDate, setStartDate] = useState(
+  const [minDOB, setMinDOB] = useState(
     new Date().setMonth(new Date().getMonth() - 240)
   );
-  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const [startDate, setStartDate] = useState(null);
+  const [currentDate, setCurrentDate] = useState(null);
 
   const [dob, setDob] = useState(startDate);
   const { notify, showLoader } = useAuth();
@@ -280,12 +282,15 @@ function Add(props) {
                           /> */}
                           <DatePicker
                             style={{ width: "100%" }}
-                            maxDate={startDate}
+                            maxDate={minDOB}
                             className="form-control"
                             selected={startDate}
                             placeholderText="Enter Date of Birth"
                             onChange={(date) => {
                               setStartDate(date);
+                              if (date == null) {
+                                return false;
+                              }
                               var d = date.getDate();
                               var m = date.getMonth() + 1; //Month from 0 to 11
                               var y = date.getFullYear();
@@ -439,8 +444,10 @@ function Add(props) {
                             selected={currentDate}
                             placeholderText="Enter State date Employement"
                             onChange={(date) => {
-                              debugger;
                               setCurrentDate(date);
+                              if (date == null) {
+                                return false;
+                              }
                               var d = date.getDate();
                               var m = date.getMonth() + 1; //Month from 0 to 11
                               var y = date.getFullYear();

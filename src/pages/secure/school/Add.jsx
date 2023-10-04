@@ -198,7 +198,7 @@ function Add(props) {
                       onSubmit={handleSubmit(onSubmit)}
                     >
                       <div className="row">
-                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-3">
                           <select
                             class={
                               errors.category_id !== undefined
@@ -238,7 +238,7 @@ function Add(props) {
                             Category
                           </label>
                         </div>
-                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-3">
                           <Select
                             className="form-control"
                             options={grades ? grades : []}
@@ -257,9 +257,8 @@ function Add(props) {
                           />
                           <label htmlFor="basic-default-country">Grades</label>
                         </div>
-                      </div>
-                      <div className="row">
-                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+
+                        <div class="form-floating form-floating-outline mb-4 col-sm-3">
                           <Select
                             className="form-control"
                             options={subjects ? subjects : []}
@@ -280,7 +279,7 @@ function Add(props) {
                             Subjects
                           </label>
                         </div>
-                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-3">
                           <Select
                             className="form-control"
                             options={streams ? streams : []}

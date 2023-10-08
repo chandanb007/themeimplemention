@@ -7,7 +7,7 @@ import UserRolesEnum from "../../Enums/UserRolesEnum";
 import { useAuth } from "../../context/AuthContext";
 
 function SideBar(props) {
-  const { showLoader } = useAuth();
+  const { showLoader, notify } = useAuth();
   const [user, setUser] = useState();
   const navigate = useNavigate();
 
@@ -47,6 +47,28 @@ function SideBar(props) {
     }
     setUser(JSON.parse(sessionStorage.getItem("user")));
   }, []);
+  const checkSubscription = async (id) => {
+    HttpHelper.get("user/checkSubscription/" + id)
+      .then((response) => {
+        if (response.data.data.has_to_subscribe) {
+          //notify("error", "Please subscribe to any package");
+          navigate("/subscription");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    if (
+      user &&
+      user.user.id != undefined &&
+      user.user.role_id !== UserRolesEnum.ADMIN
+    ) {
+      checkSubscription(user.user.id);
+    }
+  });
+
   return (
     <aside
       id="layout-menu"

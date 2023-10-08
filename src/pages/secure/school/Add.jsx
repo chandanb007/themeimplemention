@@ -170,7 +170,8 @@ function Add(props) {
         <div className="content-wrapper">
           <div className="container-xxl flex-grow-1 container-p-y mt-5">
             <h4 class="mb-4 breadcrumWrapper">
-              <span class="text-muted fw-light brreadCrumText">School /</span> Add
+              <span class="text-muted fw-light brreadCrumText">School /</span>{" "}
+              Add
             </h4>
             <div className="row gy-4">
               <div class="col-md mb-4 mb-md-0">
@@ -197,7 +198,7 @@ function Add(props) {
                       onSubmit={handleSubmit(onSubmit)}
                     >
                       <div className="row">
-                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-3">
                           <select
                             class={
                               errors.category_id !== undefined
@@ -237,7 +238,7 @@ function Add(props) {
                             Category
                           </label>
                         </div>
-                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-3">
                           <Select
                             className="form-control"
                             options={grades ? grades : []}
@@ -256,9 +257,8 @@ function Add(props) {
                           />
                           <label htmlFor="basic-default-country">Grades</label>
                         </div>
-                      </div>
-                      <div className="row">
-                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+
+                        <div class="form-floating form-floating-outline mb-4 col-sm-3">
                           <Select
                             className="form-control"
                             options={subjects ? subjects : []}
@@ -279,7 +279,7 @@ function Add(props) {
                             Subjects
                           </label>
                         </div>
-                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-3">
                           <Select
                             className="form-control"
                             options={streams ? streams : []}
@@ -297,251 +297,259 @@ function Add(props) {
                           <label htmlFor="basic-default-country">Streams</label>
                         </div>
                       </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <input
-                          {...register("first_name", {
-                            required: "Name is required",
-                            maxLength: 50,
-                          })}
-                          type="text"
-                          class={
-                            errors.name !== undefined
-                              ? "is-invalid form-control"
-                              : "form-control"
-                          }
-                          id="basic-default-name"
-                          placeholder="Enter School Name"
-                          required=""
-                        />
-                        {errors?.first_name &&
-                        errors.first_name.type &&
-                        errors.first_name.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Name is required
-                          </p>
-                        ) : null}
-                        <label htmlFor="basic-default-name">School Name</label>
-                      </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <input
-                          {...register("email", {
-                            required: "Email is required",
-                            maxLength: 50,
-                          })}
-                          type="email"
-                          id="basic-default-email"
-                          class={
-                            errors.email !== undefined
-                              ? "is-invalid form-control"
-                              : "form-control"
-                          }
-                          placeholder="Enter Offical Email Address"
-                          required=""
-                        />
-
-                        <label htmlFor="basic-default-email">
-                          Offical Email Address
-                        </label>
-                        {errors?.email &&
-                        errors.email.type &&
-                        errors.email.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Email is required
-                          </p>
-                        ) : null}
-                      </div>
-                      <div class="mb-4 form-password-toggle">
-                        <div class="input-group input-group-merge">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              {...register("mobile", {
-                                required: "Mobile is required",
-                                minLength: 10,
-                                maxLength: 13,
-                              })}
-                              type="text"
-                              id="basic-default-password"
-                              class={
-                                errors.mobile !== undefined
-                                  ? "is-invalid form-control"
-                                  : "form-control"
-                              }
-                              placeholder="Enter Offical Mobile Number"
-                              aria-describedby="basic-default-password3"
-                              required=""
-                            />
-
-                            <label htmlFor="basic-default-password">
-                              Offical Mobile Number
-                            </label>
-                          </div>
-                          <span
-                            class="input-group-text cursor-pointer"
-                            id="basic-default-password3"
-                          ></span>
+                      <div className="row">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
+                          <input
+                            {...register("first_name", {
+                              required: "Name is required",
+                              maxLength: 50,
+                            })}
+                            type="text"
+                            class={
+                              errors.name !== undefined
+                                ? "is-invalid form-control"
+                                : "form-control"
+                            }
+                            id="basic-default-name"
+                            placeholder="Enter School Name"
+                            required=""
+                          />
+                          {errors?.first_name &&
+                          errors.first_name.type &&
+                          errors.first_name.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Name is required
+                            </p>
+                          ) : null}
+                          <label htmlFor="basic-default-name">
+                            School Name
+                          </label>
                         </div>
-                        {errors?.mobile &&
-                        errors.mobile.type &&
-                        errors.mobile.type === "minLength" ? (
-                          <p className="text-danger" role="alert">
-                            Mobile number should atleast 10 digit long
-                          </p>
-                        ) : null}
-                        {errors?.mobile &&
-                        errors.mobile.type &&
-                        errors.mobile.type === "maxLength" ? (
-                          <p className="text-danger" role="alert">
-                            Mobile number should not be greater than 13 digits
-                          </p>
-                        ) : null}
-                        {errors?.mobile &&
-                        errors.mobile.type &&
-                        errors.mobile.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Mobile is required
-                          </p>
-                        ) : null}
-                      </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <select
-                          placeholder="Select County"
-                          class={
-                            errors.county !== undefined
-                              ? "is-invalid form-control"
-                              : "form-select"
-                          }
-                          id="county"
-                          required=""
-                          {...register("county", {
-                            required: "County is required",
-                          })}
-                        >
-                          <option value="">Select County</option>
-                          {counties.length > 0
-                            ? counties.map((county, index) => {
-                                return (
-                                  <>
-                                    <option value={county.id}>
-                                      {county.name}
-                                    </option>
-                                  </>
-                                );
-                              })
-                            : null}
-                        </select>
-                        {errors?.county &&
-                        errors.county.type &&
-                        errors.county.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            County is required
-                          </p>
-                        ) : null}
-                        <label htmlFor="basic-default-country">County</label>
-                      </div>
-                      <div class="mb-4 form-password-toggle">
-                        <div class="input-group input-group-merge">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              class={
-                                errors.town !== undefined
-                                  ? "is-invalid form-control"
-                                  : "form-control"
-                              }
-                              {...register("town", {
-                                required: "Town is required",
-                              })}
-                              type="text"
-                              id="basic-default-password"
-                              placeholder="Enter Town Name"
-                              aria-describedby="basic-default-password3"
-                              required=""
-                            />
+                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
+                          <input
+                            {...register("email", {
+                              required: "Email is required",
+                              maxLength: 50,
+                            })}
+                            type="email"
+                            id="basic-default-email"
+                            class={
+                              errors.email !== undefined
+                                ? "is-invalid form-control"
+                                : "form-control"
+                            }
+                            placeholder="Enter Offical Email Address"
+                            required=""
+                          />
 
-                            <label htmlFor="basic-default-password">Town</label>
-                          </div>
-                          <span
-                            class="input-group-text cursor-pointer"
-                            id="basic-default-password3"
-                          ></span>
+                          <label htmlFor="basic-default-email">
+                            Offical Email Address
+                          </label>
+                          {errors?.email &&
+                          errors.email.type &&
+                          errors.email.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Email is required
+                            </p>
+                          ) : null}
                         </div>
-                        {errors?.town &&
-                        errors.town.type &&
-                        errors.town.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Town is required
-                          </p>
-                        ) : null}
-                      </div>
-                      <div class="mb-4 form-password-toggle">
-                        <div class="input-group input-group-merge">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              class={
-                                errors.estate !== undefined
-                                  ? "is-invalid form-control"
-                                  : "form-control"
-                              }
-                              {...register("estate", {
-                                required: "Estate is required",
-                              })}
-                              type="text"
-                              id="basic-default-password"
-                              placeholder="Enter Estate Name"
-                              aria-describedby="basic-default-password3"
-                              required=""
-                            />
+                        <div class="mb-4 form-password-toggle col-sm-4">
+                          <div class="input-group input-group-merge">
+                            <div class="form-floating form-floating-outline">
+                              <input
+                                {...register("mobile", {
+                                  required: "Mobile is required",
+                                  minLength: 10,
+                                  maxLength: 13,
+                                })}
+                                type="text"
+                                id="basic-default-password"
+                                class={
+                                  errors.mobile !== undefined
+                                    ? "is-invalid form-control"
+                                    : "form-control"
+                                }
+                                placeholder="Enter Offical Mobile Number"
+                                aria-describedby="basic-default-password3"
+                                required=""
+                              />
 
-                            <label htmlFor="basic-default-password">
-                              Estate
-                            </label>
+                              <label htmlFor="basic-default-password">
+                                Offical Mobile Number
+                              </label>
+                            </div>
+                            <span
+                              class="input-group-text cursor-pointer"
+                              id="basic-default-password3"
+                            ></span>
                           </div>
-                          <span
-                            class="input-group-text cursor-pointer"
-                            id="basic-default-password3"
-                          ></span>
+                          {errors?.mobile &&
+                          errors.mobile.type &&
+                          errors.mobile.type === "minLength" ? (
+                            <p className="text-danger" role="alert">
+                              Mobile number should atleast 10 digit long
+                            </p>
+                          ) : null}
+                          {errors?.mobile &&
+                          errors.mobile.type &&
+                          errors.mobile.type === "maxLength" ? (
+                            <p className="text-danger" role="alert">
+                              Mobile number should not be greater than 13 digits
+                            </p>
+                          ) : null}
+                          {errors?.mobile &&
+                          errors.mobile.type &&
+                          errors.mobile.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Mobile is required
+                            </p>
+                          ) : null}
                         </div>
-                        {errors?.estate &&
-                        errors.estate.type &&
-                        errors.estate.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Estate is required
-                          </p>
-                        ) : null}
                       </div>
+                      <div className="row">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-3">
+                          <select
+                            placeholder="Select County"
+                            class={
+                              errors.county !== undefined
+                                ? "is-invalid form-control"
+                                : "form-select"
+                            }
+                            id="county"
+                            required=""
+                            {...register("county", {
+                              required: "County is required",
+                            })}
+                          >
+                            <option value="">Select County</option>
+                            {counties.length > 0
+                              ? counties.map((county, index) => {
+                                  return (
+                                    <>
+                                      <option value={county.id}>
+                                        {county.name}
+                                      </option>
+                                    </>
+                                  );
+                                })
+                              : null}
+                          </select>
+                          {errors?.county &&
+                          errors.county.type &&
+                          errors.county.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              County is required
+                            </p>
+                          ) : null}
+                          <label htmlFor="basic-default-country">County</label>
+                        </div>
+                        <div class="mb-4 form-password-toggle col-sm-3">
+                          <div class="input-group input-group-merge">
+                            <div class="form-floating form-floating-outline">
+                              <input
+                                class={
+                                  errors.town !== undefined
+                                    ? "is-invalid form-control"
+                                    : "form-control"
+                                }
+                                {...register("town", {
+                                  required: "Town is required",
+                                })}
+                                type="text"
+                                id="basic-default-password"
+                                placeholder="Enter Town Name"
+                                aria-describedby="basic-default-password3"
+                                required=""
+                              />
 
-                      <div class="mb-4 form-password-toggle">
-                        <div class="input-group input-group-merge">
-                          <div class="form-floating form-floating-outline">
-                            <input
-                              {...register("building", {
-                                required: false,
-                              })}
-                              type="text"
-                              id="basic-default-password"
-                              class={
-                                errors.building !== undefined
-                                  ? "is-invalid form-control"
-                                  : "form-control"
-                              }
-                              placeholder="Enter Building Number"
-                              aria-describedby="basic-default-password3"
-                              required=""
-                            />
-                            {errors?.building &&
-                            errors.building.type &&
-                            errors.building.type === "required" ? (
-                              <p className="text-danger" role="alert">
-                                Building is required
-                              </p>
-                            ) : null}
-                            <label htmlFor="basic-default-password">
-                              Building
-                            </label>
+                              <label htmlFor="basic-default-password">
+                                Town
+                              </label>
+                            </div>
+                            <span
+                              class="input-group-text cursor-pointer"
+                              id="basic-default-password3"
+                            ></span>
                           </div>
-                          <span
-                            class="input-group-text cursor-pointer"
-                            id="basic-default-password3"
-                          ></span>
+                          {errors?.town &&
+                          errors.town.type &&
+                          errors.town.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Town is required
+                            </p>
+                          ) : null}
+                        </div>
+                        <div class="mb-4 form-password-toggle col-sm-3">
+                          <div class="input-group input-group-merge">
+                            <div class="form-floating form-floating-outline">
+                              <input
+                                class={
+                                  errors.estate !== undefined
+                                    ? "is-invalid form-control"
+                                    : "form-control"
+                                }
+                                {...register("estate", {
+                                  required: "Estate is required",
+                                })}
+                                type="text"
+                                id="basic-default-password"
+                                placeholder="Enter Estate Name"
+                                aria-describedby="basic-default-password3"
+                                required=""
+                              />
+
+                              <label htmlFor="basic-default-password">
+                                Estate
+                              </label>
+                            </div>
+                            <span
+                              class="input-group-text cursor-pointer"
+                              id="basic-default-password3"
+                            ></span>
+                          </div>
+                          {errors?.estate &&
+                          errors.estate.type &&
+                          errors.estate.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Estate is required
+                            </p>
+                          ) : null}
+                        </div>
+
+                        <div class="mb-4 form-password-toggle col-sm-3">
+                          <div class="input-group input-group-merge">
+                            <div class="form-floating form-floating-outline">
+                              <input
+                                {...register("building", {
+                                  required: false,
+                                })}
+                                type="text"
+                                id="basic-default-password"
+                                class={
+                                  errors.building !== undefined
+                                    ? "is-invalid form-control"
+                                    : "form-control"
+                                }
+                                placeholder="Enter Building Number"
+                                aria-describedby="basic-default-password3"
+                                required=""
+                              />
+                              {errors?.building &&
+                              errors.building.type &&
+                              errors.building.type === "required" ? (
+                                <p className="text-danger" role="alert">
+                                  Building is required
+                                </p>
+                              ) : null}
+                              <label htmlFor="basic-default-password">
+                                Building
+                              </label>
+                            </div>
+                            <span
+                              class="input-group-text cursor-pointer"
+                              id="basic-default-password3"
+                            ></span>
+                          </div>
                         </div>
                       </div>
                       {position && position.length > 0 ? (
@@ -619,63 +627,61 @@ function Add(props) {
                           </div>
                         </div>
                       </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <input
-                          {...register("file", {
-                            required: true,
-                          })}
-                          type="file"
-                          class={
-                            errors.file !== undefined
-                              ? "is-invalid form-control"
-                              : "form-control"
-                          }
-                          id="basic-default-upload-file"
-                          required=""
-                        />
-                        {errors?.file &&
-                        errors.file.type &&
-                        errors.file.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Profile image is required
-                          </p>
-                        ) : null}
-                        <label htmlFor="basic-default-upload-file">
-                          Profile image
-                        </label>
-                      </div>
-                      <div class="form-floating form-floating-outline mb-4">
-                        <textarea
-                          {...register("bio", {
-                            required: true,
-                            minLength: 50,
-                            maxLength: 500,
-                          })}
-                          class={
-                            errors.bio !== undefined
-                              ? "is-invalid form-control h-px-75"
-                              : "form-control h-px-75"
-                          }
-                          placeholder="Enter Your School Moto"
-                        />
-                        {(errors?.bio &&
+                      <div className="row">
+                        <div class="form-floating form-floating-outline mb-4 col-sm-6">
+                          <input
+                            {...register("file", {
+                              required: true,
+                            })}
+                            type="file"
+                            class={
+                              errors.file !== undefined
+                                ? "is-invalid form-control"
+                                : "form-control"
+                            }
+                            id="basic-default-upload-file"
+                            required=""
+                          />
+                          {errors?.file &&
+                          errors.file.type &&
+                          errors.file.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Profile image is required
+                            </p>
+                          ) : null}
+                          <label htmlFor="basic-default-upload-file">
+                            Profile image
+                          </label>
+                        </div>
+                        <div class="form-floating form-floating-outline mb-4  col-sm-6">
+                          <textarea
+                            {...register("bio", {
+                              required: true,
+                              maxLength: 500,
+                            })}
+                            class={
+                              errors.bio !== undefined
+                                ? "is-invalid form-control h-px-75"
+                                : "form-control h-px-75"
+                            }
+                            placeholder="Enter Your School Moto"
+                          />
+                          {errors?.bio && errors.bio?.type === "maxLength" ? (
+                            <p className="text-danger" role="alert">
+                              Moto can not be greater then 500 charecters.
+                            </p>
+                          ) : null}
+                          {errors?.bio &&
                           errors.bio.type &&
-                          errors.bio?.type === "minLength") ||
-                        errors.bio?.type === "maxLength" ? (
-                          <p className="text-danger" role="alert">
-                            Moto can not be less than 50 charecter or greater
-                            then 500 charecters
-                          </p>
-                        ) : null}
-                        {errors?.bio &&
-                        errors.bio.type &&
-                        errors.bio.type === "required" ? (
-                          <p className="text-danger" role="alert">
-                            Moto is required
-                          </p>
-                        ) : null}
-                        <label htmlFor="basic-default-bio">Moto</label>
+                          errors.bio.type === "required" ? (
+                            <p className="text-danger" role="alert">
+                              Moto is required
+                            </p>
+                          ) : null}
+                          <label htmlFor="basic-default-bio">Moto</label>
+                        </div>
                       </div>
+
                       <div class="form-floating form-floating-outline mb-4"></div>
                       <div class="mb-3">
                         <div class="form-check">
@@ -721,7 +727,25 @@ function Add(props) {
                           </span>
                         </label>
                       </div>
-
+                      <div class="mb-3">
+                        <label class="switch switch-primary">
+                          <input
+                            {...register("activate_subscription", {
+                              required: false,
+                            })}
+                            type="checkbox"
+                            class="switch-input"
+                            required=""
+                          />
+                          <span class="switch-toggle-slider">
+                            <span class="switch-on"></span>
+                            <span class="switch-off"></span>
+                          </span>
+                          <span class="switch-label">
+                            Activate Subscription
+                          </span>
+                        </label>
+                      </div>
                       <div class="row">
                         <div class="col-12">
                           <button

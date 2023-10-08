@@ -24,6 +24,8 @@ import AddAttendance from "../pages/secure/school/attendance/Add";
 import ReportAttendance from "../pages/secure/school/attendance/Report";
 import AddNoticeBoard from "../pages/secure/school/noticeBoard/Add";
 
+import SubscriptionPackages from "../pages/secure/userSubscription/List";
+
 const routes = createBrowserRouter([
   {
     path: "/",
@@ -88,6 +90,10 @@ const routes = createBrowserRouter([
   {
     path: "notice-board/add",
     element: <AddNoticeBoard />,
+  },
+  {
+    path: "subscription",
+    element: <SubscriptionPackages />,
   },
 ]);
 export default routes;

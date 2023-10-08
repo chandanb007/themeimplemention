@@ -4,6 +4,7 @@ import HttpHelper from "../../services/HttpHelper";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useEffect } from "react";
 function Header(props) {
   const navigate = useNavigate();
   const { showLoader } = useAuth();
@@ -23,6 +24,87 @@ function Header(props) {
         console.log(error);
       });
   };
+
+  const themeChangeHandler = (e) => {
+    var docHtmlTag = document.getElementsByTagName("html")[0];
+    if (e.currentTarget.getAttribute("data-theme") == "light") {
+      setLightTheme();
+    } else if (e.currentTarget.getAttribute("data-theme") == "dark") {
+      setDarkTheme();
+    } else if (e.currentTarget.getAttribute("data-theme") == "system") {
+      setSystemTheme();
+    }
+  };
+
+  const setDarkTheme = () => {
+    localStorage.setItem("theme", "dark");
+    var docHtmlTag = document.getElementsByTagName("html")[0];
+    docHtmlTag.classList.remove("light-style");
+    docHtmlTag.classList.add("dark-style");
+
+    var getBodyAddStylesheet = document.getElementsByTagName("link");
+    var getBodyAddStylesheetf =
+      getBodyAddStylesheet[getBodyAddStylesheet.length - 1];
+    if (
+      getBodyAddStylesheetf.id &&
+      getBodyAddStylesheetf.id == "darkTmemecss"
+    ) {
+    } else {
+      var insertStyleShet = document.createElement("link");
+      insertStyleShet.rel = "stylesheet";
+      insertStyleShet.href = "/assets/css/rtl/core-dark.css";
+      insertStyleShet.type = "text/css";
+      insertStyleShet.id = "darkTmemecss";
+      var getBody = document.getElementsByTagName("body")[0];
+      getBody.parentNode.appendChild(insertStyleShet, getBody);
+    }
+  };
+
+  const setLightTheme = () => {
+    localStorage.setItem("theme", "light");
+    var docHtmlTag = document.getElementsByTagName("html")[0];
+    docHtmlTag.classList.remove("dark-style");
+    docHtmlTag.classList.add("light-style");
+    var getBodyAddStylesheet = document.getElementsByTagName("link");
+    var getBodyAddStylesheetf =
+      getBodyAddStylesheet[getBodyAddStylesheet.length - 1];
+    if (
+      getBodyAddStylesheetf.id &&
+      getBodyAddStylesheetf.id == "darkTmemecss"
+    ) {
+      getBodyAddStylesheetf.remove();
+    }
+  };
+
+  const setSystemTheme = () =>{
+    // Check to see if Media-Queries are supported
+    if (window.matchMedia) {
+      // Check if the dark-mode Media-Query matches
+      if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+        // Dark
+          setDarkTheme();
+          localStorage.setItem("theme", "systemTheme");
+      } else {
+        setLightTheme();
+        localStorage.setItem("theme", "systemTheme");
+      }
+    } else {
+      // Default (when Media-Queries are not supported)
+    }
+  }
+
+  useEffect(() => {
+    if (localStorage.getItem("theme") != null) {
+      if (localStorage.getItem("theme") == "dark") {
+        setDarkTheme();
+      } else if (localStorage.getItem("theme") == "light") {
+        setLightTheme();
+      } else if (localStorage.getItem("theme") == "systemTheme") {
+        setSystemTheme();
+      }
+    }
+  }, []);
+
   return (
     <>
       <nav
@@ -63,7 +145,7 @@ function Header(props) {
           </div>
 
           <ul className="navbar-nav flex-row align-items-center ms-auto">
-            <li className="nav-item dropdown-language dropdown me-1 me-xl-0">
+            <li className="nav-item dropdown-language dropdown me-1 me-xl-0 d-none">
               <a
                 className="nav-link btn btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow waves-effect waves-light"
                 href="#"
@@ -126,6 +208,9 @@ function Header(props) {
                     className="dropdown-item waves-effect"
                     href="#"
                     data-theme="light"
+                    onClick={(e) => {
+                      themeChangeHandler(e);
+                    }}
                   >
                     <span className="align-middle">
                       <i className="mdi mdi-weather-sunny me-2"></i>Light
@@ -137,6 +222,9 @@ function Header(props) {
                     className="dropdown-item waves-effect"
                     href="#"
                     data-theme="dark"
+                    onClick={(e) => {
+                      themeChangeHandler(e);
+                    }}
                   >
                     <span className="align-middle">
                       <i className="mdi mdi-weather-night me-2"></i>Dark
@@ -148,6 +236,9 @@ function Header(props) {
                     className="dropdown-item waves-effect"
                     href="#"
                     data-theme="system"
+                    onClick={(e) => {
+                      themeChangeHandler(e);
+                    }}
                   >
                     <span className="align-middle">
                       <i className="mdi mdi-monitor me-2"></i>System

@@ -134,6 +134,9 @@
   font-size: 14px;
 }
 
+.dark-style .loginFormSection .loginFormWrapper .card .card-body h4, .dark-style .loginFormSection .loginFormWrapper .card .card-body p {
+  color: #fff !important;
+}
 .dark-style .form-floating > .form-control:disabled ~ label::after, .dark-style .form-floating > :disabled ~ label::after {
   background-color: #312d4b !important;
   color: #fff;

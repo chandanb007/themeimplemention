@@ -37,7 +37,6 @@
 }
 
 #layout-menu {
-    background-color: #FFF !important;
     box-shadow: 0 0.375rem 1rem 0 rgba(58, 53, 65, 0.12);
     border-right: 0.5px solid #9055fd;
 
@@ -162,4 +161,45 @@
 .menu-vertical .menu-item .menu-link>div:not(.badge) {
     padding-left: 9px;
     font-size: 14px;
+}
+
+.dark-style{
+    .loginFormSection .loginFormWrapper .card .card-body h4, .loginFormSection .loginFormWrapper .card .card-body p{
+        color: #fff !important;
+    }
+    .form-floating>.form-control:disabled~label::after, .form-floating>:disabled~label::after{
+        background-color: #312d4b !important;
+        color: #fff;
+    }
+    .form-floating>.form-control:disabled~label, .form-floating>:disabled~label, .form-floating>.form-select~label {
+        color: #fff;
+    }
+    .layout-navbar-fixed .window-scrolled .bg-navbar-theme.layout-navbar, .layout-horizontal .bg-navbar-theme.layout-navbar{
+        background-color: #312d4b !important;
+    }
+    #layout-menu{
+        background-color: #312d4b !important;
+        .menu-item{
+            a{
+                color: #fff;
+            }
+        }
+        .app-brand-text{
+            color: #fff;
+        }
+        .menu-toggle-icon{
+            color: #fff;
+        }
+    }
+    .breadcrumWrapper {
+        font-size: 12px;
+        font-weight: 500 !important;
+        color: #fff !important;
+    
+        .brreadCrumText {
+            font-size: 12px;
+            font-weight: 500 !important;
+            color: #fff !important;
+        }
+    }
 }

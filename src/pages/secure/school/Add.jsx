@@ -298,60 +298,68 @@ function Add(props) {
                         </div>
                       </div>
                       <div className="row">
-                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
-                          <input
-                            {...register("first_name", {
-                              required: "Name is required",
-                              maxLength: 50,
-                            })}
-                            type="text"
-                            class={
-                              errors.name !== undefined
-                                ? "is-invalid form-control"
-                                : "form-control"
-                            }
-                            id="basic-default-name"
-                            placeholder="Enter School Name"
-                            required=""
-                          />
-                          {errors?.first_name &&
-                          errors.first_name.type &&
-                          errors.first_name.type === "required" ? (
-                            <p className="text-danger" role="alert">
-                              Name is required
-                            </p>
-                          ) : null}
-                          <label htmlFor="basic-default-name">
-                            School Name
-                          </label>
+                        <div class="mb-4 form-password-toggle col-sm-4">
+                          <div class="input-group input-group-merge">
+                            <div class="form-floating form-floating-outline mb-4 col-sm-4">
+                              <input
+                                {...register("first_name", {
+                                  required: "Name is required",
+                                  maxLength: 50,
+                                })}
+                                type="text"
+                                class={
+                                  errors.name !== undefined
+                                    ? "is-invalid form-control"
+                                    : "form-control"
+                                }
+                                id="basic-default-name"
+                                placeholder="Enter School Name"
+                                required=""
+                              />
+                              {errors?.first_name &&
+                              errors.first_name.type &&
+                              errors.first_name.type === "required" ? (
+                                <p className="text-danger" role="alert">
+                                  Name is required
+                                </p>
+                              ) : null}
+                              <label htmlFor="basic-default-name">
+                                School Name
+                              </label>
+                            </div>
+                          </div>
                         </div>
-                        <div class="form-floating form-floating-outline mb-4 col-sm-4">
-                          <input
-                            {...register("email", {
-                              required: "Email is required",
-                              maxLength: 50,
-                            })}
-                            type="email"
-                            id="basic-default-email"
-                            class={
-                              errors.email !== undefined
-                                ? "is-invalid form-control"
-                                : "form-control"
-                            }
-                            placeholder="Enter Offical Email Address"
-                            required=""
-                          />
+                        <div class="mb-4 form-password-toggle col-sm-4">
+                          <div class="input-group input-group-merge">
+                            <div class="form-floating form-floating-outline">
+                              <input
+                                {...register("email", {
+                                  required: "Email is required",
+                                  maxLength: 50,
+                                })}
+                                type="email"
+                                id="basic-default-email"
+                                class={
+                                  errors.email !== undefined
+                                    ? "is-invalid form-control"
+                                    : "form-control"
+                                }
+                                placeholder="Enter Offical Email Address"
+                                required=""
+                              />
 
-                          <label htmlFor="basic-default-email">
-                            Offical Email Address
-                          </label>
-                          {errors?.email &&
-                          errors.email.type &&
-                          errors.email.type === "required" ? (
-                            <p className="text-danger" role="alert">
-                              Email is required
-                            </p>
-                          ) : null}
+                              <label htmlFor="basic-default-email">
+                                Offical Email Address
+                              </label>
+                              {errors?.email &&
+                              errors.email.type &&
+                              errors.email.type === "required" ? (
+                                <p className="text-danger" role="alert">
+                                  Email is required
+                                </p>
+                              ) : null}
+                            </div>
+                          </div>
                         </div>
                         <div class="mb-4 form-password-toggle col-sm-4">
                           <div class="input-group input-group-merge">
@@ -653,7 +661,9 @@ function Add(props) {
                             Profile image
                           </label>
                         </div>
-                        <div class="form-floating form-floating-outline mb-4  col-sm-6">
+                        <div class="mb-4 form-password-toggle col-sm-6">
+                          <div class="input-group input-group-merge">
+                        <div class="form-floating form-floating-outline">
                           <textarea
                             {...register("bio", {
                               required: true,
@@ -680,6 +690,8 @@ function Add(props) {
                           ) : null}
                           <label htmlFor="basic-default-bio">Moto</label>
                         </div>
+                        </div>
+                       </div>
                       </div>
 
                       <div class="form-floating form-floating-outline mb-4"></div>
